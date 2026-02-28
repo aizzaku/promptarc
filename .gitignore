@@ -1,7 +1,11 @@
-# Node (for future npx-cli)
+# Node
 node_modules/
 dist/
 *.js.map
+
+# npx-cli build artifacts (source of truth is root skills/)
+setup/npx-cli/skills/
+setup/npx-cli/dist/
 
 # OS
 .DS_Store

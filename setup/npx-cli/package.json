@@ -1,0 +1,46 @@
+{
+  "name": "arc-setup",
+  "version": "1.0.0",
+  "description": "One-command installer for the ARC prompt engineering framework for Claude Code",
+  "type": "module",
+  "bin": {
+    "arc-setup": "./dist/index.js"
+  },
+  "files": [
+    "dist/",
+    "skills/"
+  ],
+  "scripts": {
+    "build": "tsup",
+    "dev": "tsx src/index.ts",
+    "sync-skills": "node scripts/sync-skills.mjs",
+    "prepack": "npm run sync-skills && npm run build"
+  },
+  "dependencies": {
+    "@inquirer/prompts": "^3.3.2",
+    "fs-extra": "^11.2.0",
+    "picocolors": "^1.1.0"
+  },
+  "devDependencies": {
+    "@types/fs-extra": "^11.0.4",
+    "@types/node": "^20.12.0",
+    "tsup": "^8.0.2",
+    "tsx": "^4.7.2",
+    "typescript": "^5.4.5"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "keywords": [
+    "claude",
+    "claude-code",
+    "anthropic",
+    "prompt-engineering",
+    "arc"
+  ],
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/yourusername/arc"
+  }
+}
