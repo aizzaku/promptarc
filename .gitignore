@@ -1,0 +1,20 @@
+# Node (for future npx-cli)
+node_modules/
+dist/
+*.js.map
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Editor
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# ARC task files (project-specific — teams choose whether to commit)
+# Uncomment to exclude from repo:
+# tasks/lessons.md
+# tasks/todo.md
+# tasks/plan.md

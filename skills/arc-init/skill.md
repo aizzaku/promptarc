@@ -42,19 +42,31 @@ Ask group 1, wait for the answer, then ask group 2, and so on. Never ask all que
 
 ## Step 2: Determine overlays and modules
 
-Map the domain number to its overlay and module:
+Map the domain number to its overlay file (in `templates/claude-md/`). Domain modules are optional add-ons from `domains/` — pick one if it matches the project's industry vertical (e.g., saas.md, fintech.md).
 
-| # | Domain | Overlay file | Module dir |
-|---|--------|-------------|------------|
-| 1 | Software Engineering | templates/claude-md/se-overlay.md | domains/software-engineering/ |
-| 2 | Content Publishing | templates/claude-md/content-overlay.md | domains/content-publishing/ |
-| 3 | Business Strategy | templates/claude-md/strategy-overlay.md | domains/business-strategy/ |
-| 4 | Learning / Research | templates/claude-md/research-overlay.md | domains/learning-research/ |
-| 5 | Productivity | templates/claude-md/productivity-overlay.md | domains/productivity/ |
-| 6 | Decision Frameworks | templates/claude-md/decisions-overlay.md | domains/decision-frameworks/ |
-| 7 | Generic | (no overlay) | domains/generic/ |
+| # | Domain | Overlay file |
+|---|--------|-------------|
+| 1 | Software Engineering | templates/claude-md/software-eng.md |
+| 2 | Content Publishing | templates/claude-md/content-publishing.md |
+| 3 | Business Strategy | templates/claude-md/business-strategy.md |
+| 4 | Learning / Research | templates/claude-md/learning-research.md |
+| 5 | Productivity | templates/claude-md/productivity.md |
+| 6 | Decision Frameworks | templates/claude-md/decision-frameworks.md |
+| 7 | Generic | templates/claude-md/generic.md |
 
-If a secondary domain was specified, identify the same overlay and module for it.
+**Domain modules** (optional, stack on top of overlays):
+- `domains/saas.md` — B2B SaaS products
+- `domains/fintech.md` — financial technology
+- `domains/e-commerce.md` — online retail and marketplaces
+- `domains/developer-tools.md` — tools built for developers
+- `domains/mobile-app.md` — native or cross-platform mobile
+- `domains/ai-ml.md` — AI/ML products and pipelines
+- `domains/healthcare.md` — health tech and medical software
+- `domains/education.md` — edtech and learning platforms
+- `domains/marketplace.md` — two-sided marketplace products
+- `domains/gaming.md` — games and interactive entertainment
+
+If a secondary domain was specified, identify the same overlay for it. Domain modules can be stacked (e.g., saas.md + fintech.md for a fintech SaaS).
 
 ---
 
