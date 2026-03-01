@@ -11,13 +11,15 @@ Tell the user: "Re-orienting the project. I'll ask a few targeted questions to s
 ## Phase 1: Read existing context
 
 Before asking anything, silently read in order:
-1. `CLAUDE.md` — current project configuration
-2. `tasks/decisions.md` — what's already been locked in
-3. `tasks/plan.md` — where the plan currently stands
-4. `tasks/todo.md` — what's pending
-5. `tasks/lessons.md` — what went wrong before
+1. `tasks/STATE.md` — current project state, last session, open questions
+2. `CLAUDE.md` — current project configuration
+3. `tasks/decisions.md` — what's already been locked in
+4. `tasks/plan.md` — where the plan currently stands
+5. `tasks/todo.md` — what's pending
+6. `tasks/lessons.md` — what went wrong before
 
-If these files don't exist, note it — the user may be running this on a project that was never arc-init'd. Proceed anyway.
+If STATE.md doesn't exist: the project was initialized before this version of ARC. Create it at the end of Phase 4.
+If other files don't exist: note it and proceed anyway.
 
 ---
 
@@ -72,6 +74,18 @@ Update the following files based on the re-kickoff conversation. Do this silentl
 **`tasks/todo.md`**: Move any tasks that are no longer relevant to the Dropped section with a reason. Add any new tasks that emerged from the conversation.
 
 **`CLAUDE.md`** (only if scope or constraints changed meaningfully): Update the relevant sections — constraints, quality bar, scope. Do NOT rewrite the Voice section unless the user explicitly asks.
+
+**`tasks/STATE.md`**: Always update, regardless of whether other files changed.
+- Set `{{CURRENT_FOCUS}}` to what emerged from this re-kickoff
+- Set `{{WHAT_FINISHED}}` to what was completed before this re-kickoff
+- Set `{{NEXT_ACTION}}` to the first task in the new phase
+- Update `{{KEY_DECISIONS}}` with any new locked decisions
+- Remove from `{{OPEN_QUESTIONS}}` anything resolved; add anything new
+- Update `{{CLAUDE_MD_STATUS}}` if CLAUDE.md was changed
+- Update `{{DECISIONS_STATUS}}` with the new entry count
+- Set `{{DATE}}` to today
+
+If STATE.md didn't exist: create it from `templates/STATE.md` using current project reality as the values.
 
 ---
 

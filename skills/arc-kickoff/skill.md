@@ -171,7 +171,86 @@ Use the format from the decisions template: date, context, options considered, d
 
 ---
 
-## Phase 6: Handoff
+## Phase 5: CLAUDE.md validation (gap closure)
+
+This step verifies that CLAUDE.md is actually doing its job — not just that it exists.
+
+### 5a — Generate a synthetic test
+
+Based on the domain, construct a realistic sample request the user would make in a real session. Use the domain-appropriate examples:
+
+| Domain | Sample request |
+|--------|---------------|
+| Software Engineering | "Add rate limiting to the API endpoints." |
+| Content & Writing | "Write an intro section for the feature announcement." |
+| Business Strategy | "Draft the exec summary for the Q3 review." |
+| Design / UX | "Design the empty state for the dashboard." |
+| Data & Analytics | "Write a query for the weekly retention report." |
+| Legal & Compliance | "Draft a mutual NDA for the enterprise partnership." |
+| Sales / GTM | "Write the first email in the outbound sequence." |
+| Other domains | Use a realistic first task for the project described in the brief. |
+
+### 5b — Self-evaluate as a fresh session
+
+Answer the sample request AS IF you are starting a new session with only `CLAUDE.md` as context. Do not use any information from the kickoff interview beyond what was written to CLAUDE.md.
+
+Then evaluate your own answer against this rubric:
+
+| Signal | Good | Bad |
+|--------|------|-----|
+| Stack specificity | References the actual tech stack by name | "Choose a framework that fits your needs" |
+| Constraint application | Applies the quality bar, hard constraints | Ignores them, goes generic |
+| Voice match | Matches the tone calibrated above | Generic professional tone |
+| Domain vocabulary | Uses domain terminology naturally | Explains basics the user already knows |
+| Would be different for another project | Yes — this answer couldn't be copy-pasted to a different project | No — this is a generic answer |
+
+### 5c — Identify and close gaps
+
+If the self-evaluation reveals generic output: CLAUDE.md doesn't have enough specific context. Identify what's missing and add it now.
+
+Common gaps and where to add them:
+
+| Gap type | Fix |
+|----------|-----|
+| Stack not specific enough | Add exact versions/libraries to DEFAULTS |
+| Quality bar not translating to rules | Add 2-3 concrete enforcement rules to NON-NEGOTIABLE |
+| Voice calibration generic | Add specific vocabulary signals observed during interview |
+| Domain constraints missing | Add to NON-NEGOTIABLE from the domain overlay's checklist |
+| Project-specific anti-patterns | Add 2-3 "DO NOT" rules specific to this project |
+
+After adding: run the synthetic test again mentally. If the answer would now be specific, proceed. If still generic, add more context and repeat once.
+
+### 5d — Report to the user
+
+Tell the user what was tested and what (if anything) was added:
+
+> "Tested CLAUDE.md against a sample task: _'{{SAMPLE_REQUEST}}'_. {{ONE OF: 'Context was specific — no gaps found.' / 'Found {{N}} gaps and added them: {{WHAT_WAS_ADDED}}.'}}"
+
+---
+
+## Phase 6: Initialize STATE.md
+
+Create `tasks/STATE.md` from `templates/STATE.md`, filling in values from this session:
+
+- `{{PROJECT_NAME}}` → project name from the brief
+- `{{DATE}}` → today's date
+- `{{DOMAIN}}` → primary domain selected
+- `{{QUALITY_BAR}}` → quality bar label
+- `{{CURRENT_FOCUS}}` → "Kickoff complete — awaiting first task"
+- `{{WHAT_FINISHED}}` → "arc-kickoff interview, project brief, CLAUDE.md calibration"
+- `{{NEXT_ACTION}}` → first task if user mentioned one, otherwise "TBD"
+- `{{KEY_DECISIONS}}` → 3-5 decisions from `tasks/decisions.md`, one line each
+- `{{OPEN_QUESTIONS}}` → open questions from the brief's "What's still open" section
+- `{{CLAUDE_MD_STATUS}}` → "✅ active, calibrated"
+- `{{BRIEF_STATUS}}` → "✅ tasks/brief.md"
+- `{{DECISIONS_STATUS}}` → "✅ tasks/decisions.md ({{N}} entries)"
+- `{{VOICE_CALIBRATED}}` → "✅ yes"
+- `{{LAST_CHECK_RESULT}}` → "not yet run"
+- `{{LAST_CHECK_DATE}}` → "—"
+
+---
+
+## Phase 7: Handoff
 
 Tell the user: "Ready to start. What's the first task?"
 

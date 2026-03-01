@@ -142,6 +142,28 @@ Create four files using the tasks-template/ formats:
 
 ---
 
+## Step 4b: Initialize STATE.md
+
+Create `tasks/STATE.md` from `templates/STATE.md`, filling in values from the setup answers:
+
+- `{{PROJECT_NAME}}` → project name from Group 1
+- `{{DATE}}` → today's date
+- `{{DOMAIN}}` → primary domain name (not number)
+- `{{QUALITY_BAR}}` → quality bar label
+- `{{CURRENT_FOCUS}}` → "Project initialized — awaiting first task"
+- `{{WHAT_FINISHED}}` → "arc-init: CLAUDE.md and tasks/ directory created"
+- `{{NEXT_ACTION}}` → "Run /arc-kickoff for deeper context, or start working"
+- `{{KEY_DECISIONS}}` → "Domain: {{DOMAIN}}, Quality bar: {{QUALITY_BAR}}, Constraints: {{CONSTRAINTS}}"
+- `{{OPEN_QUESTIONS}}` → "Voice not yet calibrated — run /arc-kickoff to set"
+- `{{CLAUDE_MD_STATUS}}` → "✅ active (voice not yet calibrated)"
+- `{{BRIEF_STATUS}}` → "❌ not created — run /arc-kickoff"
+- `{{DECISIONS_STATUS}}` → "✅ tasks/decisions.md (1 entry)"
+- `{{VOICE_CALIBRATED}}` → "❌ no — run /arc-kickoff"
+- `{{LAST_CHECK_RESULT}}` → "not yet run"
+- `{{LAST_CHECK_DATE}}` → "—"
+
+---
+
 ## Step 5: Report completion
 
 Tell the user exactly this (substituting values):
