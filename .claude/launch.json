@@ -1,0 +1,11 @@
+{
+  "version": "0.0.1",
+  "configurations": [
+    {
+      "name": "promptarc-website",
+      "runtimeExecutable": "npx.cmd",
+      "runtimeArgs": ["serve", "website", "-p", "4200", "--no-clipboard"],
+      "port": 4200
+    }
+  ]
+}
