@@ -4,11 +4,10 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>promptarc — Consistent Claude output, from the first message</title>
-  <meta name="description" content="A modular prompt engineering framework for Claude Code. Eight principles. One command.">
+  <meta name="description" content="A modular prompt engineering framework for Claude Code. Set up once. Claude knows your project forever.">
   <meta property="og:title" content="promptarc">
   <meta property="og:description" content="Consistent Claude output, from the first message.">
   <meta property="og:type" content="website">
-  <!-- TODO: Update with actual GitHub URL before deploying -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
@@ -23,6 +22,7 @@
       --muted:        #6b6b68;
       --green:        #15803d;
       --green-bg:     #f0fdf4;
+      --green-border: #bbf7d0;
       --red:          #b91c1c;
       --red-bg:       #fef2f2;
       --mono:         'JetBrains Mono', ui-monospace, 'Cascadia Code', Menlo, Consolas, monospace;
@@ -124,7 +124,7 @@
       font-size: 15.5px;
       color: var(--muted);
       line-height: 1.65;
-      max-width: 480px;
+      max-width: 520px;
       margin-top: 0.6rem;
     }
 
@@ -196,10 +196,65 @@
     }
     .link-arrow:hover { border-color: var(--text); }
 
+    /* ─── How it works ────────────────────────────────── */
+    #how {
+      border-top: 1px solid var(--border);
+      border-bottom: 1px solid var(--border);
+    }
+    .flow-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 2.5rem;
+      margin-top: 3rem;
+    }
+    .flow-step {
+      padding-top: 1.5rem;
+      border-top: 2px solid var(--border);
+    }
+    .flow-step--last {
+      border-top-color: var(--text);
+    }
+    .step-n {
+      font-family: var(--mono);
+      font-size: 11px;
+      color: var(--muted);
+      margin-bottom: 1rem;
+    }
+    .step-cmd {
+      font-family: var(--mono);
+      font-size: 11.5px;
+      color: var(--text);
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 3px;
+      display: inline-block;
+      padding: 0.2rem 0.55rem;
+      margin-bottom: 0.9rem;
+    }
+    .step-head {
+      font-size: 15px;
+      font-weight: 600;
+      letter-spacing: -0.02em;
+      margin-bottom: 0.4rem;
+    }
+    .step-time {
+      font-size: 11px;
+      font-weight: 500;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 0.6rem;
+    }
+    .step-desc {
+      font-size: 13.5px;
+      color: var(--muted);
+      line-height: 1.6;
+    }
+    .flow-step--last .step-head { color: var(--text); }
+
     /* ─── Demo ────────────────────────────────────────── */
     #demo {
       background: var(--surface);
-      border-top: 1px solid var(--border);
       border-bottom: 1px solid var(--border);
     }
     .tabs {
@@ -226,10 +281,8 @@
     .tab.active { background: var(--text); color: var(--bg); }
     .tab:not(.active):hover { background: var(--surface-2); color: var(--text); }
 
-    /* Comparison grid */
+    /* Comparison container */
     .cmp {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
       border: 1px solid var(--border);
       border-radius: var(--r);
       overflow: hidden;
@@ -237,6 +290,36 @@
       transition: opacity 0.2s ease;
     }
     .cmp.fading { opacity: 0; }
+
+    /* Shared request bar — shown once at top */
+    .cmp-request {
+      display: flex;
+      align-items: baseline;
+      gap: 0.85rem;
+      padding: 0.9rem 1.25rem;
+      background: var(--surface);
+      border-bottom: 1px solid var(--border);
+    }
+    .req-you {
+      font-family: var(--mono);
+      font-size: 10.5px;
+      font-weight: 500;
+      letter-spacing: 0.07em;
+      text-transform: uppercase;
+      color: var(--muted);
+      flex-shrink: 0;
+    }
+    .req-text {
+      font-family: var(--mono);
+      font-size: 12.5px;
+      color: var(--text);
+    }
+
+    /* Split response columns */
+    .cmp-split {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+    }
     .cmp-col {
       display: flex;
       flex-direction: column;
@@ -246,8 +329,7 @@
     .cmp-head {
       display: flex;
       align-items: center;
-      justify-content: space-between;
-      padding: 0.7rem 1.25rem;
+      padding: 0.65rem 1.25rem;
       border-bottom: 1px solid var(--border);
       flex-shrink: 0;
     }
@@ -261,27 +343,68 @@
     }
     .cmp-col.no .cmp-title { color: var(--red); }
     .cmp-col.yes .cmp-title { color: var(--green); }
-    .grade {
-      font-family: var(--mono);
-      font-size: 11px;
-      font-weight: 500;
-      padding: 0.15rem 0.5rem;
-      border-radius: 3px;
-      letter-spacing: 0.04em;
+    .cmp-body {
+      padding: 1rem 1.25rem 1.25rem;
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      gap: 0.55rem;
     }
-    .cmp-col.no .grade { background: var(--red); color: #fff; }
-    .cmp-col.yes .grade { background: var(--green); color: #fff; }
+    .resp-label {
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+    }
+    .resp-label.asking  { color: var(--muted); }
+    .resp-label.answering { color: var(--green); }
     .cmp-prompt {
       font-family: var(--mono);
       font-size: 12.5px;
       line-height: 1.75;
-      padding: 1.25rem;
       white-space: pre-wrap;
       word-break: break-word;
       flex: 1;
     }
-    .cmp-col.no .cmp-prompt { color: var(--muted); }
+    .cmp-col.no  .cmp-prompt { color: var(--muted); }
     .cmp-col.yes .cmp-prompt { color: var(--text); }
+
+    /* CLAUDE.md context chip at bottom of "With ARC" */
+    .cmp-context {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.6rem 1.25rem;
+      border-top: 1px solid var(--green-border);
+      background: var(--green-bg);
+      overflow: hidden;
+    }
+    .ctx-icon {
+      color: var(--green);
+      flex-shrink: 0;
+      line-height: 0;
+    }
+    .ctx-label {
+      font-family: var(--mono);
+      font-size: 10.5px;
+      font-weight: 500;
+      color: var(--green);
+      white-space: nowrap;
+      flex-shrink: 0;
+    }
+    .ctx-sep {
+      font-size: 10.5px;
+      color: var(--green-border);
+      flex-shrink: 0;
+    }
+    .ctx-text {
+      font-family: var(--mono);
+      font-size: 10.5px;
+      color: var(--muted);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
 
     /* ─── Principles ──────────────────────────────────── */
     .p-grid {
@@ -329,7 +452,7 @@
       color: var(--muted);
       margin-bottom: 0.2rem;
     }
-    .ex-bad { color: var(--red); margin-bottom: 0.75rem; }
+    .ex-bad  { color: var(--red);   margin-bottom: 0.75rem; }
     .ex-good { color: var(--green); }
     .p-footnote {
       margin-top: 1.5rem;
@@ -395,9 +518,9 @@
     <div class="nav-inner">
       <a href="#" class="wordmark">promptarc</a>
       <div class="nav-right">
+        <a href="#how"  class="nav-link">How it works</a>
         <a href="#demo" class="nav-link">Demo</a>
-        <a href="#principles" class="nav-link">Principles</a>
-        <a href="https://github.com/username/arc" class="btn-nav" target="_blank" rel="noopener">
+        <a href="https://github.com/aizzaku/promptarc" class="btn-nav" target="_blank" rel="noopener">
           <svg class="icon" width="14" height="14" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
             <path d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.531 1.032 1.531 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.942.359.31.678.921.678 1.856 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z"/>
           </svg>
@@ -426,9 +549,9 @@
 
         <h1>Consistent Claude output,<br>from the first message.</h1>
         <p class="hero-desc">
-          A modular prompt engineering framework for Claude Code. Eight principles, composable templates, and a kickoff system that builds your project context once — and never makes you re-explain it.
+          A modular framework for Claude Code. Tell Claude about your project once. After that, short requests get direct answers — no re-explaining your stack, style, or constraints every session.
         </p>
-        <a href="https://github.com/username/arc" class="link-arrow" target="_blank" rel="noopener">
+        <a href="https://github.com/aizzaku/promptarc" class="link-arrow" target="_blank" rel="noopener">
           View on GitHub
           <svg class="icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
             <path d="M7 17L17 7M17 7H7M17 7v10"/>
@@ -437,12 +560,55 @@
       </div>
     </section>
 
-    <!-- ─── Demo ────────────────────────────────────────── -->
+    <!-- ─── How it works ─────────────────────────────── -->
+    <section id="how">
+      <div class="wrap">
+        <p class="kicker">How it works</p>
+        <h2>Four steps. Then you just work.</h2>
+        <p class="sub">ARC does one thing upfront: it teaches Claude about your project. Every request after that gets a targeted answer — because Claude already knows your stack, quality bar, and constraints.</p>
+
+        <div class="flow-grid">
+          <div class="flow-step">
+            <div class="step-n">01</div>
+            <div class="step-cmd">$ npx arc-setup</div>
+            <div class="step-head">Install</div>
+            <div class="step-time">Once · ~10 seconds</div>
+            <p class="step-desc">Copies ARC's templates and principles into your Claude Code project. Run it once and forget it.</p>
+          </div>
+
+          <div class="flow-step">
+            <div class="step-n">02</div>
+            <div class="step-cmd">/arc-init</div>
+            <div class="step-head">Initialize</div>
+            <div class="step-time">Once per project · ~1 min</div>
+            <p class="step-desc">Pick your domain and quality bar. ARC writes a CLAUDE.md tailored to your project — stack, constraints, and anti-patterns included.</p>
+          </div>
+
+          <div class="flow-step">
+            <div class="step-n">03</div>
+            <div class="step-cmd">/arc-kickoff</div>
+            <div class="step-head">Interview <span style="font-weight:400;color:var(--muted)">(optional)</span></div>
+            <div class="step-time">Optional · ~15 min</div>
+            <p class="step-desc">8 questions. Claude learns your voice, tech decisions, and success criteria. Creates a project brief saved to your tasks folder.</p>
+          </div>
+
+          <div class="flow-step flow-step--last">
+            <div class="step-n">04</div>
+            <div class="step-cmd">ask Claude anything</div>
+            <div class="step-head">Work</div>
+            <div class="step-time">Every session · forever</div>
+            <p class="step-desc">Type short, direct requests. Claude answers with full context — no clarifying questions, no generic output.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ─── Demo ─────────────────────────────────────── -->
     <section id="demo">
       <div class="wrap">
-        <p class="kicker">Before &amp; after</p>
-        <h2>The gap is real.</h2>
-        <p class="sub">Same task. Different input structure. The quality difference isn't talent — it's missing context.</p>
+        <p class="kicker">See the difference</p>
+        <h2>Same request. No clarifying questions.</h2>
+        <p class="sub">You type the same thing either way. ARC pre-loads Claude with your project context — so instead of asking five questions, Claude answers the one you asked.</p>
 
         <div class="tabs" role="tablist" aria-label="Domain examples">
           <button class="tab active" role="tab" aria-selected="true"  data-domain="software">Software Eng</button>
@@ -493,7 +659,7 @@ handles plus addressing and international domains"</div>
 
         <p class="p-footnote">
           Six more principles in the repo — including context layering, constraint-driven creativity, and chain-of-thought scaffolding.
-          <a href="https://github.com/username/arc/blob/main/core/principles.md" target="_blank" rel="noopener">Read them →</a>
+          <a href="https://github.com/aizzaku/promptarc/blob/main/core/principles.md" target="_blank" rel="noopener">Read them →</a>
         </p>
       </div>
     </section>
@@ -504,10 +670,10 @@ handles plus addressing and international domains"</div>
         <p class="kicker">Get started</p>
         <h2>The full framework is in the repo.</h2>
         <p class="cta-meta">
-          8 principles. Domain templates for software, content, and strategy.<br>
-          Anti-slop guardrails. A kickoff skill that builds your project brief in one session.
+          8 principles. 11 domain templates. Anti-slop guardrails.<br>
+          A kickoff skill that builds your project brief in one session.
         </p>
-        <a href="https://github.com/username/arc" class="btn-lg" target="_blank" rel="noopener">
+        <a href="https://github.com/aizzaku/promptarc" class="btn-lg" target="_blank" rel="noopener">
           <svg class="icon" width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
             <path d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.531 1.032 1.531 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.942.359.31.678.921.678 1.856 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z"/>
           </svg>
@@ -522,7 +688,7 @@ handles plus addressing and international domains"</div>
   <footer>
     <div class="footer-inner">
       <span>promptarc</span>
-      <a href="https://github.com/username/arc" target="_blank" rel="noopener">GitHub</a>
+      <a href="https://github.com/aizzaku/promptarc" target="_blank" rel="noopener">GitHub</a>
     </div>
   </footer>
 
@@ -530,78 +696,73 @@ handles plus addressing and international domains"</div>
     /* ─── Demo data ──────────────────────────────────── */
     const domains = {
       software: {
-        before: {
-          grade: 'F',
-          text: 'write me a function to handle users'
+        request: 'Add JWT authentication to the user endpoints.',
+        without: {
+          label: 'Claude asks:',
+          text: `Before I start, a few questions:
+• What framework are you using? (Express, Fastify, NestJS?)
+• Where should tokens be stored? (cookies vs Authorization header)
+• Do you need refresh token rotation?
+• What's your preferred token expiry?
+• Is there existing auth middleware I should work around?`
         },
-        after: {
-          grade: 'A',
-          text: `You are a senior backend engineer reviewing a TypeScript codebase.
+        with: {
+          label: 'Claude implements:',
+          text: `Using Express + TypeScript. JWT in HttpOnly cookies
+(7-day expiry, refresh rotation) since you're avoiding
+localStorage. Rate limiting at 5 attempts/IP/hour per
+your security tier. Typed errors, no raw throws.
 
-Task: Implement a user authentication service.
-
-Requirements:
-- JWT-based auth, 7-day expiry with refresh token rotation
-- Email/password login with bcrypt (cost factor 12)
-- Rate limiting: max 5 failed login attempts per IP per hour
-- Return type: Result<AuthTokens, AuthError> discriminated union
-
-Constraints: No external auth providers (Supabase, Auth0).
-Must be idempotent. All errors typed — never thrown as
-raw strings.
-
-Output: TypeScript implementation + unit tests covering
-each error path.`
+→ src/auth/jwt.service.ts
+→ src/auth/middleware.ts
+→ src/auth/auth.router.ts`,
+          context: 'Stack: TypeScript/Express  ·  Auth: JWT, cookie-based  ·  Security: production'
         }
       },
       content: {
-        before: {
-          grade: 'F',
-          text: 'write me a good blog post about AI'
+        request: 'Write a post on why our user onboarding is broken.',
+        without: {
+          label: 'Claude asks:',
+          text: `Happy to help! A few things first:
+• Is this a blog post, internal doc, or something else?
+• Who's the audience — customers or your team?
+• What specific issues should I focus on?
+• What tone are you going for?
+• Any length or format requirements?`
         },
-        after: {
-          grade: 'A',
-          text: `You are a copy editor at a technical publication
-with 10 years of experience.
+        with: {
+          label: 'Claude writes:',
+          text: `Opening on the day-3 activation drop — that's your
+biggest friction point. Writing for technical readers,
+skipping the basics. Direct voice, no marketing fluff.
+Structured as a post-mortem: what happened, why, what
+changes. Ends with a concrete fix list.
 
-Task: Write 1,200 words on why RAG fails in production —
-targeting ML engineers who've already shipped at least
-one RAG system and hit performance walls.
-
-Angle: The problem isn't the embedding model. It's chunking
-strategy and retrieval ranking. Frame this as a post-mortem,
-not a tutorial.
-
-Constraints: No AI 101 definitions. Start in medias res.
-No summary paragraphs. No "In conclusion" or "To summarize."
-
-Output: Full draft with title, subheadings, and a
-1-paragraph TL;DR at the top.`
+→ ~900 words, 3 sections`,
+          context: 'Domain: content  ·  Voice: direct, no fluff  ·  Audience: technical users'
         }
       },
       business: {
-        before: {
-          grade: 'F',
-          text: 'analyze the market for my startup'
+        request: 'Prep me for the board meeting on Q3 numbers.',
+        without: {
+          label: 'Claude asks:',
+          text: `Sure, I can help with that. To get started:
+• What are the Q3 metrics you want to cover?
+• What's the board most focused on this quarter?
+• Do you need talking points, slide notes, or a script?
+• How many board members, and what's their background?
+• How long is your presentation slot?`
         },
-        after: {
-          grade: 'A',
-          text: `You are a market analyst preparing Series A pitch materials.
+        with: {
+          label: 'Claude prepares:',
+          text: `Leading with MRR growth (+18% QoQ), then addressing
+the August churn spike directly — two finance-background
+board members will have already modeled it. Positioning
+enterprise pipeline as the Q4 story since that's where
+your growth thesis lives.
 
-Task: Size the US market for developer productivity tools
-priced $50–200/seat/month, targeting engineering teams
-of 50–500.
-
-Scope: Exclude pure CI/CD (GitHub Actions, CircleCI).
-Include AI coding assistants, code review automation,
-observability tooling.
-
-Methodology: TAM top-down via IDC enterprise software spend.
-SAM bottom-up via LinkedIn engineering headcount data.
-Show your math at each step.
-
-Output: TAM/SAM/SOM table, 3 assumptions with confidence
-ratings, and one bear-case scenario at 40% of baseline.`
+→ 5 talking points, hard questions anticipated`,
+          context: 'Domain: business strategy  ·  Stage: Series A SaaS  ·  Board: 5 members, 2 new'
         }
       }
     };
@@ -609,34 +770,55 @@ ratings, and one bear-case scenario at 40% of baseline.`
     /* ─── HTML escaping ──────────────────────────────── */
     function esc(str) {
       return str
-        .replace(/&/g, '&amp;')
-        .replace(/</g, '&lt;')
-        .replace(/>/g, '&gt;')
-        .replace(/"/g, '&quot;');
+        .replace(/&/g,  '&amp;')
+        .replace(/</g,  '&lt;')
+        .replace(/>/g,  '&gt;')
+        .replace(/"/g,  '&quot;');
     }
 
     /* ─── Render comparison ──────────────────────────── */
     function render(domain) {
       const d = domains[domain];
       return `
-        <div class="cmp-col no">
-          <div class="cmp-head">
-            <span class="cmp-title">Without ARC</span>
-            <span class="grade">${esc(d.before.grade)}</span>
-          </div>
-          <pre class="cmp-prompt">${esc(d.before.text)}</pre>
+        <div class="cmp-request">
+          <span class="req-you">You</span>
+          <span class="req-text">${esc(d.request)}</span>
         </div>
-        <div class="cmp-col yes">
-          <div class="cmp-head">
-            <span class="cmp-title">With ARC</span>
-            <span class="grade">${esc(d.after.grade)}</span>
+        <div class="cmp-split">
+          <div class="cmp-col no">
+            <div class="cmp-head">
+              <span class="cmp-title">Without ARC</span>
+            </div>
+            <div class="cmp-body">
+              <div class="resp-label asking">${esc(d.without.label)}</div>
+              <pre class="cmp-prompt">${esc(d.without.text)}</pre>
+            </div>
           </div>
-          <pre class="cmp-prompt">${esc(d.after.text)}</pre>
+          <div class="cmp-col yes">
+            <div class="cmp-head">
+              <span class="cmp-title">With ARC</span>
+            </div>
+            <div class="cmp-body">
+              <div class="resp-label answering">${esc(d.with.label)}</div>
+              <pre class="cmp-prompt">${esc(d.with.text)}</pre>
+            </div>
+            <div class="cmp-context">
+              <span class="ctx-icon">
+                <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                  <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+                  <polyline points="14 2 14 8 20 8"/>
+                </svg>
+              </span>
+              <span class="ctx-label">CLAUDE.md</span>
+              <span class="ctx-sep">·</span>
+              <span class="ctx-text">${esc(d.with.context)}</span>
+            </div>
+          </div>
         </div>`;
     }
 
     /* ─── Domain switcher ────────────────────────────── */
-    const cmp = document.getElementById('cmp');
+    const cmp  = document.getElementById('cmp');
     const tabs = document.querySelectorAll('.tab');
     let active = 'software';
 
