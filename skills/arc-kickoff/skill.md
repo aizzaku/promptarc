@@ -2,121 +2,172 @@
 
 You are conducting a structured project kickoff interview. This is a one-time investment that pays back across every future task in this project.
 
-Tell the user: "This interview takes 15-30 minutes and builds the context that makes every future request faster and more accurate. I'll ask questions in small groups — answer as briefly or in as much detail as you want."
+Tell the user: "Kickoff interview — two phases. Phase 1 is 8 core questions (~10 min). After that, I'll ask if you want 8-12 domain-specific questions for deeper context. Answer as briefly or in as much detail as you want."
 
 ---
 
-## Phase 1: Universal questions
+## Phase 1: Core questions
 
-Ask 2-3 questions at a time. Acknowledge the answer before continuing. Do not rush.
+**Show progress before each batch**: "Phase 1 of 2 — Core (Q[N] of 8)"
 
-**Batch 1:**
+Ask 2 questions at a time. Give a one-sentence acknowledgment before the next batch — show you heard the answer ("Got it — so the constraint is X, not Y"). Do not summarize extensively.
+
+---
+
+**Q1–2** *(Phase 1 — Core | Q1 of 8)*
+
 - What is this project? Describe it in your own words, not a pitch.
-- Who is the end user? Be specific — not "developers" but "backend engineers at mid-size companies who are already using Kubernetes."
+- Who is the end user or primary beneficiary? Be specific — not "developers" but "backend engineers at mid-size B2B SaaS companies who already use Kubernetes."
 
-**Batch 2 (after acknowledging batch 1):**
-- What's the one thing this project must do well? If it does only one thing, what is it?
-- What's explicitly out of scope? What are you deliberately not doing?
+---
 
-**Batch 3:**
-- What's the timeline? Is there a hard deadline or a soft target?
-- What's the quality bar? (prototype speed / MVP reliability / production correctness)
-- What hard constraints exist that aren't negotiable? Tech stack, budget, regulations, team skills.
+**Q3–4** *(Phase 1 — Core | Q3 of 8)*
 
-**Batch 4:**
-- What existing work does this build on? Prior codebase, prior research, prior strategy docs?
-- What decisions have already been made that we shouldn't revisit?
+- What's the one thing this project must do well? If it only does one thing, what is it?
+- What's explicitly out of scope? What are you deliberately not building?
 
-**Batch 5:**
-- Who else is involved? Stakeholders, collaborators, reviewers?
-- Who makes the final call when there's disagreement?
+---
 
-**Batch 6:**
-- How will success be measured? Quantitatively if possible.
-- What does "done" look like for the first milestone?
+**Q5–6** *(Phase 1 — Core | Q5 of 8)*
 
-**Batch 7:**
-- What's the biggest risk? What's most likely to go wrong?
-- What's still genuinely open and undecided?
+- What's the quality bar? Present as a numbered list:
+  1. Prototype — fastest path, rough edges OK
+  2. MVP — functional and shippable, not polished
+  3. Production — reliable, maintainable, ready for real users
+  4. Polished — high craft, presentation and detail matter
 
-After each batch: give a one-sentence acknowledgment that shows you heard the answer ("Got it — so the constraint is X, not Y") before asking the next batch. Do not summarize extensively.
+- What hard constraints exist that aren't negotiable? (Tech stack, budget, regulation, timeline, team skills.) If none, say none.
+
+---
+
+**Q7–8** *(Phase 1 — Core | Q7 of 8)*
+
+- What's the biggest risk? What's most likely to derail this?
+- How will success be measured? Quantitatively if possible — what number or outcome signals this worked?
+
+---
+
+## Opt-in to Phase 2
+
+After Phase 1, tell the user:
+
+"Core complete. Want to go deeper? I'll ask 8-12 domain-specific questions that sharpen the context further and unlock more tailored templates. It takes about 10 more minutes.
+
+1. Yes — continue to domain-specific questions
+2. No — generate the brief now"
+
+If they say **No** (or anything equivalent): skip to Phase 3.
+If they say **Yes**: continue to Phase 2.
 
 ---
 
 ## Phase 2: Domain-specific questions
 
-Based on the domain in CLAUDE.md (or ask if CLAUDE.md doesn't exist yet), run the relevant checklist. Ask 3-4 questions at a time.
+**Show progress before each batch**: "Phase 2 of 2 — [Domain] (Q[N] of ~[TOTAL])"
 
-**Software Engineering:** architecture decisions already made, existing test coverage, deployment environment, performance requirements, external integrations, team's primary language expertise, rollback strategy.
+Identify the domain from:
+1. `CLAUDE.md` if it exists and has a domain set
+2. If not, ask: "What's the primary domain for this project?" — present as a numbered list:
+   1. Software Engineering
+   2. Content & Writing
+   3. Business Strategy
+   4. Design / UX
+   5. Data & Analytics
+   6. Legal & Compliance
+   7. Sales / GTM
+   8. Learning & Research
+   9. Productivity
+   10. Decision-Making
+   11. Generic (skip to Phase 3)
 
-**Content Publishing:** target audience literacy level, SEO requirements, publication cadence, brand voice examples (link or paste), approval workflow, content lifecycle (evergreen vs. dated), distribution channels.
+Ask 3 questions at a time from the relevant checklist in `templates/kickoff/`. Use the full checklist for that domain, prioritizing the required questions and skipping conditional questions that clearly don't apply based on Phase 1 answers.
 
-**Business Strategy:** current stage (pre-product / post-revenue / scaling), known competitors and how they're differentiated, customer acquisition hypothesis, unit economics targets, board or investor constraints.
+**Domain → checklist file map:**
 
-**Learning / Research:** research question or hypothesis, sources already reviewed, methodology constraints, output format (paper / internal report / personal notes), deadline, audience for findings.
-
-**Productivity:** current workflow being replaced or augmented, friction points in the current system, tools already in use that must integrate, definition of "captured" vs. "done," review cadence.
-
-**Decision Frameworks:** decision frequency (one-off vs. recurring), stakeholders who must align on the framework, criteria that are non-negotiable inputs, how decisions will be documented and revisited.
-
-**Generic:** skip domain-specific phase.
+| Domain | Checklist |
+|--------|-----------|
+| Software Engineering | `templates/kickoff/software-eng-checklist.md` |
+| Content & Writing | `templates/kickoff/content-checklist.md` |
+| Business Strategy | `templates/kickoff/business-strategy-checklist.md` |
+| Design / UX | `templates/kickoff/design-ux-checklist.md` |
+| Data & Analytics | `templates/kickoff/data-analytics-checklist.md` |
+| Legal & Compliance | `templates/kickoff/legal-compliance-checklist.md` |
+| Sales / GTM | `templates/kickoff/sales-gtm-checklist.md` |
+| Learning & Research | `templates/kickoff/learning-research-checklist.md` |
+| Productivity | `templates/kickoff/productivity-checklist.md` |
+| Decision-Making | `templates/kickoff/decision-frameworks-checklist.md` |
+| Generic | skip Phase 2 entirely |
 
 ---
 
-## Phase 3: Generate the Project Brief
+## Phase 3: Generate and save the Project Brief
 
-Write a Project Brief directly in the chat (not to a file yet). Format:
+### 3a — Generate the brief
+
+Write the brief in the chat first:
 
 ```
 ## Project Brief — {{PROJECT_NAME}}
 Date: {{TODAY}}
 
 ### What this project is
-[2-3 sentences from the user's own description, not paraphrased into corporate language]
+[2-3 sentences from the user's own description — their words, not corporate paraphrase]
 
 ### Core constraints
-[Bulleted list of the hard non-negotiables that came up: timeline, tech, budget, scope limits]
+[Bulleted list of hard non-negotiables: timeline, tech, budget, scope limits]
 
 ### Decisions already made
-[Bulleted list — what's locked, what's not up for debate]
+[Bulleted list — what's locked, not up for debate]
 
 ### What's still open
-[Bulleted list of genuinely undecided questions]
+[Bulleted list of genuinely undecided questions that need resolution]
 
 ### Initial approach
-[Your read on how to tackle this, based on the interview — 3-5 sentences]
+[Your read on how to tackle this — 3-5 sentences grounded in the interview answers]
 
 ### How success is measured
-[From their answer — be specific, use their numbers if they gave any]
+[Specific metrics or outcomes from their answer. Use their numbers if they gave any.]
 ```
 
-After showing the brief, ask: "Does this capture it accurately? Anything wrong or missing?"
+Ask: "Does this capture it accurately? Anything wrong or missing?"
 
 Revise if they correct anything.
 
+### 3b — Save the brief
+
+Once confirmed accurate, write the brief to `tasks/brief.md`.
+
+If `tasks/brief.md` already exists (from a previous kickoff), prepend the new brief above the old one — do not overwrite it. Add a `---` divider between entries.
+
 ---
 
-## Phase 4: Update CLAUDE.md
+## Phase 4: Calibrate voice and update CLAUDE.md
 
-**Voice section:** Based on how the user communicated during this interview, fill in the Voice section of CLAUDE.md:
+### Voice observation rubric
 
-Observe and record:
-- Vocabulary: did they use technical jargon freely, or stay plain? Domain-specific terms they used naturally.
-- Tone: direct and terse? Narrative and exploratory? Precise and formal?
-- Format preferences: did they bullet everything, or write in sentences? Did they ask for examples?
-- Length tolerance: did they give long answers or short ones? That signals how long your responses should be.
+Based on how the user communicated during this interview, fill in the Voice section of `CLAUDE.md`. Observe and record **specific signals**, not generic labels:
 
-Write the Voice section with specific observations, not generic labels. "Uses 'surface area' and 'blast radius' as natural vocabulary — technical audience assumed" is useful. "Professional tone" is not.
+| What to observe | What to record |
+|-----------------|----------------|
+| Vocabulary | Technical terms they used naturally (e.g., "idempotent", "blast radius", "surface area") → assume that vocabulary is shared. Plain language → calibrate down. |
+| Tone | Terse one-liners → be terse. Full paragraphs → match length. Exploratory/narrative → engage discursively. |
+| Format | If they bulleted their answers → they likely want bullets. If prose → prose. If they asked for examples → include examples by default. |
+| Length signal | Short answers (1-2 sentences) → short responses. Long answers → they want depth. |
+| Directness | Did they state opinions strongly, or hedge? → Match their directness in recommendations. |
 
-**Update CLAUDE.md silently** — no need to show the diff unless the user asks.
+**Write the Voice section with specific observations:**
+- Good: "Uses 'surface area' and 'blast radius' as natural vocabulary — technical audience assumed. Terse answers, 1-2 sentences each — keep responses short and direct."
+- Bad: "Professional tone, clear communicator."
+
+Update CLAUDE.md silently. Show the diff only if the user asks.
 
 ---
 
 ## Phase 5: Log decisions
 
-Add 2-3 entries to `tasks/decisions.md` for significant constraints or choices discussed. Use the format from the decisions template: date, what was decided, why, who decided.
+Add 2-3 entries to `tasks/decisions.md` for significant constraints or choices that came up. Only log genuinely significant decisions — technology choices, scope exclusions, quality tradeoffs, hard deadlines.
 
-Only log genuinely significant decisions — not every answer is a decision. Log: technology choices, scope exclusions, quality trade-offs, hard deadlines.
+Use the format from the decisions template: date, context, options considered, decision, rationale, revisit conditions.
 
 ---
 
@@ -124,4 +175,4 @@ Only log genuinely significant decisions — not every answer is a decision. Log
 
 Tell the user: "Ready to start. What's the first task?"
 
-Nothing else. Do not summarize the interview back at them. Do not offer a menu of options. Just ask what's next.
+Nothing else. No summary. No menu of options. Just ask what's next.

@@ -18,19 +18,24 @@ Ask group 1, wait for the answer, then ask group 2, and so on. Never ask all que
   1. Software Engineering
   2. Content Publishing
   3. Business Strategy
-  4. Learning / Research
-  5. Productivity
-  6. Decision Frameworks
-  7. Generic"
+  4. Design / UX
+  5. Data & Analytics
+  6. Legal & Compliance
+  7. Sales / GTM
+  8. Learning / Research
+  9. Productivity
+  10. Decision Frameworks
+  11. Generic"
 
 **Group 3 (after group 2 answer):**
-- "Is there a secondary domain? For example, a SaaS product that also needs content strategy. (type 1-7 or 'none')"
+- "Is there a secondary domain? For example, a SaaS product that also needs content strategy. (type 1-11 or 'none')"
 
 **Group 4 (after group 3 answer):**
 - "Quality bar?
   1. Quick prototype — move fast, cut corners deliberately
   2. Functional MVP — works reliably, not polished
-  3. Production-ready — correctness, error handling, maintainability"
+  3. Production-ready — correctness, error handling, maintainability
+  4. Polished — high craft bar, presentation and detail matter"
 
 **Group 5 (after group 4 answer):**
 - "Team size? (solo / small team 2-5 / larger)"
@@ -49,10 +54,14 @@ Map the domain number to its overlay file (in `templates/claude-md/`). Domain mo
 | 1 | Software Engineering | templates/claude-md/software-eng.md |
 | 2 | Content Publishing | templates/claude-md/content-publishing.md |
 | 3 | Business Strategy | templates/claude-md/business-strategy.md |
-| 4 | Learning / Research | templates/claude-md/learning-research.md |
-| 5 | Productivity | templates/claude-md/productivity.md |
-| 6 | Decision Frameworks | templates/claude-md/decision-frameworks.md |
-| 7 | Generic | templates/claude-md/generic.md |
+| 4 | Design / UX | templates/claude-md/design-ux.md |
+| 5 | Data & Analytics | templates/claude-md/data-analytics.md |
+| 6 | Legal & Compliance | templates/claude-md/legal-compliance.md |
+| 7 | Sales / GTM | templates/claude-md/sales-gtm.md |
+| 8 | Learning / Research | templates/claude-md/learning-research.md |
+| 9 | Productivity | templates/claude-md/productivity.md |
+| 10 | Decision Frameworks | templates/claude-md/decision-frameworks.md |
+| 11 | Generic | templates/claude-md/generic.md |
 
 **Domain modules** (optional, stack on top of overlays):
 - `domains/saas.md` — B2B SaaS products
@@ -65,6 +74,10 @@ Map the domain number to its overlay file (in `templates/claude-md/`). Domain mo
 - `domains/education.md` — edtech and learning platforms
 - `domains/marketplace.md` — two-sided marketplace products
 - `domains/gaming.md` — games and interactive entertainment
+- `domains/design-ux.md` — product design, design systems, UX research
+- `domains/data-analytics.md` — data warehouses, BI, metrics, pipelines
+- `domains/legal-compliance.md` — contracts, policy, regulatory work
+- `domains/sales-gtm.md` — outbound, GTM strategy, deal execution
 
 If a secondary domain was specified, identify the same overlay for it. Domain modules can be stacked (e.g., saas.md + fintech.md for a fintech SaaS).
 

@@ -60,10 +60,20 @@ Based on answers to Q1-Q4, the kickoff skill identifies the primary domain:
 |---------|--------|---------------|
 | Building software, writing code, technical architecture | Software Engineering | `software-eng-checklist.md` |
 | Writing articles, scripts, social content, publishing | Content Publishing | `content-checklist.md` |
-| Market analysis, business model, pricing, GTM | Business Strategy | `business-strategy-checklist.md` |
-| Learning a topic, research synthesis, curriculum | Learning & Research | `learning-research-checklist.md` |
+| Market analysis, business model, pricing, GTM strategy | Business Strategy | `business-strategy-checklist.md` |
+| UI/UX design, product design, user research, design systems | Design / UX | `design-ux-checklist.md` |
+| SQL, dashboards, data modeling, pipelines, BI, experimentation | Data & Analytics | `data-analytics-checklist.md` |
+| Contracts, policy, regulatory analysis, compliance programs | Legal & Compliance | `legal-compliance-checklist.md` |
+| Outbound, sales sequences, deal execution, GTM playbooks | Sales / GTM | `sales-gtm-checklist.md` |
+| Learning a topic, research synthesis, curriculum design | Learning & Research | `learning-research-checklist.md` |
 | Planning, goal setting, habit design, time management | Productivity | `productivity-checklist.md` |
 | Making a decision, evaluating options, risk assessment | Decision Frameworks | `decision-frameworks-checklist.md` |
 | None of the above | Generic | `generic-checklist.md` |
+
+**Disambiguation rules** (when signals overlap):
+- "Build a GTM strategy" → Business Strategy (macro strategy) vs. Sales / GTM (execution-level sequences, playbooks, ICP definition)
+- "Design a dashboard" → Data & Analytics (data-driven, BI) vs. Design / UX (user-experience-first)
+- "Review a vendor contract" → Legal & Compliance; "Define pricing model" → Business Strategy
+- When ambiguous, ask: "Is this more about analysis/strategy or execution/production?"
 
 Multi-domain projects use multiple checklists. The first domain listed becomes the primary (its conventions take priority on conflicts).
