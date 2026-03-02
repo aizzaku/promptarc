@@ -117,9 +117,18 @@ Constraints: {{CONSTRAINTS or "None specified"}}
 
 ## Voice
 
-Tone: [leave as "TBD — will calibrate during /arc-kickoff"]
-Vocabulary: [leave as "TBD"]
-Format preferences: [leave as "TBD"]
+_Calibrated during /arc-kickoff. Until then, default to: direct, concise, no filler. Match the user's vocabulary and length._
+
+## Project Context
+
+### Stack
+{{If Group 6 specified a tech stack, list it here. Otherwise write: "Not yet specified — will be defined during /arc-kickoff."}}
+
+### Architecture
+_Not yet defined. Update with: service boundaries, data flow, key integration points._
+
+### Conventions
+_Not yet defined. Follow existing code style until this is defined._
 ```
 
 Replace all `{{VARIABLE}}` placeholders with actual values. Do not leave any placeholders unfilled.
@@ -128,6 +137,7 @@ Quality bar label mapping:
 - 1 → "Prototype (speed over correctness)"
 - 2 → "MVP (functional reliability)"
 - 3 → "Production (correctness, error handling, maintainability)"
+- 4 → "Polished (high craft, presentation and detail matter)"
 
 ---
 

@@ -24,8 +24,8 @@ Output exactly this — no more, no less:
 ```
 Picking up **{{PROJECT_NAME}}**.
 
-Last session: {{LAST_SESSION_SUMMARY, 1 sentence}}.
-Working on: {{CURRENT_FOCUS, 1 sentence}}.
+Last session: {{STATE.md "Last session → Completed" field, condensed to 1 sentence}}.
+Working on: {{STATE.md "Current focus" field, 1 sentence}}.
 {{IF open questions exist: "Open question: {{FIRST_OPEN_QUESTION}}"}}
 {{IF blocked tasks exist: "Blocked: {{FIRST_BLOCKED_TASK}}"}}
 
@@ -55,9 +55,10 @@ When the user says what to work on:
 ## Step 4: Update STATE.md
 
 After the user confirms what to work on, update STATE.md:
-- Set `{{CURRENT_FOCUS}}` to what the user said
-- Set `{{DATE}}` to today
-- Set `{{LAST_SESSION_SUMMARY}}` to a 1-sentence summary of what was just described as completed
+- Update `Current focus` to what the user said
+- Update `Last session → Completed` to a 1-sentence summary of what was done before this session
+- Update `Last session → Next up` to what the user is now about to work on
+- Update the date in the header line
 
 Do this silently. Do not announce the update.
 

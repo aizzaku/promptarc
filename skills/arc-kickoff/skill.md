@@ -171,7 +171,7 @@ Use the format from the decisions template: date, context, options considered, d
 
 ---
 
-## Phase 5: CLAUDE.md validation (gap closure)
+## Phase 6: CLAUDE.md validation (gap closure)
 
 This step verifies that CLAUDE.md is actually doing its job — not just that it exists.
 
@@ -228,7 +228,7 @@ Tell the user what was tested and what (if anything) was added:
 
 ---
 
-## Phase 6: Initialize STATE.md
+## Phase 7: Initialize STATE.md
 
 Create `tasks/STATE.md` from `templates/STATE.md`, filling in values from this session:
 
@@ -250,7 +250,7 @@ Create `tasks/STATE.md` from `templates/STATE.md`, filling in values from this s
 
 ---
 
-## Phase 7: Handoff
+## Phase 8: Handoff
 
 Tell the user: "Ready to start. What's the first task?"
 

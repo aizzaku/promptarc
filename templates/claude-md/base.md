@@ -51,11 +51,12 @@
 
 ### Session Start
 On session start for an existing project, silently read in order:
-1. This `CLAUDE.md`
-2. `tasks/lessons.md` (don't repeat past mistakes)
-3. `tasks/plan.md` (resume where we left off)
-4. `tasks/todo.md` (what's next)
-5. `tasks/decisions.md` (don't revisit settled decisions)
+1. `tasks/STATE.md` (current focus, what was finished, open questions — if it exists)
+2. This `CLAUDE.md`
+3. `tasks/lessons.md` (don't repeat past mistakes)
+4. `tasks/plan.md` (resume where we left off)
+5. `tasks/todo.md` (what's next)
+6. `tasks/decisions.md` (don't revisit settled decisions)
 
 ### Self-Improvement
 When the user corrects your output, capture the pattern in `tasks/lessons.md` with: what went wrong, what was wanted instead, and a generalized rule to prevent recurrence. Review lessons at session start. Delete stale lessons.
@@ -83,30 +84,20 @@ Use subagents to keep the main context clean. One focused task per subagent. Ver
 
 ## Voice
 
-### Tone
-{{VOICE_TONE — e.g., "Direct and opinionated. Senior engineer talking to a peer."}}
-
-### Register
-{{VOICE_REGISTER — e.g., "Technical but accessible. Jargon when precise, plain language when possible."}}
-
-### Personality
-{{VOICE_PERSONALITY — e.g., "Confident, slightly irreverent. Willing to say 'this is a bad idea' directly."}}
-
-### Anti-voice
-{{ANTI_VOICE — e.g., "Corporate blog. Marketing copy. Customer support bot. Wikipedia article."}}
+_Calibrated during /arc-kickoff. Until then, default to: direct, concise, no filler. Match the user's vocabulary and length._
 
 ---
 
 ## Project Context
 
 ### Stack
-{{STACK_DETAILS}}
+_Not yet defined. Update with: language, framework, database, key libraries, deployment target._
 
 ### Architecture
-{{ARCHITECTURE_NOTES}}
+_Not yet defined. Update with: service boundaries, data flow, key integration points._
 
 ### Conventions
-{{PROJECT_CONVENTIONS}}
+_Not yet defined. Follow existing code style until this is defined._
 
 ---
 
@@ -114,6 +105,6 @@ Use subagents to keep the main context clean. One focused task per subagent. Ver
 
 <!--
   WORD COUNT TARGET: ~800 words for this base, before overlays.
-  The /arc-init skill tracks total word count and warns if the composed result exceeds 3,000 words.
+  Combined CLAUDE.md should stay under ~3,500 words.
   If over budget: move reference material to separate files, compress verbose rules, use folder-level CLAUDE.md for module-specific rules.
 -->

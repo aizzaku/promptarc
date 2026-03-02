@@ -76,14 +76,13 @@ Update the following files based on the re-kickoff conversation. Do this silentl
 **`CLAUDE.md`** (only if scope or constraints changed meaningfully): Update the relevant sections — constraints, quality bar, scope. Do NOT rewrite the Voice section unless the user explicitly asks.
 
 **`tasks/STATE.md`**: Always update, regardless of whether other files changed.
-- Set `{{CURRENT_FOCUS}}` to what emerged from this re-kickoff
-- Set `{{WHAT_FINISHED}}` to what was completed before this re-kickoff
-- Set `{{NEXT_ACTION}}` to the first task in the new phase
-- Update `{{KEY_DECISIONS}}` with any new locked decisions
-- Remove from `{{OPEN_QUESTIONS}}` anything resolved; add anything new
-- Update `{{CLAUDE_MD_STATUS}}` if CLAUDE.md was changed
-- Update `{{DECISIONS_STATUS}}` with the new entry count
-- Set `{{DATE}}` to today
+- Update `Current focus` to what emerged from this re-kickoff
+- Update `Last session → Completed` to what was finished before this re-kickoff
+- Update `Last session → Next up` to the first task in the new phase
+- Update `Accumulated decisions` with any new locked decisions
+- Update `Open questions` — remove anything resolved, add anything new
+- Update the date in the header line
+- Update Context health table if CLAUDE.md or decisions.md changed
 
 If STATE.md didn't exist: create it from `templates/STATE.md` using current project reality as the values.
 
@@ -95,8 +94,9 @@ State what you changed:
 
 ```
 Updated:
+- tasks/STATE.md — current focus, last session, decisions
 - tasks/decisions.md — added [N] decisions, updated [N]
-- tasks/plan.md — revised [specific sections]
+- tasks/plan.md — revised [specific sections] (or "no changes needed")
 - tasks/todo.md — dropped [N] tasks, added [N]
 - CLAUDE.md — updated [section] (or "no changes needed")
 ```
