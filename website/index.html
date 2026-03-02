@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>promptarc — Consistent Claude output, from the first message</title>
-  <meta name="description" content="A modular prompt engineering framework for Claude Code. Set up once. Claude knows your project forever.">
+  <meta name="description" content="A modular framework for Claude Code. Set up once. Claude knows your project forever — no re-explaining, no clarifying questions.">
   <meta property="og:title" content="promptarc">
   <meta property="og:description" content="Consistent Claude output, from the first message.">
   <meta property="og:type" content="website">
@@ -162,7 +162,6 @@
       color: var(--muted);
       cursor: pointer;
       transition: color 0.15s, background 0.15s;
-      font-size: 11px;
       font-family: var(--mono);
     }
     .cmd-copy:hover { background: var(--surface-2); color: var(--text); }
@@ -252,11 +251,59 @@
     }
     .flow-step--last .step-head { color: var(--text); }
 
-    /* ─── Demo ────────────────────────────────────────── */
-    #demo {
-      background: var(--surface);
+    /* ─── Commands ────────────────────────────────────── */
+    #commands {
       border-bottom: 1px solid var(--border);
+      background: var(--surface);
     }
+    .cmd-grid-section {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1px;
+      background: var(--border);
+      border: 1px solid var(--border);
+      border-radius: var(--r);
+      overflow: hidden;
+      margin-top: 2.5rem;
+    }
+    .cmd-card {
+      background: var(--bg);
+      padding: 1.5rem 1.75rem;
+    }
+    .cmd-badge {
+      display: inline-block;
+      font-size: 10px;
+      font-weight: 600;
+      letter-spacing: 0.07em;
+      text-transform: uppercase;
+      padding: 0.15rem 0.5rem;
+      border-radius: 3px;
+      margin-bottom: 0.9rem;
+    }
+    .cmd-badge.setup {
+      background: var(--surface-2);
+      color: var(--muted);
+    }
+    .cmd-badge.daily {
+      background: var(--green-bg);
+      color: var(--green);
+      border: 1px solid var(--green-border);
+    }
+    .cmd-card-name {
+      font-family: var(--mono);
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--text);
+      margin-bottom: 0.5rem;
+    }
+    .cmd-card-desc {
+      font-size: 13px;
+      color: var(--muted);
+      line-height: 1.6;
+    }
+
+    /* ─── Demo ────────────────────────────────────────── */
+    #demo { border-bottom: 1px solid var(--border); }
     .tabs {
       display: inline-flex;
       border: 1px solid var(--border);
@@ -291,7 +338,7 @@
     }
     .cmp.fading { opacity: 0; }
 
-    /* Shared request bar — shown once at top */
+    /* Shared request bar */
     .cmp-request {
       display: flex;
       align-items: baseline;
@@ -314,8 +361,9 @@
       font-size: 12.5px;
       color: var(--text);
     }
+    .req-text.muted { color: var(--muted); font-style: italic; }
 
-    /* Split response columns */
+    /* Split columns */
     .cmp-split {
       display: grid;
       grid-template-columns: 1fr 1fr;
@@ -333,7 +381,7 @@
       border-bottom: 1px solid var(--border);
       flex-shrink: 0;
     }
-    .cmp-col.no .cmp-head { background: var(--red-bg); }
+    .cmp-col.no  .cmp-head { background: var(--red-bg); }
     .cmp-col.yes .cmp-head { background: var(--green-bg); }
     .cmp-title {
       font-size: 11.5px;
@@ -341,7 +389,7 @@
       letter-spacing: 0.07em;
       text-transform: uppercase;
     }
-    .cmp-col.no .cmp-title { color: var(--red); }
+    .cmp-col.no  .cmp-title { color: var(--red); }
     .cmp-col.yes .cmp-title { color: var(--green); }
     .cmp-body {
       padding: 1rem 1.25rem 1.25rem;
@@ -356,7 +404,7 @@
       letter-spacing: 0.06em;
       text-transform: uppercase;
     }
-    .resp-label.asking  { color: var(--muted); }
+    .resp-label.asking    { color: var(--muted); }
     .resp-label.answering { color: var(--green); }
     .cmp-prompt {
       font-family: var(--mono);
@@ -369,7 +417,7 @@
     .cmp-col.no  .cmp-prompt { color: var(--muted); }
     .cmp-col.yes .cmp-prompt { color: var(--text); }
 
-    /* CLAUDE.md context chip at bottom of "With ARC" */
+    /* CLAUDE.md / STATE.md context chip */
     .cmp-context {
       display: flex;
       align-items: center;
@@ -379,11 +427,7 @@
       background: var(--green-bg);
       overflow: hidden;
     }
-    .ctx-icon {
-      color: var(--green);
-      flex-shrink: 0;
-      line-height: 0;
-    }
+    .ctx-icon  { color: var(--green); flex-shrink: 0; line-height: 0; }
     .ctx-label {
       font-family: var(--mono);
       font-size: 10.5px;
@@ -392,11 +436,7 @@
       white-space: nowrap;
       flex-shrink: 0;
     }
-    .ctx-sep {
-      font-size: 10.5px;
-      color: var(--green-border);
-      flex-shrink: 0;
-    }
+    .ctx-sep  { font-size: 10.5px; color: var(--green-border); flex-shrink: 0; }
     .ctx-text {
       font-family: var(--mono);
       font-size: 10.5px;
@@ -444,36 +484,17 @@
       font-size: 12px;
       line-height: 1.7;
     }
-    .ex-tag {
-      font-size: 10px;
-      font-weight: 600;
-      letter-spacing: 0.09em;
-      text-transform: uppercase;
-      color: var(--muted);
-      margin-bottom: 0.2rem;
-    }
+    .ex-tag  { font-size: 10px; font-weight: 600; letter-spacing: 0.09em; text-transform: uppercase; color: var(--muted); margin-bottom: 0.2rem; }
     .ex-bad  { color: var(--red);   margin-bottom: 0.75rem; }
     .ex-good { color: var(--green); }
-    .p-footnote {
-      margin-top: 1.5rem;
-      font-size: 13px;
-      color: var(--muted);
-    }
+    .p-footnote { margin-top: 1.5rem; font-size: 13px; color: var(--muted); }
     .p-footnote a { color: var(--muted); }
     .p-footnote a:hover { color: var(--text); }
 
     /* ─── CTA ─────────────────────────────────────────── */
-    #cta {
-      text-align: center;
-      border-top: 1px solid var(--border);
-    }
+    #cta { text-align: center; border-top: 1px solid var(--border); }
     #cta h2 { margin-bottom: 0.5rem; }
-    .cta-meta {
-      font-size: 14.5px;
-      color: var(--muted);
-      line-height: 1.7;
-      margin-top: 0.5rem;
-    }
+    .cta-meta { font-size: 14.5px; color: var(--muted); line-height: 1.7; margin-top: 0.5rem; }
     .btn-lg {
       display: inline-flex;
       align-items: center;
@@ -491,10 +512,7 @@
     .btn-lg:hover { opacity: 0.8; }
 
     /* ─── Footer ──────────────────────────────────────── */
-    footer {
-      border-top: 1px solid var(--border);
-      padding: 1.75rem 2rem;
-    }
+    footer { border-top: 1px solid var(--border); padding: 1.75rem 2rem; }
     .footer-inner {
       max-width: var(--max);
       margin: 0 auto;
@@ -518,8 +536,9 @@
     <div class="nav-inner">
       <a href="#" class="wordmark">promptarc</a>
       <div class="nav-right">
-        <a href="#how"  class="nav-link">How it works</a>
-        <a href="#demo" class="nav-link">Demo</a>
+        <a href="#how"      class="nav-link">How it works</a>
+        <a href="#commands" class="nav-link">Commands</a>
+        <a href="#demo"     class="nav-link">Demo</a>
         <a href="https://github.com/aizzaku/promptarc" class="btn-nav" target="_blank" rel="noopener">
           <svg class="icon" width="14" height="14" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
             <path d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.531 1.032 1.531 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.942.359.31.678.921.678 1.856 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z"/>
@@ -549,7 +568,7 @@
 
         <h1>Consistent Claude output,<br>from the first message.</h1>
         <p class="hero-desc">
-          A modular framework for Claude Code. Tell Claude about your project once. After that, short requests get direct answers — no re-explaining your stack, style, or constraints every session.
+          A modular framework for Claude Code. Teach Claude about your project once. Every session after that starts in two sentences, every request gets a direct answer, and every output gets verified.
         </p>
         <a href="https://github.com/aizzaku/promptarc" class="link-arrow" target="_blank" rel="noopener">
           View on GitHub
@@ -565,7 +584,7 @@
       <div class="wrap">
         <p class="kicker">How it works</p>
         <h2>Four steps. Then you just work.</h2>
-        <p class="sub">ARC does one thing upfront: it teaches Claude about your project. Every request after that gets a targeted answer — because Claude already knows your stack, quality bar, and constraints.</p>
+        <p class="sub">ARC does one thing upfront: teaches Claude about your project. Every request after that gets a targeted answer — because Claude already knows your stack, quality bar, and constraints.</p>
 
         <div class="flow-grid">
           <div class="flow-step">
@@ -573,7 +592,7 @@
             <div class="step-cmd">$ npx arc-setup</div>
             <div class="step-head">Install</div>
             <div class="step-time">Once · ~10 seconds</div>
-            <p class="step-desc">Copies ARC's templates and principles into your Claude Code project. Run it once and forget it.</p>
+            <p class="step-desc">Copies ARC's templates into your Claude Code project. Run it once and forget it.</p>
           </div>
 
           <div class="flow-step">
@@ -581,7 +600,7 @@
             <div class="step-cmd">/arc-init</div>
             <div class="step-head">Initialize</div>
             <div class="step-time">Once per project · ~1 min</div>
-            <p class="step-desc">Pick your domain and quality bar. ARC writes a CLAUDE.md tailored to your project — stack, constraints, and anti-patterns included.</p>
+            <p class="step-desc">Pick your domain and quality bar. ARC writes CLAUDE.md and STATE.md — your project's permanent memory.</p>
           </div>
 
           <div class="flow-step">
@@ -589,15 +608,62 @@
             <div class="step-cmd">/arc-kickoff</div>
             <div class="step-head">Interview <span style="font-weight:400;color:var(--muted)">(optional)</span></div>
             <div class="step-time">Optional · ~15 min</div>
-            <p class="step-desc">8 questions. Claude learns your voice, tech decisions, and success criteria. Creates a project brief saved to your tasks folder.</p>
+            <p class="step-desc">8 questions. Claude learns your voice and constraints, then tests its own output to close gaps before you start.</p>
           </div>
 
           <div class="flow-step flow-step--last">
             <div class="step-n">04</div>
-            <div class="step-cmd">ask Claude anything</div>
+            <div class="step-cmd">/arc-resume</div>
             <div class="step-head">Work</div>
             <div class="step-time">Every session · forever</div>
-            <p class="step-desc">Type short, direct requests. Claude answers with full context — no clarifying questions, no generic output.</p>
+            <p class="step-desc">Start each session with one command. Claude reads STATE.md and orients in two sentences — no re-explaining required.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ─── Commands ─────────────────────────────────── -->
+    <section id="commands">
+      <div class="wrap">
+        <p class="kicker">The commands</p>
+        <h2>Six commands. Two phases.</h2>
+        <p class="sub">Three to set up, three to keep going. After setup, the daily loop is <code style="font-family:var(--mono);font-size:14px">/arc-resume → work → /arc-check</code>.</p>
+
+        <div class="cmd-grid-section">
+          <div class="cmd-card">
+            <span class="cmd-badge setup">Setup</span>
+            <div class="cmd-card-name">/arc-init</div>
+            <p class="cmd-card-desc">Pick domain and quality bar. Writes CLAUDE.md and initializes STATE.md in under a minute. Run once per project.</p>
+          </div>
+
+          <div class="cmd-card">
+            <span class="cmd-badge setup">Setup</span>
+            <div class="cmd-card-name">/arc-kickoff</div>
+            <p class="cmd-card-desc">8-question interview. Calibrates voice, captures constraints, validates CLAUDE.md with a synthetic test, and closes any gaps it finds.</p>
+          </div>
+
+          <div class="cmd-card">
+            <span class="cmd-badge setup">When pivoting</span>
+            <div class="cmd-card-name">/arc-rekickoff</div>
+            <p class="cmd-card-desc">Re-orient after scope changes. Targeted Q&amp;A on what's changed, then updates CLAUDE.md, task files, and STATE.md.</p>
+          </div>
+
+          <div class="cmd-card">
+            <span class="cmd-badge daily">Daily</span>
+            <div class="cmd-card-name">/arc-resume</div>
+            <p class="cmd-card-desc">Start every session. Reads STATE.md and orients in two sentences — last session, current focus, what's next. No re-explaining the project.</p>
+          </div>
+
+          <div class="cmd-card">
+            <span class="cmd-badge daily">Daily</span>
+            <div class="cmd-card-name">/arc-check</div>
+            <p class="cmd-card-desc">Goal-backward output verification. Detects stubs, wiring failures, and domain-specific anti-patterns. Produces a structured gap list.</p>
+          </div>
+
+          <div class="cmd-card">
+            <span class="cmd-badge daily">Anytime</span>
+            <div class="cmd-card-name">/arc-progress</div>
+            <p class="cmd-card-desc">Project health dashboard. Context completeness, open decisions, todo summary, and exactly one recommended next action.</p>
           </div>
         </div>
       </div>
@@ -607,13 +673,14 @@
     <section id="demo">
       <div class="wrap">
         <p class="kicker">See the difference</p>
-        <h2>Same request. No clarifying questions.</h2>
-        <p class="sub">You type the same thing either way. ARC pre-loads Claude with your project context — so instead of asking five questions, Claude answers the one you asked.</p>
+        <h2>Same input. Completely different output.</h2>
+        <p class="sub">You type the same thing either way. ARC pre-loads Claude with project context — so instead of asking five questions, Claude answers the one you asked.</p>
 
         <div class="tabs" role="tablist" aria-label="Domain examples">
           <button class="tab active" role="tab" aria-selected="true"  data-domain="software">Software Eng</button>
           <button class="tab"        role="tab" aria-selected="false" data-domain="content">Content</button>
           <button class="tab"        role="tab" aria-selected="false" data-domain="business">Business</button>
+          <button class="tab"        role="tab" aria-selected="false" data-domain="resume">Session start</button>
         </div>
 
         <div class="cmp" id="cmp" role="tabpanel"></div>
@@ -670,8 +737,8 @@ handles plus addressing and international domains"</div>
         <p class="kicker">Get started</p>
         <h2>The full framework is in the repo.</h2>
         <p class="cta-meta">
-          8 principles. 11 domain templates. Anti-slop guardrails.<br>
-          A kickoff skill that builds your project brief in one session.
+          8 principles. 11 domain templates. 6 commands. Anti-slop guardrails.<br>
+          A kickoff that tests its own output. A verifier that catches stubs and wiring failures.
         </p>
         <a href="https://github.com/aizzaku/promptarc" class="btn-lg" target="_blank" rel="noopener">
           <svg class="icon" width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
@@ -716,6 +783,7 @@ your security tier. Typed errors, no raw throws.
 → src/auth/jwt.service.ts
 → src/auth/middleware.ts
 → src/auth/auth.router.ts`,
+          contextLabel: 'CLAUDE.md',
           context: 'Stack: TypeScript/Express  ·  Auth: JWT, cookie-based  ·  Security: production'
         }
       },
@@ -739,6 +807,7 @@ Structured as a post-mortem: what happened, why, what
 changes. Ends with a concrete fix list.
 
 → ~900 words, 3 sections`,
+          contextLabel: 'CLAUDE.md',
           context: 'Domain: content  ·  Voice: direct, no fluff  ·  Audience: technical users'
         }
       },
@@ -762,7 +831,34 @@ enterprise pipeline as the Q4 story since that's where
 your growth thesis lives.
 
 → 5 talking points, hard questions anticipated`,
+          contextLabel: 'CLAUDE.md',
           context: 'Domain: business strategy  ·  Stage: Series A SaaS  ·  Board: 5 members, 2 new'
+        }
+      },
+      resume: {
+        request: '(opening a new Claude Code session)',
+        requestMuted: true,
+        without: {
+          label: 'Claude asks:',
+          text: `Hi! What are we working on today?
+
+Could you remind me:
+• What project is this?
+• Where did we leave off last time?
+• What's the tech stack I should know about?
+• What should I focus on first?`
+        },
+        with: {
+          label: 'Claude says:',
+          text: `Picking up promptarc.
+
+Last session: added robustness layer — STATE.md,
+arc-resume, arc-progress, and arc-check improvements.
+Working on: website update to reflect the new commands.
+
+What should we tackle?`,
+          contextLabel: 'STATE.md',
+          context: 'Last updated: today  ·  Focus: website update  ·  6 decisions locked'
         }
       }
     };
@@ -779,10 +875,11 @@ your growth thesis lives.
     /* ─── Render comparison ──────────────────────────── */
     function render(domain) {
       const d = domains[domain];
+      const reqClass = d.requestMuted ? ' muted' : '';
       return `
         <div class="cmp-request">
           <span class="req-you">You</span>
-          <span class="req-text">${esc(d.request)}</span>
+          <span class="req-text${reqClass}">${esc(d.request)}</span>
         </div>
         <div class="cmp-split">
           <div class="cmp-col no">
@@ -809,7 +906,7 @@ your growth thesis lives.
                   <polyline points="14 2 14 8 20 8"/>
                 </svg>
               </span>
-              <span class="ctx-label">CLAUDE.md</span>
+              <span class="ctx-label">${esc(d.with.contextLabel)}</span>
               <span class="ctx-sep">·</span>
               <span class="ctx-text">${esc(d.with.context)}</span>
             </div>
