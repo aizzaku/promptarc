@@ -13,6 +13,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Syne:wght@600;700;800&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+  <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
   <style>
     /* ─── Variables ───────────────────────────────────── */
     :root {
@@ -595,116 +596,42 @@
     }
     .formula-box strong { color: var(--accent); font-weight: 500; }
 
-    /* ─── Modules (overlays + domains) ────────────────── */
+    /* ─── Domains ────────────────────────────────────── */
     #modules { border-top: 1px solid var(--border); }
-    .modules-sub-kicker {
-      font-family: var(--mono);
-      font-size: 11px;
-      font-weight: 500;
-      letter-spacing: 0.18em;
-      text-transform: uppercase;
-      color: var(--text-muted);
-      margin-bottom: 8px;
-    }
-    .modules-sub-kicker::before { content: '// '; }
-    .modules-sub-h {
-      font-family: var(--display);
-      font-size: clamp(1.3rem, 2.5vw, 1.8rem);
-      font-weight: 700;
-      letter-spacing: -0.03em;
-      line-height: 1.15;
-    }
-    .modules-sub-desc {
-      font-size: 14.5px;
-      color: var(--muted);
-      max-width: 520px;
-      line-height: 1.65;
-      margin-top: 0.5rem;
-      margin-bottom: 2rem;
-    }
-    .overlays-wrap { margin-bottom: 72px; }
-    .overlays-grid { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 24px; }
-    .overlay-pill {
+    .domains-grid {
       display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 2rem;
+    }
+    .domain-pill {
+      display: inline-flex;
       align-items: center;
       gap: 8px;
-      padding: 10px 18px;
-      background: var(--violet-dim);
-      border: 1px solid rgba(139,92,246,0.2);
-      border-radius: 100px;
-      transition: border-color 0.2s, background 0.2s, transform 0.2s;
+      padding: 8px 14px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      transition: border-color 0.15s, background 0.15s;
       cursor: default;
     }
-    .overlay-pill:hover {
-      border-color: rgba(139,92,246,0.45);
-      background: rgba(139,92,246,0.2);
-      transform: translateY(-1px);
+    .domain-pill:hover {
+      border-color: var(--border-bright);
+      background: var(--surface-2);
     }
-    .overlay-icon { font-size: 16px; }
-    .overlay-name {
+    .domain-icon {
+      width: 14px;
+      height: 14px;
+      color: var(--muted);
+      flex-shrink: 0;
+    }
+    .domain-pill span {
       font-family: var(--mono);
       font-size: 12px;
       font-weight: 500;
-      color: var(--violet);
-      letter-spacing: 0.02em;
-    }
-    .domains-section { margin-top: 16px; }
-    .domain-group { margin-bottom: 40px; }
-    .domain-group-header {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      margin-bottom: 16px;
-    }
-    .domain-group-label {
-      font-family: var(--mono);
-      font-size: 11px;
-      font-weight: 700;
-      letter-spacing: 0.15em;
-      text-transform: uppercase;
-      color: var(--group-color, var(--emerald));
-      white-space: nowrap;
-    }
-    .domain-group-count {
-      font-family: var(--mono);
-      font-size: 11px;
-      color: var(--group-color, var(--emerald));
-      background: var(--group-color-dim, var(--emerald-dim));
-      padding: 2px 9px;
-      border-radius: 100px;
-      white-space: nowrap;
-    }
-    .domain-group-line { flex: 1; height: 1px; background: var(--border); }
-    .domains-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(155px, 1fr));
-      gap: 8px;
-    }
-    .domain-card {
-      background: var(--bg-card);
-      border: 1px solid var(--border);
-      border-radius: 9px;
-      padding: 16px 16px 14px;
-      transition: border-color 0.2s, background 0.2s, transform 0.2s;
-      cursor: default;
-      position: relative;
-      overflow: hidden;
-    }
-    .domain-card:hover {
-      border-color: var(--domain-color-border, rgba(16,185,129,0.3));
-      background: var(--domain-color-bg, rgba(16,185,129,0.05));
-      transform: translateY(-2px);
-    }
-    .domain-emoji { font-size: 22px; display: block; margin-bottom: 10px; line-height: 1; }
-    .domain-name {
-      font-family: var(--mono);
-      font-size: 11.5px;
-      font-weight: 700;
       color: var(--text);
-      margin-bottom: 3px;
       letter-spacing: -0.01em;
     }
-    .domain-tag { font-size: 11px; color: var(--text-muted); line-height: 1.4; }
 
     /* ─── Demo ────────────────────────────────────────── */
     #demo { border-bottom: 1px solid var(--border); }
@@ -982,8 +909,7 @@
         <a href="#how"         class="nav-link">How it works</a>
         <a href="#commands"    class="nav-link">Commands</a>
         <a href="#composition" class="nav-link">Composition</a>
-        <a href="#modules"     class="nav-link">Modules</a>
-        <a href="#demo"        class="nav-link">Demo</a>
+        <a href="#modules"     class="nav-link">Domains</a>
         <a href="https://github.com/aizzaku/promptarc" class="btn-nav" target="_blank" rel="noopener">
           <svg class="icon" width="14" height="14" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
             <path d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.531 1.032 1.531 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.942.359.31.678.921.678 1.856 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z"/>
@@ -1266,280 +1192,62 @@
             </div>
           </div>
         </div>
+
+        <div style="margin-top:72px;padding-top:48px;border-top:1px solid var(--border)">
+          <p class="kicker">Before &amp; after</p>
+          <h2>Same input. Completely different output.</h2>
+          <p class="sub">You type the same thing either way. ARC pre-loads Claude with project context — so instead of asking five questions, Claude answers the one you asked.</p>
+
+          <div class="tabs" role="tablist" aria-label="Domain examples">
+            <button class="tab active" role="tab" aria-selected="true"  data-domain="software">Software Eng</button>
+            <button class="tab"        role="tab" aria-selected="false" data-domain="content">Content</button>
+            <button class="tab"        role="tab" aria-selected="false" data-domain="business">Business</button>
+            <button class="tab"        role="tab" aria-selected="false" data-domain="resume">Session start</button>
+          </div>
+
+          <div class="cmp" id="cmp" role="tabpanel"></div>
+        </div>
       </div>
     </section>
 
     <div class="section-divider"></div>
 
-    <!-- ─── Modules ───────────────────────────────────── -->
+    <!-- ─── Domains ──────────────────────────────────── -->
     <section id="modules">
       <div class="wrap">
-        <p class="kicker">The modules</p>
-        <h2>38 files. Pick what fits.</h2>
-        <p class="sub">Eleven task-type overlays and twenty-seven industry domain modules. Stack the ones that match your project — nothing else loads.</p>
+        <p class="kicker">Domains</p>
+        <h2>27 domain modules.</h2>
+        <p class="sub">Pre-built knowledge layers — vocabulary, regulatory surface, common pitfalls, recommended stack. Load only what matches your vertical.</p>
 
-        <!-- Overlays -->
-        <div class="overlays-wrap">
-          <div class="modules-sub-kicker">Templates / claude-md/</div>
-          <div class="modules-sub-h">11 task-type overlays</div>
-          <div class="modules-sub-desc">Each defines NON-NEGOTIABLE rules, strong DEFAULTS, and a tuned voice. Stack above base.md.</div>
-          <div class="overlays-grid">
-            <div class="overlay-pill"><span class="overlay-icon">💻</span><span class="overlay-name">software-eng</span></div>
-            <div class="overlay-pill"><span class="overlay-icon">✍️</span><span class="overlay-name">content-publishing</span></div>
-            <div class="overlay-pill"><span class="overlay-icon">📊</span><span class="overlay-name">business-strategy</span></div>
-            <div class="overlay-pill"><span class="overlay-icon">📚</span><span class="overlay-name">learning-research</span></div>
-            <div class="overlay-pill"><span class="overlay-icon">✅</span><span class="overlay-name">productivity</span></div>
-            <div class="overlay-pill"><span class="overlay-icon">⚖️</span><span class="overlay-name">decision-frameworks</span></div>
-            <div class="overlay-pill"><span class="overlay-icon">🎨</span><span class="overlay-name">design-ux</span></div>
-            <div class="overlay-pill"><span class="overlay-icon">📈</span><span class="overlay-name">data-analytics</span></div>
-            <div class="overlay-pill"><span class="overlay-icon">⚖️</span><span class="overlay-name">legal-compliance</span></div>
-            <div class="overlay-pill"><span class="overlay-icon">📣</span><span class="overlay-name">sales-gtm</span></div>
-            <div class="overlay-pill"><span class="overlay-icon">◻️</span><span class="overlay-name">generic</span></div>
-          </div>
+        <div class="domains-grid">
+          <div class="domain-pill"><i data-lucide="building-2" class="domain-icon"></i><span>SaaS</span></div>
+          <div class="domain-pill"><i data-lucide="credit-card" class="domain-icon"></i><span>Fintech</span></div>
+          <div class="domain-pill"><i data-lucide="shopping-cart" class="domain-icon"></i><span>E-commerce</span></div>
+          <div class="domain-pill"><i data-lucide="wrench" class="domain-icon"></i><span>Developer Tools</span></div>
+          <div class="domain-pill"><i data-lucide="smartphone" class="domain-icon"></i><span>Mobile App</span></div>
+          <div class="domain-pill"><i data-lucide="cpu" class="domain-icon"></i><span>AI / ML</span></div>
+          <div class="domain-pill"><i data-lucide="store" class="domain-icon"></i><span>Marketplace</span></div>
+          <div class="domain-pill"><i data-lucide="gamepad-2" class="domain-icon"></i><span>Gaming</span></div>
+          <div class="domain-pill"><i data-lucide="shield-check" class="domain-icon"></i><span>Cybersecurity</span></div>
+          <div class="domain-pill"><i data-lucide="git-branch" class="domain-icon"></i><span>DevOps Platform</span></div>
+          <div class="domain-pill"><i data-lucide="landmark" class="domain-icon"></i><span>Enterprise Software</span></div>
+          <div class="domain-pill"><i data-lucide="link-2" class="domain-icon"></i><span>Blockchain / Web3</span></div>
+          <div class="domain-pill"><i data-lucide="layout" class="domain-icon"></i><span>Consumer App</span></div>
+          <div class="domain-pill"><i data-lucide="users" class="domain-icon"></i><span>Social / Community</span></div>
+          <div class="domain-pill"><i data-lucide="play-circle" class="domain-icon"></i><span>Media Streaming</span></div>
+          <div class="domain-pill"><i data-lucide="wifi" class="domain-icon"></i><span>IoT / Embedded</span></div>
+          <div class="domain-pill"><i data-lucide="activity" class="domain-icon"></i><span>Healthcare</span></div>
+          <div class="domain-pill"><i data-lucide="book-open" class="domain-icon"></i><span>Education</span></div>
+          <div class="domain-pill"><i data-lucide="truck" class="domain-icon"></i><span>Logistics</span></div>
+          <div class="domain-pill"><i data-lucide="briefcase" class="domain-icon"></i><span>HR / Talent</span></div>
+          <div class="domain-pill"><i data-lucide="home" class="domain-icon"></i><span>Real Estate</span></div>
+          <div class="domain-pill"><i data-lucide="leaf" class="domain-icon"></i><span>Climate / Sustainability</span></div>
+          <div class="domain-pill"><i data-lucide="scroll" class="domain-icon"></i><span>Government / Civic</span></div>
+          <div class="domain-pill"><i data-lucide="pen-tool" class="domain-icon"></i><span>Design / UX</span></div>
+          <div class="domain-pill"><i data-lucide="bar-chart-2" class="domain-icon"></i><span>Data Analytics</span></div>
+          <div class="domain-pill"><i data-lucide="scale" class="domain-icon"></i><span>Legal / Compliance</span></div>
+          <div class="domain-pill"><i data-lucide="megaphone" class="domain-icon"></i><span>Sales / GTM</span></div>
         </div>
-
-        <!-- Domains -->
-        <div class="modules-sub-kicker">Domains/</div>
-        <div class="modules-sub-h">27 industry domain modules</div>
-        <div class="modules-sub-desc">Pre-built knowledge layers — vocabulary, regulatory surface, common pitfalls, and recommended stack. Only load what matches your vertical.</div>
-
-        <div class="domains-section">
-
-          <!-- Tech Products -->
-          <div class="domain-group">
-            <div class="domain-group-header">
-              <span class="domain-group-label" style="--group-color:var(--accent)">Tech Products</span>
-              <span class="domain-group-count" style="--group-color:var(--accent);--group-color-dim:var(--indigo-dim)">16</span>
-              <div class="domain-group-line"></div>
-            </div>
-            <div class="domains-grid">
-              <div class="domain-card" style="--domain-color-border:rgba(99,102,241,0.3);--domain-color-bg:rgba(99,102,241,0.05)">
-                <span class="domain-emoji">🏢</span>
-                <div class="domain-name">SaaS</div>
-                <div class="domain-tag">Multi-tenancy, ARR, churn</div>
-              </div>
-              <div class="domain-card" style="--domain-color-border:rgba(99,102,241,0.3);--domain-color-bg:rgba(99,102,241,0.05)">
-                <span class="domain-emoji">💳</span>
-                <div class="domain-name">Fintech</div>
-                <div class="domain-tag">Payment rails, KYC/AML</div>
-              </div>
-              <div class="domain-card" style="--domain-color-border:rgba(99,102,241,0.3);--domain-color-bg:rgba(99,102,241,0.05)">
-                <span class="domain-emoji">🛒</span>
-                <div class="domain-name">E-commerce</div>
-                <div class="domain-tag">Inventory, payments, DTC</div>
-              </div>
-              <div class="domain-card" style="--domain-color-border:rgba(99,102,241,0.3);--domain-color-bg:rgba(99,102,241,0.05)">
-                <span class="domain-emoji">🛠️</span>
-                <div class="domain-name">Developer Tools</div>
-                <div class="domain-tag">DX, CLIs, SDKs, adoption</div>
-              </div>
-              <div class="domain-card" style="--domain-color-border:rgba(99,102,241,0.3);--domain-color-bg:rgba(99,102,241,0.05)">
-                <span class="domain-emoji">📱</span>
-                <div class="domain-name">Mobile App</div>
-                <div class="domain-tag">iOS/Android, IAP, release</div>
-              </div>
-              <div class="domain-card" style="--domain-color-border:rgba(99,102,241,0.3);--domain-color-bg:rgba(99,102,241,0.05)">
-                <span class="domain-emoji">🤖</span>
-                <div class="domain-name">AI / ML</div>
-                <div class="domain-tag">LLMs, RAG, evals, cost</div>
-              </div>
-              <div class="domain-card" style="--domain-color-border:rgba(99,102,241,0.3);--domain-color-bg:rgba(99,102,241,0.05)">
-                <span class="domain-emoji">🏪</span>
-                <div class="domain-name">Marketplace</div>
-                <div class="domain-tag">Cold start, liquidity, trust</div>
-              </div>
-              <div class="domain-card" style="--domain-color-border:rgba(99,102,241,0.3);--domain-color-bg:rgba(99,102,241,0.05)">
-                <span class="domain-emoji">🎮</span>
-                <div class="domain-name">Gaming</div>
-                <div class="domain-tag">Netcode, F2P, cert</div>
-              </div>
-              <div class="domain-card" style="--domain-color-border:rgba(99,102,241,0.3);--domain-color-bg:rgba(99,102,241,0.05)">
-                <span class="domain-emoji">🛡️</span>
-                <div class="domain-name">Cybersecurity</div>
-                <div class="domain-tag">SIEM, IAM, zero trust</div>
-              </div>
-              <div class="domain-card" style="--domain-color-border:rgba(99,102,241,0.3);--domain-color-bg:rgba(99,102,241,0.05)">
-                <span class="domain-emoji">⚙️</span>
-                <div class="domain-name">DevOps Platform</div>
-                <div class="domain-tag">IaC, K8s, SRE, DORA</div>
-              </div>
-              <div class="domain-card" style="--domain-color-border:rgba(99,102,241,0.3);--domain-color-bg:rgba(99,102,241,0.05)">
-                <span class="domain-emoji">🏛️</span>
-                <div class="domain-name">Enterprise Software</div>
-                <div class="domain-tag">SSO/SCIM, RBAC, procurement</div>
-              </div>
-              <div class="domain-card" style="--domain-color-border:rgba(99,102,241,0.3);--domain-color-bg:rgba(99,102,241,0.05)">
-                <span class="domain-emoji">⛓️</span>
-                <div class="domain-name">Blockchain / Web3</div>
-                <div class="domain-tag">Smart contracts, DeFi, DAOs</div>
-              </div>
-              <div class="domain-card" style="--domain-color-border:rgba(99,102,241,0.3);--domain-color-bg:rgba(99,102,241,0.05)">
-                <span class="domain-emoji">📲</span>
-                <div class="domain-name">Consumer App</div>
-                <div class="domain-tag">Retention, growth, push</div>
-              </div>
-              <div class="domain-card" style="--domain-color-border:rgba(99,102,241,0.3);--domain-color-bg:rgba(99,102,241,0.05)">
-                <span class="domain-emoji">👥</span>
-                <div class="domain-name">Social / Community</div>
-                <div class="domain-tag">Fan-out, moderation, CSAM</div>
-              </div>
-              <div class="domain-card" style="--domain-color-border:rgba(99,102,241,0.3);--domain-color-bg:rgba(99,102,241,0.05)">
-                <span class="domain-emoji">🎬</span>
-                <div class="domain-name">Media Streaming</div>
-                <div class="domain-tag">CDN, ABR, DRM, rights</div>
-              </div>
-              <div class="domain-card" style="--domain-color-border:rgba(99,102,241,0.3);--domain-color-bg:rgba(99,102,241,0.05)">
-                <span class="domain-emoji">🌐</span>
-                <div class="domain-name">IoT / Embedded</div>
-                <div class="domain-tag">OTA, secure boot, MQTT</div>
-              </div>
-            </div>
-          </div>
-
-          <!-- Industry Verticals -->
-          <div class="domain-group">
-            <div class="domain-group-header">
-              <span class="domain-group-label">Industry Verticals</span>
-              <span class="domain-group-count">7</span>
-              <div class="domain-group-line"></div>
-            </div>
-            <div class="domains-grid">
-              <div class="domain-card">
-                <span class="domain-emoji">🏥</span>
-                <div class="domain-name">Healthcare</div>
-                <div class="domain-tag">HIPAA, FHIR, EHR, SaMD</div>
-              </div>
-              <div class="domain-card">
-                <span class="domain-emoji">📚</span>
-                <div class="domain-name">Education</div>
-                <div class="domain-tag">FERPA/COPPA, LTI, LMS</div>
-              </div>
-              <div class="domain-card">
-                <span class="domain-emoji">📦</span>
-                <div class="domain-name">Logistics</div>
-                <div class="domain-tag">OMS/WMS/TMS, EDI, last-mile</div>
-              </div>
-              <div class="domain-card">
-                <span class="domain-emoji">👔</span>
-                <div class="domain-name">HR / Talent</div>
-                <div class="domain-tag">ATS, HRIS, payroll, EEO</div>
-              </div>
-              <div class="domain-card">
-                <span class="domain-emoji">🏠</span>
-                <div class="domain-name">Real Estate</div>
-                <div class="domain-tag">MLS, transactions, Fair Housing</div>
-              </div>
-              <div class="domain-card">
-                <span class="domain-emoji">🌱</span>
-                <div class="domain-name">Climate / Sustainability</div>
-                <div class="domain-tag">Carbon accounting, ESG, MRV</div>
-              </div>
-              <div class="domain-card">
-                <span class="domain-emoji">🗳️</span>
-                <div class="domain-name">Government / Civic</div>
-                <div class="domain-tag">FedRAMP, 508, benefits</div>
-              </div>
-            </div>
-          </div>
-
-          <!-- Cross-cutting -->
-          <div class="domain-group">
-            <div class="domain-group-header">
-              <span class="domain-group-label" style="--group-color:var(--violet)">Cross-cutting</span>
-              <span class="domain-group-count" style="--group-color:var(--violet);--group-color-dim:var(--violet-dim)">4</span>
-              <div class="domain-group-line"></div>
-            </div>
-            <div class="domains-grid" style="grid-template-columns:repeat(auto-fill,minmax(200px,1fr))">
-              <div class="domain-card" style="--domain-color-border:rgba(139,92,246,0.3);--domain-color-bg:rgba(139,92,246,0.05)">
-                <span class="domain-emoji">🎨</span>
-                <div class="domain-name">Design / UX</div>
-                <div class="domain-tag">Systems, accessibility, patterns</div>
-              </div>
-              <div class="domain-card" style="--domain-color-border:rgba(139,92,246,0.3);--domain-color-bg:rgba(139,92,246,0.05)">
-                <span class="domain-emoji">📊</span>
-                <div class="domain-name">Data Analytics</div>
-                <div class="domain-tag">Pipelines, BI, metrics</div>
-              </div>
-              <div class="domain-card" style="--domain-color-border:rgba(139,92,246,0.3);--domain-color-bg:rgba(139,92,246,0.05)">
-                <span class="domain-emoji">⚖️</span>
-                <div class="domain-name">Legal / Compliance</div>
-                <div class="domain-tag">Contracts, IP, risk</div>
-              </div>
-              <div class="domain-card" style="--domain-color-border:rgba(139,92,246,0.3);--domain-color-bg:rgba(139,92,246,0.05)">
-                <span class="domain-emoji">📣</span>
-                <div class="domain-name">Sales / GTM</div>
-                <div class="domain-tag">Pipeline, positioning, ICP</div>
-              </div>
-            </div>
-          </div>
-
-        </div>
-      </div>
-    </section>
-
-    <div class="section-divider"></div>
-
-    <!-- ─── Demo ─────────────────────────────────────── -->
-    <section id="demo">
-      <div class="wrap">
-        <p class="kicker">See the difference</p>
-        <h2>Same input. Completely different output.</h2>
-        <p class="sub">You type the same thing either way. ARC pre-loads Claude with project context — so instead of asking five questions, Claude answers the one you asked.</p>
-
-        <div class="tabs" role="tablist" aria-label="Domain examples">
-          <button class="tab active" role="tab" aria-selected="true"  data-domain="software">Software Eng</button>
-          <button class="tab"        role="tab" aria-selected="false" data-domain="content">Content</button>
-          <button class="tab"        role="tab" aria-selected="false" data-domain="business">Business</button>
-          <button class="tab"        role="tab" aria-selected="false" data-domain="resume">Session start</button>
-        </div>
-
-        <div class="cmp" id="cmp" role="tabpanel"></div>
-      </div>
-    </section>
-
-    <!-- ─── Principles ──────────────────────────────────── -->
-    <section id="principles">
-      <div class="wrap">
-        <p class="kicker">From the framework</p>
-        <h2>Two things most people skip.</h2>
-        <p class="sub">The ARC framework runs on eight principles. These two eliminate the most failure modes.</p>
-
-        <div class="p-grid">
-          <div class="p-card">
-            <div class="p-file">core/principles.md</div>
-            <div class="p-num">01 / 08</div>
-            <div class="p-name">Specificity Amplification</div>
-            <p class="p-desc">Generic input produces generic output. Always. Every detail you add eliminates an entire category of wrong answers — because it narrows the space of likely responses Claude can produce.</p>
-            <div class="p-ex">
-              <div class="ex-tag">Without</div>
-              <div class="ex-bad">"write good code"</div>
-              <div class="ex-tag">With</div>
-              <div class="ex-good">"TypeScript function validating email per RFC 5322,
-returns Valid | Invalid&lt;reason&gt;,
-handles plus addressing and international domains"</div>
-            </div>
-          </div>
-
-          <div class="p-card">
-            <div class="p-file">core/principles.md</div>
-            <div class="p-num">07 / 08</div>
-            <div class="p-name">Negative Examples</div>
-            <p class="p-desc">Showing Claude what you don't want is more instructive than describing what you do. There are infinite ways to be "clear" — but you can enumerate the specific failure modes you're trying to avoid.</p>
-            <div class="p-ex">
-              <div class="ex-tag">Instead of "write clearly," use:</div>
-              <div class="ex-good">DO NOT:
-- Start with "In today's fast-paced world"
-- Use bullet points as default structure
-- Summarize what was just said
-- End with "In conclusion" or "To summarize"</div>
-            </div>
-          </div>
-        </div>
-
-        <p class="p-footnote">
-          Six more principles in the repo — including context layering, constraint-driven creativity, and chain-of-thought scaffolding.
-          <a href="https://github.com/aizzaku/promptarc/blob/main/core/principles.md" target="_blank" rel="noopener">Read them →</a>
-        </p>
       </div>
     </section>
 
@@ -1732,6 +1440,9 @@ Next: update README with the new skill list.`,
         }, 160);
       });
     });
+
+    /* ─── Icons ─────────────────────────────────────── */
+    lucide.createIcons();
 
     /* ─── Copy button ────────────────────────────────── */
     const copyBtn = document.getElementById('copyBtn');
