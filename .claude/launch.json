@@ -3,9 +3,15 @@
   "configurations": [
     {
       "name": "promptarc-website",
-      "runtimeExecutable": "npx.cmd",
-      "runtimeArgs": ["serve", "website", "-p", "4200", "--no-clipboard"],
+      "runtimeExecutable": "python",
+      "runtimeArgs": ["-m", "http.server", "4200", "--directory", "A:\\claude\\arc\\website"],
       "port": 4200
+    },
+    {
+      "name": "arc-infographic",
+      "runtimeExecutable": "python",
+      "runtimeArgs": ["-m", "http.server", "4201", "--directory", "A:\\claude\\arc"],
+      "port": 4201
     }
   ]
 }

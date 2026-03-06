@@ -1,0 +1,26 @@
+{
+  "name": "arc-setup",
+  "version": "1.0.0",
+  "description": "Install ARC — A Runtime Configuration Framework for Claude Code",
+  "bin": {
+    "arc-setup": "./bin/arc-setup.js"
+  },
+  "files": [
+    "bin/"
+  ],
+  "engines": {
+    "node": ">=16"
+  },
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/aizzaku/promptarc"
+  },
+  "keywords": [
+    "claude",
+    "claude-code",
+    "prompt-engineering",
+    "ai",
+    "arc"
+  ]
+}

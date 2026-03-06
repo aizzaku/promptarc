@@ -1,0 +1,1536 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ARC — Anthropic Runtime Configuration Framework</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;700&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --bg: #07070d;
+  --bg-card: rgba(255,255,255,0.03);
+  --bg-card-hover: rgba(255,255,255,0.055);
+  --border: rgba(255,255,255,0.07);
+  --border-bright: rgba(255,255,255,0.14);
+  --text: #e8e8f0;
+  --text-dim: #7a7a96;
+  --text-muted: #45455a;
+  --indigo: #6366f1;
+  --indigo-dim: rgba(99,102,241,0.15);
+  --indigo-glow: rgba(99,102,241,0.3);
+  --violet: #8b5cf6;
+  --violet-dim: rgba(139,92,246,0.12);
+  --emerald: #10b981;
+  --emerald-dim: rgba(16,185,129,0.12);
+  --amber: #f59e0b;
+  --amber-dim: rgba(245,158,11,0.12);
+  --rose: #f43f5e;
+  --rose-dim: rgba(244,63,94,0.12);
+  --cyan: #06b6d4;
+  --cyan-dim: rgba(6,182,212,0.12);
+}
+
+html { scroll-behavior: smooth; }
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: 'DM Sans', system-ui, sans-serif;
+  font-size: 15px;
+  line-height: 1.6;
+  overflow-x: hidden;
+}
+
+/* ─── GRID BACKGROUND ─── */
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background-image:
+    linear-gradient(rgba(99,102,241,0.04) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(99,102,241,0.04) 1px, transparent 1px);
+  background-size: 40px 40px;
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* ─── LAYOUT ─── */
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 40px;
+  position: relative;
+  z-index: 1;
+}
+
+section { padding: 100px 0; }
+
+.section-label {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  margin-bottom: 14px;
+}
+
+.section-title {
+  font-family: 'Syne', sans-serif;
+  font-size: clamp(28px, 4vw, 44px);
+  font-weight: 700;
+  line-height: 1.1;
+  margin-bottom: 16px;
+  color: var(--text);
+}
+
+.section-sub {
+  font-size: 16px;
+  color: var(--text-dim);
+  max-width: 560px;
+  line-height: 1.7;
+}
+
+/* ─── HERO ─── */
+#hero {
+  padding: 130px 0 110px;
+  position: relative;
+}
+
+#hero::after {
+  content: '';
+  position: absolute;
+  top: -200px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 800px;
+  height: 800px;
+  background: radial-gradient(circle, rgba(99,102,241,0.1) 0%, transparent 65%);
+  pointer-events: none;
+}
+
+.hero-eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 12px;
+  color: var(--indigo);
+  background: var(--indigo-dim);
+  border: 1px solid rgba(99,102,241,0.25);
+  padding: 5px 14px;
+  border-radius: 100px;
+  margin-bottom: 32px;
+  letter-spacing: 0.05em;
+}
+
+.hero-eyebrow::before {
+  content: '';
+  width: 6px;
+  height: 6px;
+  background: var(--indigo);
+  border-radius: 50%;
+  animation: pulse 2s ease-in-out infinite;
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.5; transform: scale(0.8); }
+}
+
+.hero-title {
+  font-family: 'Syne', sans-serif;
+  font-size: clamp(64px, 10vw, 120px);
+  font-weight: 800;
+  line-height: 0.95;
+  letter-spacing: -0.03em;
+  margin-bottom: 8px;
+  background: linear-gradient(135deg, #fff 0%, #a5b4fc 50%, #c4b5fd 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.hero-full-name {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 13px;
+  color: var(--text-muted);
+  letter-spacing: 0.02em;
+  margin-bottom: 28px;
+}
+
+.hero-tagline {
+  font-size: clamp(18px, 2.5vw, 24px);
+  color: var(--text-dim);
+  font-weight: 300;
+  margin-bottom: 60px;
+  max-width: 540px;
+  line-height: 1.5;
+}
+
+.hero-tagline em {
+  font-style: normal;
+  color: var(--text);
+  font-weight: 400;
+}
+
+.stats-row {
+  display: flex;
+  gap: 2px;
+  flex-wrap: wrap;
+}
+
+.stat-box {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  padding: 24px 32px;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  flex: 1;
+  min-width: 160px;
+  position: relative;
+  overflow: hidden;
+  transition: border-color 0.2s, background 0.2s;
+}
+
+.stat-box:first-child { border-radius: 10px 0 0 10px; }
+.stat-box:last-child { border-radius: 0 10px 10px 0; }
+
+.stat-box::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--stat-color, var(--indigo)), transparent);
+  opacity: 0.5;
+}
+
+.stat-box:hover { background: var(--bg-card-hover); border-color: var(--border-bright); }
+
+.stat-num {
+  font-family: 'Syne', sans-serif;
+  font-size: 48px;
+  font-weight: 800;
+  line-height: 1;
+  color: var(--stat-color, var(--amber));
+  margin-bottom: 6px;
+  letter-spacing: -0.02em;
+}
+
+.stat-label {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px;
+  color: var(--text-muted);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+/* ─── GOALS ─── */
+.goals-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+  margin-top: 48px;
+}
+
+.goal-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 36px 32px;
+  position: relative;
+  overflow: hidden;
+  transition: border-color 0.25s, transform 0.25s;
+}
+
+.goal-card:hover {
+  border-color: var(--border-bright);
+  transform: translateY(-2px);
+}
+
+.goal-card::before {
+  content: '';
+  position: absolute;
+  bottom: -40px; right: -40px;
+  width: 120px; height: 120px;
+  border-radius: 50%;
+  background: var(--goal-color, var(--indigo));
+  opacity: 0.06;
+  transition: opacity 0.3s;
+}
+
+.goal-card:hover::before { opacity: 0.1; }
+
+.goal-icon {
+  font-size: 28px;
+  margin-bottom: 20px;
+  display: block;
+}
+
+.goal-num {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px;
+  color: var(--goal-color, var(--indigo));
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  margin-bottom: 10px;
+  opacity: 0.8;
+}
+
+.goal-title {
+  font-family: 'Syne', sans-serif;
+  font-size: 22px;
+  font-weight: 700;
+  margin-bottom: 10px;
+  color: var(--text);
+}
+
+.goal-desc {
+  font-size: 14px;
+  color: var(--text-dim);
+  line-height: 1.65;
+}
+
+/* ─── COMPOSITION DIAGRAM ─── */
+#composition {
+  background: linear-gradient(180deg, transparent 0%, rgba(99,102,241,0.03) 50%, transparent 100%);
+}
+
+.composition-wrap {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 80px;
+  align-items: start;
+  margin-top: 56px;
+}
+
+.layers-stack {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+
+.layer {
+  display: flex;
+  align-items: stretch;
+  position: relative;
+  transition: transform 0.2s;
+}
+
+.layer:hover { transform: translateX(6px); }
+.layer:hover .layer-bar { opacity: 1; }
+
+.layer-bar {
+  width: 3px;
+  background: var(--layer-color, var(--indigo));
+  border-radius: 2px 0 0 2px;
+  flex-shrink: 0;
+  opacity: 0.5;
+  transition: opacity 0.2s;
+}
+
+.layer-content {
+  flex: 1;
+  padding: 16px 20px;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-left: none;
+  position: relative;
+}
+
+.layer:first-child .layer-content { border-radius: 0 8px 0 0; }
+.layer:last-child .layer-content { border-radius: 0 0 8px 0; }
+.layer:not(:last-child) .layer-content { border-bottom: none; }
+
+.layer-meta {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 3px;
+}
+
+.layer-name {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--layer-color, var(--indigo));
+}
+
+.layer-badge {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px;
+  color: var(--layer-color, var(--indigo));
+  background: var(--layer-color-dim, var(--indigo-dim));
+  padding: 2px 8px;
+  border-radius: 100px;
+  letter-spacing: 0.05em;
+}
+
+.layer-desc {
+  font-size: 12px;
+  color: var(--text-dim);
+}
+
+.connector {
+  width: 3px;
+  height: 0;
+  background: linear-gradient(180deg, var(--border-bright), transparent);
+  margin-left: 0;
+}
+
+.composition-examples {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.comp-example {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 24px 24px 20px;
+  transition: border-color 0.2s;
+}
+
+.comp-example:hover { border-color: var(--border-bright); }
+
+.comp-name {
+  font-family: 'Syne', sans-serif;
+  font-size: 15px;
+  font-weight: 700;
+  margin-bottom: 12px;
+  color: var(--text);
+}
+
+.comp-layers {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.comp-layer-pill {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px;
+  padding: 5px 10px;
+  border-radius: 5px;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  width: fit-content;
+}
+
+.comp-layer-pill::before {
+  content: '+';
+  opacity: 0.4;
+  font-size: 10px;
+}
+
+.comp-layer-pill:first-child::before { content: '→'; opacity: 0.6; }
+
+.formula-box {
+  background: var(--indigo-dim);
+  border: 1px solid rgba(99,102,241,0.2);
+  border-radius: 8px;
+  padding: 16px 20px;
+  margin-bottom: 24px;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 12px;
+  color: var(--text-dim);
+  line-height: 1.7;
+}
+
+.formula-box strong { color: var(--indigo); font-weight: 500; }
+
+/* ─── SKILLS ─── */
+.skills-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 14px;
+  margin-top: 48px;
+}
+
+.skill-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 28px 24px;
+  position: relative;
+  overflow: hidden;
+  transition: border-color 0.2s, transform 0.2s, background 0.2s;
+  cursor: default;
+}
+
+.skill-card::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(circle at 80% 20%, var(--skill-glow, rgba(99,102,241,0.08)), transparent 60%);
+  pointer-events: none;
+}
+
+.skill-card:hover {
+  border-color: var(--border-bright);
+  transform: translateY(-3px);
+  background: var(--bg-card-hover);
+}
+
+.skill-phase {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px;
+  font-weight: 500;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--skill-color, var(--indigo));
+  margin-bottom: 16px;
+}
+
+.skill-command {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 22px;
+  font-weight: 700;
+  color: var(--skill-color, var(--indigo));
+  margin-bottom: 8px;
+  letter-spacing: -0.02em;
+}
+
+.skill-purpose {
+  font-size: 13px;
+  color: var(--text-dim);
+  margin-bottom: 20px;
+  line-height: 1.5;
+}
+
+.skill-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-top: 16px;
+  border-top: 1px solid var(--border);
+}
+
+.skill-time {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px;
+  color: var(--text-muted);
+}
+
+.skill-trigger {
+  font-size: 11px;
+  color: var(--text-muted);
+  font-style: italic;
+  max-width: 150px;
+  text-align: right;
+}
+
+/* ─── OVERLAYS ─── */
+.overlays-wrap { margin-top: 48px; }
+
+.overlays-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.overlay-pill {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 18px;
+  background: var(--violet-dim);
+  border: 1px solid rgba(139,92,246,0.2);
+  border-radius: 100px;
+  transition: border-color 0.2s, background 0.2s, transform 0.2s;
+  cursor: default;
+}
+
+.overlay-pill:hover {
+  border-color: rgba(139,92,246,0.45);
+  background: rgba(139,92,246,0.2);
+  transform: translateY(-1px);
+}
+
+.overlay-icon { font-size: 16px; }
+
+.overlay-name {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--violet);
+  letter-spacing: 0.02em;
+}
+
+/* ─── DOMAINS ─── */
+.domains-section { margin-top: 56px; }
+
+.domain-group { margin-bottom: 40px; }
+
+.domain-group-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 16px;
+}
+
+.domain-group-label {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--group-color, var(--emerald));
+}
+
+.domain-group-count {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px;
+  color: var(--group-color, var(--emerald));
+  background: var(--group-color-dim, var(--emerald-dim));
+  padding: 2px 9px;
+  border-radius: 100px;
+}
+
+.domain-group-line {
+  flex: 1;
+  height: 1px;
+  background: var(--border);
+}
+
+.domains-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(170px, 1fr));
+  gap: 8px;
+}
+
+.domain-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 9px;
+  padding: 16px 16px 14px;
+  transition: border-color 0.2s, background 0.2s, transform 0.2s;
+  cursor: default;
+  position: relative;
+  overflow: hidden;
+}
+
+.domain-card:hover {
+  border-color: var(--domain-color-border, rgba(16,185,129,0.3));
+  background: var(--domain-color-bg, rgba(16,185,129,0.05));
+  transform: translateY(-2px);
+}
+
+.domain-emoji {
+  font-size: 22px;
+  display: block;
+  margin-bottom: 10px;
+  line-height: 1;
+}
+
+.domain-name {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11.5px;
+  font-weight: 700;
+  color: var(--text);
+  margin-bottom: 3px;
+  letter-spacing: -0.01em;
+}
+
+.domain-tag {
+  font-size: 11px;
+  color: var(--text-muted);
+  line-height: 1.4;
+}
+
+/* ─── PROMPTS ─── */
+.prompts-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 12px;
+  margin-top: 48px;
+}
+
+.prompt-cat {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 22px 20px;
+  transition: border-color 0.2s;
+}
+
+.prompt-cat:hover { border-color: var(--border-bright); }
+
+.prompt-cat-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 14px;
+}
+
+.prompt-cat-name {
+  font-family: 'Syne', sans-serif;
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--text);
+}
+
+.prompt-count-badge {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--indigo);
+  background: var(--indigo-dim);
+  border: 1px solid rgba(99,102,241,0.2);
+  padding: 2px 8px;
+  border-radius: 100px;
+}
+
+.prompt-list {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.prompt-item {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px;
+  color: var(--text-dim);
+  padding: 4px 0;
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.prompt-item::before {
+  content: '›';
+  color: var(--text-muted);
+  font-size: 13px;
+}
+
+.prompt-item:last-child { border-bottom: none; }
+
+/* ─── PRINCIPLES ─── */
+.principles-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12px;
+  margin-top: 48px;
+}
+
+.principle-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 24px 22px;
+  transition: border-color 0.2s, transform 0.2s;
+}
+
+.principle-card:hover {
+  border-color: var(--border-bright);
+  transform: translateY(-2px);
+}
+
+.principle-file {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px;
+  color: var(--indigo);
+  margin-bottom: 10px;
+  opacity: 0.8;
+}
+
+.principle-name {
+  font-family: 'Syne', sans-serif;
+  font-size: 17px;
+  font-weight: 700;
+  color: var(--text);
+  margin-bottom: 8px;
+}
+
+.principle-desc {
+  font-size: 13px;
+  color: var(--text-dim);
+  line-height: 1.6;
+}
+
+/* ─── FOOTER ─── */
+footer {
+  padding: 56px 0;
+  border-top: 1px solid var(--border);
+  position: relative;
+  z-index: 1;
+}
+
+.footer-inner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: gap;
+  gap: 20px;
+}
+
+.footer-brand {
+  font-family: 'Syne', sans-serif;
+  font-size: 20px;
+  font-weight: 800;
+  color: var(--text);
+  letter-spacing: -0.02em;
+}
+
+.footer-path {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 12px;
+  color: var(--text-muted);
+}
+
+.footer-count {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 12px;
+  color: var(--text-muted);
+  text-align: right;
+}
+
+.footer-count span {
+  color: var(--amber);
+  font-weight: 700;
+}
+
+/* ─── DIVIDERS ─── */
+.section-divider {
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--border-bright), transparent);
+  position: relative;
+  z-index: 1;
+}
+
+/* ─── UTILITY ─── */
+.mt-8 { margin-top: 8px; }
+.mt-12 { margin-top: 12px; }
+
+/* ─── NAV ─── */
+nav {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  background: rgba(7,7,13,0.85);
+  backdrop-filter: blur(16px);
+  border-bottom: 1px solid var(--border);
+  padding: 0 40px;
+}
+
+.nav-inner {
+  max-width: 1200px;
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 52px;
+}
+
+.nav-brand {
+  font-family: 'Syne', sans-serif;
+  font-size: 18px;
+  font-weight: 800;
+  background: linear-gradient(135deg, #fff, #a5b4fc);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  letter-spacing: -0.02em;
+}
+
+.nav-links {
+  display: flex;
+  gap: 4px;
+  list-style: none;
+}
+
+.nav-links a {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px;
+  color: var(--text-muted);
+  text-decoration: none;
+  padding: 5px 12px;
+  border-radius: 6px;
+  letter-spacing: 0.05em;
+  transition: color 0.2s, background 0.2s;
+}
+
+.nav-links a:hover {
+  color: var(--text);
+  background: rgba(255,255,255,0.06);
+}
+</style>
+</head>
+
+<body>
+
+<!-- NAV -->
+<nav>
+  <div class="nav-inner">
+    <div class="nav-brand">ARC</div>
+    <ul class="nav-links">
+      <li><a href="#goals">Goals</a></li>
+      <li><a href="#composition">Composition</a></li>
+      <li><a href="#skills">Skills</a></li>
+      <li><a href="#overlays">Overlays</a></li>
+      <li><a href="#domains">Domains</a></li>
+      <li><a href="#prompts">Prompts</a></li>
+      <li><a href="#principles">Principles</a></li>
+    </ul>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section id="hero">
+  <div class="container">
+    <div class="hero-eyebrow">Prompt Engineering Framework</div>
+    <h1 class="hero-title">ARC</h1>
+    <div class="hero-full-name">A Runtime Configuration Framework</div>
+    <p class="hero-tagline">
+      A modular system that configures Claude once and <em>eliminates friction</em> for every project after.<br>
+      Composable layers. Domain awareness. Zero re-explanation.
+    </p>
+    <div class="stats-row">
+      <div class="stat-box" style="--stat-color: var(--amber)">
+        <div class="stat-num">6</div>
+        <div class="stat-label">Skills</div>
+      </div>
+      <div class="stat-box" style="--stat-color: var(--violet)">
+        <div class="stat-num">11</div>
+        <div class="stat-label">Task Overlays</div>
+      </div>
+      <div class="stat-box" style="--stat-color: var(--emerald)">
+        <div class="stat-num">27</div>
+        <div class="stat-label">Domain Modules</div>
+      </div>
+      <div class="stat-box" style="--stat-color: var(--indigo)">
+        <div class="stat-num">47</div>
+        <div class="stat-label">Prompt Patterns</div>
+      </div>
+      <div class="stat-box" style="--stat-color: var(--cyan)">
+        <div class="stat-num">156<span style="font-size:28px;opacity:0.5">+</span></div>
+        <div class="stat-label">Total Files</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="section-divider"></div>
+
+<!-- GOALS -->
+<section id="goals">
+  <div class="container">
+    <div class="section-label">// design criteria</div>
+    <h2 class="section-title">Three hard requirements</h2>
+    <p class="section-sub">ARC ships when all three are met. Each one is binary — either it works or it doesn't.</p>
+    <div class="goals-grid">
+      <div class="goal-card" style="--goal-color: var(--amber); --goal-color-dim: var(--amber-dim)">
+        <span class="goal-icon">⚡</span>
+        <div class="goal-num">01 — Speed</div>
+        <div class="goal-title">Under 5 minutes</div>
+        <div class="goal-desc">Quality Claude output on any new project in under five minutes. <code style="font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--amber)">/arc-init</code> handles setup. <code style="font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--amber)">/arc-kickoff</code> fills context.</div>
+      </div>
+      <div class="goal-card" style="--goal-color: var(--indigo); --goal-color-dim: var(--indigo-dim)">
+        <span class="goal-icon">◈</span>
+        <div class="goal-num">02 — Consistency</div>
+        <div class="goal-title">Uniform quality</div>
+        <div class="goal-desc">The same high output bar regardless of project type, domain, team size, or how early in the day you're reading the output.</div>
+      </div>
+      <div class="goal-card" style="--goal-color: var(--emerald); --goal-color-dim: var(--emerald-dim)">
+        <span class="goal-icon">∅</span>
+        <div class="goal-num">03 — Memory</div>
+        <div class="goal-title">Zero re-explanation</div>
+        <div class="goal-desc">Preferences, conventions, and constraints live in files — not in your head. Claude reads them once. You never repeat yourself.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="section-divider"></div>
+
+<!-- COMPOSITION -->
+<section id="composition">
+  <div class="container">
+    <div class="section-label">// architecture</div>
+    <h2 class="section-title">Layered composition</h2>
+    <p class="section-sub">A CLAUDE.md is assembled from independent layers. Each layer adds without overwriting. Upper layers take precedence.</p>
+    <div class="composition-wrap">
+      <div>
+        <div class="formula-box">
+          <strong>base.md</strong><br>
+          + [task-type overlay]<br>
+          + [industry overlay]<br>
+          + [domain module]<br>
+          + [project overrides]<br>
+          ─────────────────<br>
+          = CLAUDE.md (&lt; 3,500 words)
+        </div>
+        <div class="layers-stack">
+          <div class="layer" style="--layer-color: var(--rose); --layer-color-dim: var(--rose-dim)">
+            <div class="layer-bar"></div>
+            <div class="layer-content">
+              <div class="layer-meta">
+                <span class="layer-name">project-overrides.md</span>
+                <span class="layer-badge" style="--layer-color: var(--rose); --layer-color-dim: var(--rose-dim)">yours</span>
+              </div>
+              <div class="layer-desc">Your rules for this specific project</div>
+            </div>
+          </div>
+          <div class="layer" style="--layer-color: var(--emerald)">
+            <div class="layer-bar"></div>
+            <div class="layer-content">
+              <div class="layer-meta">
+                <span class="layer-name">domains/fintech.md</span>
+                <span class="layer-badge" style="--layer-color: var(--emerald); --layer-color-dim: var(--emerald-dim)">industry</span>
+              </div>
+              <div class="layer-desc">Domain vocabulary, pitfalls, stack context</div>
+            </div>
+          </div>
+          <div class="layer" style="--layer-color: var(--violet)">
+            <div class="layer-bar"></div>
+            <div class="layer-content">
+              <div class="layer-meta">
+                <span class="layer-name">claude-md/saas.md</span>
+                <span class="layer-badge" style="--layer-color: var(--violet); --layer-color-dim: var(--violet-dim)">overlay</span>
+              </div>
+              <div class="layer-desc">NON-NEGOTIABLE rules, defaults, voice</div>
+            </div>
+          </div>
+          <div class="layer" style="--layer-color: var(--indigo)">
+            <div class="layer-bar"></div>
+            <div class="layer-content">
+              <div class="layer-meta">
+                <span class="layer-name">claude-md/software-eng.md</span>
+                <span class="layer-badge" style="--layer-color: var(--indigo); --layer-color-dim: var(--indigo-dim)">task</span>
+              </div>
+              <div class="layer-desc">Work-type behavior and code standards</div>
+            </div>
+          </div>
+          <div class="layer" style="--layer-color: var(--text-dim)">
+            <div class="layer-bar" style="background: var(--text-muted)"></div>
+            <div class="layer-content">
+              <div class="layer-meta">
+                <span class="layer-name" style="color: var(--text-dim)">base.md</span>
+                <span class="layer-badge" style="color: var(--text-muted); background: rgba(255,255,255,0.05); border-color: var(--border)">foundation</span>
+              </div>
+              <div class="layer-desc">Universal identity, tone, anti-slop rules</div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="composition-examples">
+        <div style="font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--text-muted);letter-spacing:0.1em;text-transform:uppercase;margin-bottom:4px;">Example compositions</div>
+        <div class="comp-example">
+          <div class="comp-name">Fintech SaaS startup</div>
+          <div class="comp-layers">
+            <span class="comp-layer-pill" style="background:rgba(255,255,255,0.04);color:var(--text-dim)">base.md</span>
+            <span class="comp-layer-pill" style="background:var(--indigo-dim);color:var(--indigo)">software-eng.md</span>
+            <span class="comp-layer-pill" style="background:var(--violet-dim);color:var(--violet)">saas.md</span>
+            <span class="comp-layer-pill" style="background:var(--emerald-dim);color:var(--emerald)">domains/fintech.md</span>
+          </div>
+        </div>
+        <div class="comp-example">
+          <div class="comp-name">YouTube education channel</div>
+          <div class="comp-layers">
+            <span class="comp-layer-pill" style="background:rgba(255,255,255,0.04);color:var(--text-dim)">base.md</span>
+            <span class="comp-layer-pill" style="background:var(--indigo-dim);color:var(--indigo)">content-publishing.md</span>
+            <span class="comp-layer-pill" style="background:var(--emerald-dim);color:var(--emerald)">domains/education.md</span>
+          </div>
+        </div>
+        <div class="comp-example">
+          <div class="comp-name">Healthcare market analysis</div>
+          <div class="comp-layers">
+            <span class="comp-layer-pill" style="background:rgba(255,255,255,0.04);color:var(--text-dim)">base.md</span>
+            <span class="comp-layer-pill" style="background:var(--indigo-dim);color:var(--indigo)">business-strategy.md</span>
+            <span class="comp-layer-pill" style="background:var(--emerald-dim);color:var(--emerald)">domains/healthcare.md</span>
+          </div>
+        </div>
+        <div class="comp-example">
+          <div class="comp-name">IoT security platform</div>
+          <div class="comp-layers">
+            <span class="comp-layer-pill" style="background:rgba(255,255,255,0.04);color:var(--text-dim)">base.md</span>
+            <span class="comp-layer-pill" style="background:var(--indigo-dim);color:var(--indigo)">software-eng.md</span>
+            <span class="comp-layer-pill" style="background:var(--violet-dim);color:var(--violet)">cybersecurity.md</span>
+            <span class="comp-layer-pill" style="background:var(--emerald-dim);color:var(--emerald)">domains/iot-embedded.md</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="section-divider"></div>
+
+<!-- SKILLS -->
+<section id="skills">
+  <div class="container">
+    <div class="section-label">// slash commands</div>
+    <h2 class="section-title">Six operational skills</h2>
+    <p class="section-sub">ARC's runtime layer. Called from Claude Code as slash commands. Each has a precise trigger and expected time cost.</p>
+    <div class="skills-grid">
+
+      <div class="skill-card" style="--skill-color:var(--amber); --skill-glow:rgba(245,158,11,0.1)">
+        <div class="skill-phase">Setup phase</div>
+        <div class="skill-command">/arc-init</div>
+        <div class="skill-purpose">Six-question wizard. Generates a complete CLAUDE.md from scratch — picks overlays, domain modules, and quality level automatically.</div>
+        <div class="skill-footer">
+          <span class="skill-time">~2 min</span>
+          <span class="skill-trigger">new project</span>
+        </div>
+      </div>
+
+      <div class="skill-card" style="--skill-color:var(--amber); --skill-glow:rgba(245,158,11,0.08)">
+        <div class="skill-phase">Setup phase</div>
+        <div class="skill-command">/arc-kickoff</div>
+        <div class="skill-purpose">Deep project interview. Surfaces implicit requirements — tech constraints, team norms, quality bar, risk tolerance — before the first line of work.</div>
+        <div class="skill-footer">
+          <span class="skill-time">15–30 min</span>
+          <span class="skill-trigger">after init</span>
+        </div>
+      </div>
+
+      <div class="skill-card" style="--skill-color:var(--indigo); --skill-glow:rgba(99,102,241,0.1)">
+        <div class="skill-phase">Ongoing phase</div>
+        <div class="skill-command">/arc-resume</div>
+        <div class="skill-purpose">Daily session start. Loads project state, outstanding todos, and last context. Claude continues where it left off with no re-briefing.</div>
+        <div class="skill-footer">
+          <span class="skill-time">&lt;1 min</span>
+          <span class="skill-trigger">every session</span>
+        </div>
+      </div>
+
+      <div class="skill-card" style="--skill-color:var(--indigo); --skill-glow:rgba(99,102,241,0.08)">
+        <div class="skill-phase">Ongoing phase</div>
+        <div class="skill-command">/arc-rekickoff</div>
+        <div class="skill-purpose">Mid-project pivot. Re-runs the kickoff interview when scope changes, tech stack shifts, or the project direction changes meaningfully.</div>
+        <div class="skill-footer">
+          <span class="skill-time">10–20 min</span>
+          <span class="skill-trigger">scope pivot</span>
+        </div>
+      </div>
+
+      <div class="skill-card" style="--skill-color:var(--emerald); --skill-glow:rgba(16,185,129,0.1)">
+        <div class="skill-phase">Quality phase</div>
+        <div class="skill-command">/arc-check</div>
+        <div class="skill-purpose">Output quality gate. Three-level check: existence, substantive, wired. Domain-specific checks including the 21-item security surface scan.</div>
+        <div class="skill-footer">
+          <span class="skill-time">2–5 min</span>
+          <span class="skill-trigger">any artifact</span>
+        </div>
+      </div>
+
+      <div class="skill-card" style="--skill-color:var(--emerald); --skill-glow:rgba(16,185,129,0.08)">
+        <div class="skill-phase">Quality phase</div>
+        <div class="skill-command">/arc-progress</div>
+        <div class="skill-purpose">Project dashboard. Renders current state — completed todos, open decisions, lessons learned, and blockers — as a single structured view.</div>
+        <div class="skill-footer">
+          <span class="skill-time">~1 min</span>
+          <span class="skill-trigger">status check</span>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<div class="section-divider"></div>
+
+<!-- OVERLAYS -->
+<section id="overlays">
+  <div class="container">
+    <div class="section-label">// templates/claude-md/</div>
+    <h2 class="section-title">Task-type overlays</h2>
+    <p class="section-sub">Eleven work-domain overlays. Each defines NON-NEGOTIABLE rules, strong DEFAULTS, and a tuned voice for that work type. Stack above base.md.</p>
+    <div class="overlays-wrap">
+      <div class="overlays-grid">
+        <div class="overlay-pill"><span class="overlay-icon">💻</span><span class="overlay-name">software-eng</span></div>
+        <div class="overlay-pill"><span class="overlay-icon">✍️</span><span class="overlay-name">content-publishing</span></div>
+        <div class="overlay-pill"><span class="overlay-icon">📊</span><span class="overlay-name">business-strategy</span></div>
+        <div class="overlay-pill"><span class="overlay-icon">📚</span><span class="overlay-name">learning-research</span></div>
+        <div class="overlay-pill"><span class="overlay-icon">✅</span><span class="overlay-name">productivity</span></div>
+        <div class="overlay-pill"><span class="overlay-icon">⚖️</span><span class="overlay-name">decision-frameworks</span></div>
+        <div class="overlay-pill"><span class="overlay-icon">🎨</span><span class="overlay-name">design-ux</span></div>
+        <div class="overlay-pill"><span class="overlay-icon">📈</span><span class="overlay-name">data-analytics</span></div>
+        <div class="overlay-pill"><span class="overlay-icon">⚖️</span><span class="overlay-name">legal-compliance</span></div>
+        <div class="overlay-pill"><span class="overlay-icon">📣</span><span class="overlay-name">sales-gtm</span></div>
+        <div class="overlay-pill"><span class="overlay-icon">◻️</span><span class="overlay-name">generic</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="section-divider"></div>
+
+<!-- DOMAINS -->
+<section id="domains">
+  <div class="container">
+    <div class="section-label">// domains/</div>
+    <h2 class="section-title">27 industry domain modules</h2>
+    <p class="section-sub">Pre-built knowledge layers. Each delivers: industry vocabulary, regulatory surface, common pitfalls, and recommended stack. Only add one if it matches your vertical.</p>
+
+    <div class="domains-section">
+
+      <!-- Tech Products -->
+      <div class="domain-group">
+        <div class="domain-group-header">
+          <span class="domain-group-label" style="--group-color:var(--indigo)">Tech Products</span>
+          <span class="domain-group-count" style="--group-color:var(--indigo);--group-color-dim:var(--indigo-dim)">16</span>
+          <div class="domain-group-line"></div>
+        </div>
+        <div class="domains-grid">
+          <div class="domain-card" style="--domain-color-border:rgba(99,102,241,0.3);--domain-color-bg:rgba(99,102,241,0.05)">
+            <span class="domain-emoji">🏢</span>
+            <div class="domain-name">SaaS</div>
+            <div class="domain-tag">Multi-tenancy, ARR, churn</div>
+          </div>
+          <div class="domain-card" style="--domain-color-border:rgba(99,102,241,0.3);--domain-color-bg:rgba(99,102,241,0.05)">
+            <span class="domain-emoji">💳</span>
+            <div class="domain-name">Fintech</div>
+            <div class="domain-tag">Payment rails, KYC/AML</div>
+          </div>
+          <div class="domain-card" style="--domain-color-border:rgba(99,102,241,0.3);--domain-color-bg:rgba(99,102,241,0.05)">
+            <span class="domain-emoji">🛒</span>
+            <div class="domain-name">E-commerce</div>
+            <div class="domain-tag">Inventory, payments, DTC</div>
+          </div>
+          <div class="domain-card" style="--domain-color-border:rgba(99,102,241,0.3);--domain-color-bg:rgba(99,102,241,0.05)">
+            <span class="domain-emoji">🛠️</span>
+            <div class="domain-name">Developer Tools</div>
+            <div class="domain-tag">DX, CLIs, SDKs, adoption</div>
+          </div>
+          <div class="domain-card" style="--domain-color-border:rgba(99,102,241,0.3);--domain-color-bg:rgba(99,102,241,0.05)">
+            <span class="domain-emoji">📱</span>
+            <div class="domain-name">Mobile App</div>
+            <div class="domain-tag">iOS/Android, IAP, release</div>
+          </div>
+          <div class="domain-card" style="--domain-color-border:rgba(99,102,241,0.3);--domain-color-bg:rgba(99,102,241,0.05)">
+            <span class="domain-emoji">🤖</span>
+            <div class="domain-name">AI / ML</div>
+            <div class="domain-tag">LLMs, RAG, evals, cost</div>
+          </div>
+          <div class="domain-card" style="--domain-color-border:rgba(99,102,241,0.3);--domain-color-bg:rgba(99,102,241,0.05)">
+            <span class="domain-emoji">🏪</span>
+            <div class="domain-name">Marketplace</div>
+            <div class="domain-tag">Cold start, liquidity, trust</div>
+          </div>
+          <div class="domain-card" style="--domain-color-border:rgba(99,102,241,0.3);--domain-color-bg:rgba(99,102,241,0.05)">
+            <span class="domain-emoji">🎮</span>
+            <div class="domain-name">Gaming</div>
+            <div class="domain-tag">Netcode, F2P, cert</div>
+          </div>
+          <div class="domain-card" style="--domain-color-border:rgba(99,102,241,0.3);--domain-color-bg:rgba(99,102,241,0.05)">
+            <span class="domain-emoji">🛡️</span>
+            <div class="domain-name">Cybersecurity</div>
+            <div class="domain-tag">SIEM, IAM, zero trust</div>
+          </div>
+          <div class="domain-card" style="--domain-color-border:rgba(99,102,241,0.3);--domain-color-bg:rgba(99,102,241,0.05)">
+            <span class="domain-emoji">⚙️</span>
+            <div class="domain-name">DevOps Platform</div>
+            <div class="domain-tag">IaC, K8s, SRE, DORA</div>
+          </div>
+          <div class="domain-card" style="--domain-color-border:rgba(99,102,241,0.3);--domain-color-bg:rgba(99,102,241,0.05)">
+            <span class="domain-emoji">🏛️</span>
+            <div class="domain-name">Enterprise Software</div>
+            <div class="domain-tag">SSO/SCIM, RBAC, procurement</div>
+          </div>
+          <div class="domain-card" style="--domain-color-border:rgba(99,102,241,0.3);--domain-color-bg:rgba(99,102,241,0.05)">
+            <span class="domain-emoji">⛓️</span>
+            <div class="domain-name">Blockchain / Web3</div>
+            <div class="domain-tag">Smart contracts, DeFi, DAOs</div>
+          </div>
+          <div class="domain-card" style="--domain-color-border:rgba(99,102,241,0.3);--domain-color-bg:rgba(99,102,241,0.05)">
+            <span class="domain-emoji">📲</span>
+            <div class="domain-name">Consumer App</div>
+            <div class="domain-tag">Retention, growth, push</div>
+          </div>
+          <div class="domain-card" style="--domain-color-border:rgba(99,102,241,0.3);--domain-color-bg:rgba(99,102,241,0.05)">
+            <span class="domain-emoji">👥</span>
+            <div class="domain-name">Social / Community</div>
+            <div class="domain-tag">Fan-out, moderation, CSAM</div>
+          </div>
+          <div class="domain-card" style="--domain-color-border:rgba(99,102,241,0.3);--domain-color-bg:rgba(99,102,241,0.05)">
+            <span class="domain-emoji">🎬</span>
+            <div class="domain-name">Media Streaming</div>
+            <div class="domain-tag">CDN, ABR, DRM, rights</div>
+          </div>
+          <div class="domain-card" style="--domain-color-border:rgba(99,102,241,0.3);--domain-color-bg:rgba(99,102,241,0.05)">
+            <span class="domain-emoji">🌐</span>
+            <div class="domain-name">IoT / Embedded</div>
+            <div class="domain-tag">OTA, secure boot, MQTT</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Industry Verticals -->
+      <div class="domain-group">
+        <div class="domain-group-header">
+          <span class="domain-group-label">Industry Verticals</span>
+          <span class="domain-group-count">7</span>
+          <div class="domain-group-line"></div>
+        </div>
+        <div class="domains-grid">
+          <div class="domain-card">
+            <span class="domain-emoji">🏥</span>
+            <div class="domain-name">Healthcare</div>
+            <div class="domain-tag">HIPAA, FHIR, EHR, SaMD</div>
+          </div>
+          <div class="domain-card">
+            <span class="domain-emoji">📚</span>
+            <div class="domain-name">Education</div>
+            <div class="domain-tag">FERPA/COPPA, LTI, LMS</div>
+          </div>
+          <div class="domain-card">
+            <span class="domain-emoji">📦</span>
+            <div class="domain-name">Logistics</div>
+            <div class="domain-tag">OMS/WMS/TMS, EDI, last-mile</div>
+          </div>
+          <div class="domain-card">
+            <span class="domain-emoji">👔</span>
+            <div class="domain-name">HR / Talent</div>
+            <div class="domain-tag">ATS, HRIS, payroll, EEO</div>
+          </div>
+          <div class="domain-card">
+            <span class="domain-emoji">🏠</span>
+            <div class="domain-name">Real Estate</div>
+            <div class="domain-tag">MLS, transactions, Fair Housing</div>
+          </div>
+          <div class="domain-card">
+            <span class="domain-emoji">🌱</span>
+            <div class="domain-name">Climate / Sustainability</div>
+            <div class="domain-tag">Carbon accounting, ESG, MRV</div>
+          </div>
+          <div class="domain-card">
+            <span class="domain-emoji">🗳️</span>
+            <div class="domain-name">Government / Civic</div>
+            <div class="domain-tag">FedRAMP, 508, benefits</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Cross-cutting -->
+      <div class="domain-group">
+        <div class="domain-group-header">
+          <span class="domain-group-label" style="--group-color:var(--violet)">Cross-cutting</span>
+          <span class="domain-group-count" style="--group-color:var(--violet);--group-color-dim:var(--violet-dim)">4</span>
+          <div class="domain-group-line"></div>
+        </div>
+        <div class="domains-grid" style="grid-template-columns:repeat(auto-fill,minmax(200px,1fr))">
+          <div class="domain-card" style="--domain-color-border:rgba(139,92,246,0.3);--domain-color-bg:rgba(139,92,246,0.05)">
+            <span class="domain-emoji">🎨</span>
+            <div class="domain-name">Design / UX</div>
+            <div class="domain-tag">Systems, accessibility, patterns</div>
+          </div>
+          <div class="domain-card" style="--domain-color-border:rgba(139,92,246,0.3);--domain-color-bg:rgba(139,92,246,0.05)">
+            <span class="domain-emoji">📊</span>
+            <div class="domain-name">Data Analytics</div>
+            <div class="domain-tag">Pipelines, BI, metrics</div>
+          </div>
+          <div class="domain-card" style="--domain-color-border:rgba(139,92,246,0.3);--domain-color-bg:rgba(139,92,246,0.05)">
+            <span class="domain-emoji">⚖️</span>
+            <div class="domain-name">Legal / Compliance</div>
+            <div class="domain-tag">Contracts, IP, risk</div>
+          </div>
+          <div class="domain-card" style="--domain-color-border:rgba(139,92,246,0.3);--domain-color-bg:rgba(139,92,246,0.05)">
+            <span class="domain-emoji">📣</span>
+            <div class="domain-name">Sales / GTM</div>
+            <div class="domain-tag">Pipeline, positioning, ICP</div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<div class="section-divider"></div>
+
+<!-- PROMPTS -->
+<section id="prompts">
+  <div class="container">
+    <div class="section-label">// templates/prompts/</div>
+    <h2 class="section-title">47 prompt patterns</h2>
+    <p class="section-sub">Reusable prompt templates organized by work type. Each is specific enough to eliminate the blank-page problem for common tasks.</p>
+    <div class="prompts-grid">
+      <div class="prompt-cat">
+        <div class="prompt-cat-header">
+          <span class="prompt-cat-name">Software Eng</span>
+          <span class="prompt-count-badge">6</span>
+        </div>
+        <div class="prompt-list">
+          <div class="prompt-item">architecture</div>
+          <div class="prompt-item">debugging</div>
+          <div class="prompt-item">code-review</div>
+          <div class="prompt-item">refactoring</div>
+          <div class="prompt-item">greenfield</div>
+          <div class="prompt-item">stack-evaluation</div>
+        </div>
+      </div>
+      <div class="prompt-cat">
+        <div class="prompt-cat-header">
+          <span class="prompt-cat-name">Content</span>
+          <span class="prompt-count-badge">7</span>
+        </div>
+        <div class="prompt-list">
+          <div class="prompt-item">ideation</div>
+          <div class="prompt-item">research</div>
+          <div class="prompt-item">outlining</div>
+          <div class="prompt-item">drafting</div>
+          <div class="prompt-item">editing</div>
+          <div class="prompt-item">video-scripts</div>
+          <div class="prompt-item">social-media</div>
+        </div>
+      </div>
+      <div class="prompt-cat">
+        <div class="prompt-cat-header">
+          <span class="prompt-cat-name">Biz Strategy</span>
+          <span class="prompt-count-badge">6</span>
+        </div>
+        <div class="prompt-list">
+          <div class="prompt-item">market-analysis</div>
+          <div class="prompt-item">competitive-intel</div>
+          <div class="prompt-item">business-model</div>
+          <div class="prompt-item">go-to-market</div>
+          <div class="prompt-item">financial-modeling</div>
+          <div class="prompt-item">pitch-materials</div>
+        </div>
+      </div>
+      <div class="prompt-cat">
+        <div class="prompt-cat-header">
+          <span class="prompt-cat-name">Learning</span>
+          <span class="prompt-count-badge">6</span>
+        </div>
+        <div class="prompt-list">
+          <div class="prompt-item">deep-dive</div>
+          <div class="prompt-item">source-synthesis</div>
+          <div class="prompt-item">mental-model-building</div>
+          <div class="prompt-item">curriculum-design</div>
+          <div class="prompt-item">concept-explanation</div>
+          <div class="prompt-item">knowledge-gap-analysis</div>
+        </div>
+      </div>
+      <div class="prompt-cat">
+        <div class="prompt-cat-header">
+          <span class="prompt-cat-name">Productivity</span>
+          <span class="prompt-count-badge">6</span>
+        </div>
+        <div class="prompt-list">
+          <div class="prompt-item">project-breakdown</div>
+          <div class="prompt-item">planning-cycles</div>
+          <div class="prompt-item">goal-setting</div>
+          <div class="prompt-item">priority-frameworks</div>
+          <div class="prompt-item">meeting-prep</div>
+          <div class="prompt-item">reflection-journaling</div>
+        </div>
+      </div>
+      <div class="prompt-cat">
+        <div class="prompt-cat-header">
+          <span class="prompt-cat-name">Decisions</span>
+          <span class="prompt-count-badge">6</span>
+        </div>
+        <div class="prompt-list">
+          <div class="prompt-item">structured-decisions</div>
+          <div class="prompt-item">first-principles</div>
+          <div class="prompt-item">risk-assessment</div>
+          <div class="prompt-item">root-cause-analysis</div>
+          <div class="prompt-item">red-team-steelman</div>
+          <div class="prompt-item">group-decisions</div>
+        </div>
+      </div>
+      <div class="prompt-cat">
+        <div class="prompt-cat-header">
+          <span class="prompt-cat-name">Cross-Domain</span>
+          <span class="prompt-count-badge">6</span>
+        </div>
+        <div class="prompt-list">
+          <div class="prompt-item">idea-to-architecture</div>
+          <div class="prompt-item">market-to-build</div>
+          <div class="prompt-item">technical-content</div>
+          <div class="prompt-item">product-launch</div>
+          <div class="prompt-item">build-vs-buy</div>
+          <div class="prompt-item">learning-for-project</div>
+        </div>
+      </div>
+      <div class="prompt-cat">
+        <div class="prompt-cat-header">
+          <span class="prompt-cat-name">Generic</span>
+          <span class="prompt-count-badge">4</span>
+        </div>
+        <div class="prompt-list">
+          <div class="prompt-item">analysis</div>
+          <div class="prompt-item">brainstorming</div>
+          <div class="prompt-item">synthesis</div>
+          <div class="prompt-item">structured-output</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="section-divider"></div>
+
+<!-- PRINCIPLES -->
+<section id="principles">
+  <div class="container">
+    <div class="section-label">// core/</div>
+    <h2 class="section-title">Core principle layer</h2>
+    <p class="section-sub">Six foundational guides that underpin every template and pattern. Model-agnostic — they work because of how language models process context, not Claude quirks.</p>
+    <div class="principles-grid">
+      <div class="principle-card">
+        <div class="principle-file">core/principles.md</div>
+        <div class="principle-name">Specificity Amplification</div>
+        <div class="principle-desc">Generic input → generic output. Every detail you add eliminates a category of wrong answers. The root cause of ~60% of bad Claude output.</div>
+      </div>
+      <div class="principle-card">
+        <div class="principle-file">core/anti-slop.md</div>
+        <div class="principle-name">Anti-Slop System</div>
+        <div class="principle-desc">Structured rules against the AI generic-output trap: delete test, hedge scan, filler audit, preamble ban, and constraint injection.</div>
+      </div>
+      <div class="principle-card">
+        <div class="principle-file">core/mental-models.md</div>
+        <div class="principle-name">Mental Models</div>
+        <div class="principle-desc">How to think about prompting: context layers, the solution space model, and why Claude is a very smart peer — not a search engine.</div>
+      </div>
+      <div class="principle-card">
+        <div class="principle-file">core/execution-discipline.md</div>
+        <div class="principle-name">Execution Discipline</div>
+        <div class="principle-desc">Plan-first rule, elegance gate, verification protocol. What must happen between receiving a task and declaring it complete.</div>
+      </div>
+      <div class="principle-card">
+        <div class="principle-file">core/failure-modes.md</div>
+        <div class="principle-name">Failure Mode Catalog</div>
+        <div class="principle-desc">Named failure patterns — sycophancy spiral, scope creep, stub delivery, unverified assumption — with recovery protocols for each.</div>
+      </div>
+      <div class="principle-card">
+        <div class="principle-file">core/prompt-debugging.md</div>
+        <div class="principle-name">Prompt Debugging</div>
+        <div class="principle-desc">Systematic "my prompt isn't working" troubleshooter. Fourteen diagnostic questions organized by failure symptom, not by prompt structure.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="section-divider"></div>
+
+<!-- FOOTER -->
+<footer>
+  <div class="container">
+    <div class="footer-inner">
+      <div>
+        <div class="footer-brand">ARC</div>
+        <div class="footer-path mt-8">A:\claude\arc\  ·  git repository</div>
+      </div>
+      <div class="footer-count">
+        <span>156+</span> files across 8 layers<br>
+        <span>6</span> skills  ·  <span>27</span> domains  ·  <span>47</span> patterns<br>
+        <span>&lt; 5 min</span> to first quality output
+      </div>
+    </div>
+  </div>
+</footer>
+
+</body>
+</html>

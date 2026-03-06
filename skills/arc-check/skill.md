@@ -99,9 +99,33 @@ Identify the active domain from `CLAUDE.md`. Apply the matching check group plus
 - Return types match actual returns?
 
 **Security surface**
-- Injection vectors? (SQL, shell, HTML)
-- Secrets hardcoded?
-- User input validated before use?
+
+*Secrets & Config*
+- Hardcoded secrets, tokens, or API keys anywhere in the codebase?
+- Secrets leaking through logs, error messages, or API responses?
+- `.env` or credential files committed to git?
+- API keys exposed client-side that belong server-only?
+- CORS policy too permissive (wildcard origin in production)?
+- Dependencies with known CVEs? (check `npm audit` / `pip-audit`)
+- Default credentials or example configs still present?
+- Debug mode or dev tools enabled in production builds?
+
+*Access & API*
+- Pages or routes reachable without proper auth?
+- IDOR: can a user access another user's data by changing an ID in the URL?
+- Tokens stored insecurely on the client (localStorage for sensitive tokens)?
+- Login or reset flows that reveal whether an account exists?
+- Endpoints missing rate limiting?
+- Error responses exposing stack traces or internal details?
+- Endpoints returning more fields than the caller needs?
+- Sensitive actions (delete, email change) with no confirmation step?
+- Admin routes protected only by URL obscurity?
+
+*User Input*
+- Unsanitized input reaching database queries?
+- User-submitted content that can execute in other users' browsers (XSS)?
+- File uploads accepted without type or size validation?
+- Payment or billing logic bypassable client-side?
 
 ---
 

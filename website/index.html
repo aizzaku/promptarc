@@ -3,31 +3,51 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>promptarc — Consistent Claude output, from the first message</title>
-  <meta name="description" content="A modular framework for Claude Code. Set up once. Claude knows your project forever — no re-explaining, no clarifying questions.">
-  <meta property="og:title" content="promptarc">
-  <meta property="og:description" content="Consistent Claude output, from the first message.">
+  <title>ARC — A Runtime Configuration Framework for Claude Code</title>
+  <meta name="description" content="A modular framework for Claude Code. Composable layers. Domain awareness. Zero re-explanation.">
+  <meta property="og:title" content="ARC — A Runtime Configuration Framework">
+  <meta property="og:description" content="Composable layers. Domain awareness. Zero re-explanation.">
   <meta property="og:type" content="website">
+  <meta property="og:image" content="https://arc-ten-cyan.vercel.app/og.png">
+  <link rel="canonical" href="https://arc-ten-cyan.vercel.app/">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@600;700;800&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
   <style>
     /* ─── Variables ───────────────────────────────────── */
     :root {
-      --bg:           #f9f9f8;
-      --surface:      #f2f2ef;
-      --surface-2:    #eae9e5;
-      --border:       #e3e3e0;
-      --text:         #1a1a18;
-      --muted:        #6b6b68;
-      --green:        #15803d;
-      --green-bg:     #f0fdf4;
-      --green-border: #bbf7d0;
-      --red:          #b91c1c;
-      --red-bg:       #fef2f2;
+      --bg:           #07070d;
+      --surface:      rgba(255,255,255,0.03);
+      --surface-2:    rgba(255,255,255,0.06);
+      --border:       rgba(255,255,255,0.07);
+      --border-bright:rgba(255,255,255,0.14);
+      --text:         #e8e8f0;
+      --muted:        #7a7a96;
+      --accent:       #6366f1;
+      --accent-dim:   rgba(99,102,241,0.14);
+      --accent-border:rgba(99,102,241,0.28);
+      --emerald:      #10b981;
+      --emerald-dim:  rgba(16,185,129,0.12);
+      --emerald-border:rgba(16,185,129,0.28);
+      --red:          #f43f5e;
+      --red-bg:       rgba(244,63,94,0.1);
+      --amber:        #f59e0b;
+      --amber-dim:    rgba(245,158,11,0.12);
+      --amber-border: rgba(245,158,11,0.28);
+      --violet:       #8b5cf6;
+      --violet-dim:   rgba(139,92,246,0.12);
+      --violet-border:rgba(139,92,246,0.28);
+      --indigo-dim:   rgba(99,102,241,0.15);
+      --rose-dim:     rgba(244,63,94,0.12);
+      --cyan:         #06b6d4;
+      --bg-card:      rgba(255,255,255,0.03);
+      --bg-card-hover:rgba(255,255,255,0.055);
+      --text-dim:     #7a7a96;
+      --text-muted:   #45455a;
       --mono:         'JetBrains Mono', ui-monospace, 'Cascadia Code', Menlo, Consolas, monospace;
-      --sans:         'Inter', system-ui, -apple-system, sans-serif;
-      --r:            5px;
+      --display:      'Syne', system-ui, sans-serif;
+      --sans:         'DM Sans', system-ui, -apple-system, sans-serif;
+      --r:            8px;
       --max:          960px;
     }
 
@@ -42,12 +62,32 @@
       line-height: 1.65;
       -webkit-font-smoothing: antialiased;
     }
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background-image:
+        linear-gradient(rgba(99,102,241,0.04) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(99,102,241,0.04) 1px, transparent 1px);
+      background-size: 40px 40px;
+      pointer-events: none;
+      z-index: 0;
+    }
 
     /* ─── Layout ──────────────────────────────────────── */
     .wrap {
       max-width: var(--max);
       margin: 0 auto;
       padding: 0 2rem;
+      position: relative;
+      z-index: 1;
+    }
+    .wrap-wide {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 0 2rem;
+      position: relative;
+      z-index: 1;
     }
 
     /* ─── Nav ─────────────────────────────────────────── */
@@ -55,8 +95,9 @@
       position: sticky;
       top: 0;
       z-index: 100;
-      background: rgba(249, 249, 248, 0.92);
-      backdrop-filter: blur(10px);
+      background: rgba(7,7,13,0.85);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
       border-bottom: 1px solid var(--border);
     }
     .nav-inner {
@@ -69,76 +110,165 @@
       justify-content: space-between;
     }
     .wordmark {
-      font-size: 15px;
-      font-weight: 600;
-      letter-spacing: -0.01em;
-      color: var(--text);
+      font-family: var(--display);
+      font-size: 17px;
+      font-weight: 800;
+      letter-spacing: -0.02em;
+      background: linear-gradient(135deg, #fff 0%, #a5b4fc 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
       text-decoration: none;
     }
     .nav-right {
       display: flex;
       align-items: center;
-      gap: 1.5rem;
+      gap: 0.25rem;
+      flex-wrap: wrap;
     }
     .nav-link {
-      font-size: 13.5px;
+      font-family: var(--mono);
+      font-size: 11px;
+      letter-spacing: 0.04em;
       color: var(--muted);
       text-decoration: none;
-      transition: color 0.15s;
+      padding: 0.3rem 0.75rem;
+      border-radius: 6px;
+      transition: color 0.15s, background 0.15s;
     }
-    .nav-link:hover { color: var(--text); }
+    .nav-link:hover { color: var(--text); background: rgba(255,255,255,0.06); }
     .btn-nav {
       display: inline-flex;
       align-items: center;
       gap: 0.4rem;
-      background: var(--text);
-      color: var(--bg);
-      font-size: 13px;
+      background: var(--surface-2);
+      color: var(--text);
+      border: 1px solid var(--border-bright);
+      font-family: var(--mono);
+      font-size: 11px;
       font-weight: 500;
-      font-family: var(--sans);
-      padding: 0.35rem 0.8rem;
-      border-radius: var(--r);
+      letter-spacing: 0.04em;
+      padding: 0.35rem 0.85rem;
+      border-radius: 6px;
       text-decoration: none;
-      transition: opacity 0.15s;
+      transition: background 0.15s, border-color 0.15s;
       white-space: nowrap;
+      margin-left: 0.5rem;
     }
-    .btn-nav:hover { opacity: 0.8; }
+    .btn-nav:hover { background: rgba(255,255,255,0.08); border-color: rgba(255,255,255,0.2); }
 
     /* ─── Section shared ──────────────────────────────── */
-    section { padding: 96px 0; }
+    section { padding: 96px 0; position: relative; z-index: 1; }
     .kicker {
-      font-size: 11.5px;
-      font-weight: 600;
-      letter-spacing: 0.09em;
+      font-family: var(--mono);
+      font-size: 11px;
+      font-weight: 500;
+      letter-spacing: 0.2em;
       text-transform: uppercase;
-      color: var(--muted);
-      margin-bottom: 0.9rem;
+      color: var(--text-muted);
+      margin-bottom: 14px;
     }
+    .kicker::before { content: '// '; }
     h2 {
-      font-size: clamp(1.6rem, 3.5vw, 2.2rem);
-      font-weight: 600;
-      letter-spacing: -0.035em;
-      line-height: 1.15;
+      font-family: var(--display);
+      font-size: clamp(1.7rem, 3.5vw, 2.4rem);
+      font-weight: 700;
+      letter-spacing: -0.03em;
+      line-height: 1.1;
     }
     .sub {
       font-size: 15.5px;
       color: var(--muted);
-      line-height: 1.65;
+      line-height: 1.7;
       max-width: 520px;
-      margin-top: 0.6rem;
+      margin-top: 0.75rem;
+    }
+    .section-divider {
+      height: 1px;
+      background: linear-gradient(90deg, transparent, var(--border-bright), transparent);
+      position: relative;
+      z-index: 1;
     }
 
     /* ─── Hero ────────────────────────────────────────── */
-    #hero { padding: 108px 0 100px; }
+    #hero { padding: 120px 0 108px; }
+    #hero::after {
+      content: '';
+      position: absolute;
+      top: -100px; left: 50%;
+      transform: translateX(-60%);
+      width: 700px; height: 700px;
+      background: radial-gradient(circle, rgba(99,102,241,0.1) 0%, transparent 65%);
+      pointer-events: none;
+      z-index: 0;
+    }
+    .hero-eyebrow {
+      display: flex;
+      width: fit-content;
+      align-items: center;
+      gap: 8px;
+      font-family: var(--mono);
+      font-size: 11px;
+      color: var(--accent);
+      background: var(--accent-dim);
+      border: 1px solid var(--accent-border);
+      padding: 4px 14px;
+      border-radius: 100px;
+      margin-bottom: 2rem;
+      letter-spacing: 0.04em;
+    }
+    .hero-eyebrow::before {
+      content: '';
+      width: 6px; height: 6px;
+      background: var(--accent);
+      border-radius: 50%;
+      animation: pulse 2s ease-in-out infinite;
+    }
+    @keyframes pulse {
+      0%,100% { opacity:1; transform:scale(1); }
+      50%      { opacity:0.4; transform:scale(0.7); }
+    }
+    .hero-title {
+      font-family: var(--display);
+      font-size: clamp(64px, 12vw, 140px);
+      font-weight: 800;
+      line-height: 0.92;
+      letter-spacing: -0.03em;
+      margin-bottom: 12px;
+      background: linear-gradient(135deg, #fff 0%, #a5b4fc 50%, #c4b5fd 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    .hero-full-name {
+      font-family: var(--mono);
+      font-size: 13px;
+      color: var(--text-muted);
+      letter-spacing: 0.02em;
+      margin-bottom: 28px;
+    }
+    .hero-tagline {
+      font-size: clamp(17px, 2.2vw, 22px);
+      color: var(--muted);
+      font-weight: 300;
+      max-width: 520px;
+      line-height: 1.55;
+      margin-bottom: 2.25rem;
+    }
+    .hero-tagline em {
+      font-style: normal;
+      color: var(--text);
+      font-weight: 400;
+    }
     .cmd-wrap {
       display: inline-flex;
       align-items: center;
       gap: 0;
-      margin-bottom: 2.75rem;
-      border: 1px solid var(--border);
+      margin-bottom: 2.5rem;
+      border: 1px solid var(--accent-border);
       border-radius: var(--r);
       overflow: hidden;
-      background: var(--surface);
+      background: var(--accent-dim);
     }
     .cmd-text {
       display: flex;
@@ -147,160 +277,434 @@
       font-family: var(--mono);
       font-size: 14px;
       color: var(--text);
-      padding: 0.55rem 0.9rem;
+      padding: 0.6rem 1rem;
     }
-    .cmd-dollar { color: var(--muted); }
+    .cmd-dollar { color: var(--accent); }
     .cmd-copy {
       display: flex;
       align-items: center;
       justify-content: center;
-      width: 36px;
-      height: 36px;
+      width: 38px;
+      height: 38px;
       border: none;
-      border-left: 1px solid var(--border);
+      border-left: 1px solid var(--accent-border);
       background: none;
       color: var(--muted);
       cursor: pointer;
       transition: color 0.15s, background 0.15s;
       font-family: var(--mono);
     }
-    .cmd-copy:hover { background: var(--surface-2); color: var(--text); }
-    .cmd-copy.copied { color: var(--green); }
-    h1 {
-      font-size: clamp(2.4rem, 5vw, 3.5rem);
-      font-weight: 600;
-      letter-spacing: -0.045em;
-      line-height: 1.08;
-      max-width: 620px;
-      margin-bottom: 1.25rem;
-    }
-    .hero-desc {
-      font-size: 17px;
-      line-height: 1.65;
-      color: var(--muted);
-      max-width: 460px;
-      margin-bottom: 2.25rem;
-    }
+    .cmd-copy:hover { background: rgba(99,102,241,0.1); color: var(--accent); }
+    .cmd-copy.copied { color: var(--emerald); }
     .link-arrow {
       display: inline-flex;
       align-items: center;
       gap: 0.4rem;
-      font-size: 14.5px;
+      font-family: var(--mono);
+      font-size: 13px;
       font-weight: 500;
-      color: var(--text);
+      color: var(--muted);
       text-decoration: none;
-      border-bottom: 1.5px solid var(--border);
-      padding-bottom: 1px;
-      transition: border-color 0.15s;
+      border-bottom: 1px solid var(--border-bright);
+      padding-bottom: 2px;
+      transition: color 0.15s, border-color 0.15s;
     }
-    .link-arrow:hover { border-color: var(--text); }
+    .link-arrow:hover { color: var(--text); border-color: var(--accent); }
 
-    /* ─── How it works ────────────────────────────────── */
-    #how {
-      border-top: 1px solid var(--border);
-      border-bottom: 1px solid var(--border);
+    /* ─── Stats row ───────────────────────────────────── */
+    .stats-row {
+      display: flex;
+      gap: 2px;
+      margin-bottom: 2.5rem;
+      flex-wrap: wrap;
     }
-    .flow-grid {
-      display: grid;
-      grid-template-columns: repeat(4, 1fr);
-      gap: 2.5rem;
-      margin-top: 3rem;
-    }
-    .flow-step {
-      padding-top: 1.5rem;
-      border-top: 2px solid var(--border);
-    }
-    .flow-step--last {
-      border-top-color: var(--text);
-    }
-    .step-n {
-      font-family: var(--mono);
-      font-size: 11px;
-      color: var(--muted);
-      margin-bottom: 1rem;
-    }
-    .step-cmd {
-      font-family: var(--mono);
-      font-size: 11.5px;
-      color: var(--text);
-      background: var(--surface);
+    .stat-box {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      padding: 20px 28px;
+      background: var(--bg-card);
       border: 1px solid var(--border);
-      border-radius: 3px;
-      display: inline-block;
-      padding: 0.2rem 0.55rem;
-      margin-bottom: 0.9rem;
+      flex: 1;
+      min-width: 130px;
+      position: relative;
+      overflow: hidden;
+      transition: border-color 0.2s, background 0.2s;
     }
-    .step-head {
-      font-size: 15px;
-      font-weight: 600;
+    .stat-box:first-child { border-radius: 10px 0 0 10px; }
+    .stat-box:last-child  { border-radius: 0 10px 10px 0; }
+    .stat-box::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, var(--stat-color, var(--accent)), transparent);
+      opacity: 0.6;
+    }
+    .stat-box:hover { background: var(--bg-card-hover); border-color: var(--border-bright); }
+    .stat-num {
+      font-family: var(--display);
+      font-size: 42px;
+      font-weight: 800;
+      line-height: 1;
+      color: var(--stat-color, var(--amber));
+      margin-bottom: 6px;
       letter-spacing: -0.02em;
-      margin-bottom: 0.4rem;
     }
-    .step-time {
-      font-size: 11px;
-      font-weight: 500;
-      letter-spacing: 0.05em;
+    .stat-label {
+      font-family: var(--mono);
+      font-size: 10px;
+      color: var(--text-muted);
+      letter-spacing: 0.1em;
       text-transform: uppercase;
-      color: var(--muted);
-      margin-bottom: 0.6rem;
     }
-    .step-desc {
-      font-size: 13.5px;
-      color: var(--muted);
-      line-height: 1.6;
+
+    /* ─── Comparison chart (How it works) ─────────────── */
+    .compare-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 14px;
+      margin-top: 48px;
     }
-    .flow-step--last .step-head { color: var(--text); }
+    .compare-col {
+      border-radius: 12px;
+      overflow: hidden;
+      border: 1px solid var(--border);
+    }
+    .compare-head {
+      padding: 13px 20px;
+      font-family: var(--mono);
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+    }
+    .compare-col.no  .compare-head { background: var(--red-bg);     color: var(--red); }
+    .compare-col.yes .compare-head { background: var(--emerald-dim); color: var(--emerald); }
+    .compare-body { background: var(--bg-card); }
+    .compare-step {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 13px 20px;
+      border-bottom: 1px solid var(--border);
+      font-size: 13px;
+    }
+    .compare-step:last-child { border-bottom: none; }
+    .compare-col.no  .compare-step { color: var(--muted); }
+    .compare-col.yes .compare-step { color: var(--text); }
+    .compare-col.yes .compare-step code {
+      font-family: var(--mono);
+      font-size: 13px;
+      color: var(--emerald);
+      background: none;
+    }
+    .cs-n {
+      font-family: var(--mono);
+      font-size: 10px;
+      color: var(--text-muted);
+      min-width: 16px;
+      flex-shrink: 0;
+    }
+    .cs-note {
+      font-family: var(--mono);
+      font-size: 11px;
+      color: var(--text-muted);
+      margin-left: auto;
+      font-style: italic;
+      white-space: nowrap;
+    }
 
     /* ─── Commands ────────────────────────────────────── */
-    #commands {
-      border-bottom: 1px solid var(--border);
-      background: var(--surface);
-    }
+    #commands { border-bottom: 1px solid var(--border); }
     .cmd-grid-section {
       display: grid;
       grid-template-columns: repeat(3, 1fr);
-      gap: 1px;
-      background: var(--border);
-      border: 1px solid var(--border);
-      border-radius: var(--r);
-      overflow: hidden;
+      gap: 14px;
       margin-top: 2.5rem;
     }
     .cmd-card {
-      background: var(--bg);
-      padding: 1.5rem 1.75rem;
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 28px 24px;
+      display: flex;
+      flex-direction: column;
+      position: relative;
+      overflow: hidden;
+      transition: border-color 0.2s, transform 0.2s, background 0.2s;
     }
+    .cmd-card::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(circle at 80% 20%, var(--card-glow, rgba(99,102,241,0.07)), transparent 60%);
+      pointer-events: none;
+    }
+    .cmd-card:hover { border-color: var(--border-bright); transform: translateY(-3px); background: var(--bg-card-hover); }
     .cmd-badge {
       display: inline-block;
+      font-family: var(--mono);
       font-size: 10px;
       font-weight: 600;
-      letter-spacing: 0.07em;
+      letter-spacing: 0.15em;
       text-transform: uppercase;
-      padding: 0.15rem 0.5rem;
-      border-radius: 3px;
-      margin-bottom: 0.9rem;
+      margin-bottom: 16px;
+      border: none;
+      background: none;
+      padding: 0;
     }
-    .cmd-badge.setup {
-      background: var(--surface-2);
-      color: var(--muted);
-    }
-    .cmd-badge.daily {
-      background: var(--green-bg);
-      color: var(--green);
-      border: 1px solid var(--green-border);
-    }
+    .cmd-badge.setup  { color: var(--amber); }
+    .cmd-badge.daily  { color: var(--emerald); }
+    .cmd-badge.pivot  { color: var(--violet); }
     .cmd-card-name {
       font-family: var(--mono);
+      font-size: 20px;
+      font-weight: 700;
+      color: var(--card-color, var(--accent));
+      margin-bottom: 10px;
+      letter-spacing: -0.02em;
+    }
+    .cmd-card-desc { font-size: 13px; color: var(--text-dim); line-height: 1.6; flex: 1; margin-bottom: 0; }
+    .cmd-card-footer {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding-top: 14px;
+      margin-top: 16px;
+      border-top: 1px solid var(--border);
+      font-family: var(--mono);
+      font-size: 11px;
+      color: var(--text-muted);
+    }
+    .cmd-card-trigger { font-style: italic; text-align: right; }
+
+    /* ─── Composition ─────────────────────────────────── */
+    #composition {
+      background: linear-gradient(180deg, transparent 0%, rgba(99,102,241,0.03) 50%, transparent 100%);
+    }
+    .composition-wrap {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 48px;
+      align-items: start;
+      margin-top: 56px;
+    }
+    .layers-stack {
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      gap: 0;
+    }
+    .layer {
+      display: flex;
+      align-items: stretch;
+      position: relative;
+      transition: transform 0.2s;
+    }
+    .layer:hover { transform: translateX(6px); }
+    .layer:hover .layer-bar { opacity: 1; }
+    .layer-bar {
+      width: 3px;
+      background: var(--layer-color, var(--accent));
+      border-radius: 2px 0 0 2px;
+      flex-shrink: 0;
+      opacity: 0.5;
+      transition: opacity 0.2s;
+    }
+    .layer-content {
+      flex: 1;
+      padding: 16px 20px;
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-left: none;
+      position: relative;
+    }
+    .layer:first-child .layer-content { border-radius: 0 8px 0 0; }
+    .layer:last-child  .layer-content { border-radius: 0 0 8px 0; }
+    .layer:not(:last-child) .layer-content { border-bottom: none; }
+    .layer-meta {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 3px;
+    }
+    .layer-name {
+      font-family: var(--mono);
       font-size: 13px;
-      font-weight: 500;
+      font-weight: 700;
+      color: var(--layer-color, var(--accent));
+    }
+    .layer-badge {
+      font-family: var(--mono);
+      font-size: 10px;
+      color: var(--layer-color, var(--accent));
+      background: var(--layer-color-dim, var(--indigo-dim));
+      padding: 2px 8px;
+      border-radius: 100px;
+      letter-spacing: 0.05em;
+    }
+    .layer-desc { font-size: 12px; color: var(--text-dim); }
+    .composition-examples { display: flex; flex-direction: column; gap: 16px; }
+    .comp-examples-label {
+      font-family: var(--mono);
+      font-size: 11px;
+      color: var(--text-muted);
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      margin-bottom: 4px;
+    }
+    .comp-example {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 24px 24px 20px;
+      transition: border-color 0.2s;
+    }
+    .comp-example:hover { border-color: var(--border-bright); }
+    .comp-name {
+      font-family: var(--display);
+      font-size: 15px;
+      font-weight: 700;
+      margin-bottom: 12px;
       color: var(--text);
-      margin-bottom: 0.5rem;
     }
-    .cmd-card-desc {
-      font-size: 13px;
+    .comp-layers { display: flex; flex-direction: column; gap: 4px; }
+    .comp-layer-pill {
+      font-family: var(--mono);
+      font-size: 11px;
+      padding: 5px 10px;
+      border-radius: 5px;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      width: fit-content;
+    }
+    .comp-layer-pill::before { content: '+'; opacity: 0.4; font-size: 10px; }
+    .comp-layer-pill:first-child::before { content: '→'; opacity: 0.6; }
+    .formula-box {
+      background: var(--indigo-dim);
+      border: 1px solid rgba(99,102,241,0.2);
+      border-radius: 8px;
+      padding: 16px 20px;
+      margin-bottom: 24px;
+      font-family: var(--mono);
+      font-size: 12px;
+      color: var(--text-dim);
+      line-height: 1.7;
+    }
+    .formula-box strong { color: var(--accent); font-weight: 500; }
+
+    /* ─── Modules (overlays + domains) ────────────────── */
+    #modules { border-top: 1px solid var(--border); }
+    .modules-sub-kicker {
+      font-family: var(--mono);
+      font-size: 11px;
+      font-weight: 500;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--text-muted);
+      margin-bottom: 8px;
+    }
+    .modules-sub-kicker::before { content: '// '; }
+    .modules-sub-h {
+      font-family: var(--display);
+      font-size: clamp(1.3rem, 2.5vw, 1.8rem);
+      font-weight: 700;
+      letter-spacing: -0.03em;
+      line-height: 1.15;
+    }
+    .modules-sub-desc {
+      font-size: 14.5px;
       color: var(--muted);
-      line-height: 1.6;
+      max-width: 520px;
+      line-height: 1.65;
+      margin-top: 0.5rem;
+      margin-bottom: 2rem;
     }
+    .overlays-wrap { margin-bottom: 72px; }
+    .overlays-grid { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 24px; }
+    .overlay-pill {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 10px 18px;
+      background: var(--violet-dim);
+      border: 1px solid rgba(139,92,246,0.2);
+      border-radius: 100px;
+      transition: border-color 0.2s, background 0.2s, transform 0.2s;
+      cursor: default;
+    }
+    .overlay-pill:hover {
+      border-color: rgba(139,92,246,0.45);
+      background: rgba(139,92,246,0.2);
+      transform: translateY(-1px);
+    }
+    .overlay-icon { font-size: 16px; }
+    .overlay-name {
+      font-family: var(--mono);
+      font-size: 12px;
+      font-weight: 500;
+      color: var(--violet);
+      letter-spacing: 0.02em;
+    }
+    .domains-section { margin-top: 16px; }
+    .domain-group { margin-bottom: 40px; }
+    .domain-group-header {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 16px;
+    }
+    .domain-group-label {
+      font-family: var(--mono);
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: var(--group-color, var(--emerald));
+      white-space: nowrap;
+    }
+    .domain-group-count {
+      font-family: var(--mono);
+      font-size: 11px;
+      color: var(--group-color, var(--emerald));
+      background: var(--group-color-dim, var(--emerald-dim));
+      padding: 2px 9px;
+      border-radius: 100px;
+      white-space: nowrap;
+    }
+    .domain-group-line { flex: 1; height: 1px; background: var(--border); }
+    .domains-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(155px, 1fr));
+      gap: 8px;
+    }
+    .domain-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 9px;
+      padding: 16px 16px 14px;
+      transition: border-color 0.2s, background 0.2s, transform 0.2s;
+      cursor: default;
+      position: relative;
+      overflow: hidden;
+    }
+    .domain-card:hover {
+      border-color: var(--domain-color-border, rgba(16,185,129,0.3));
+      background: var(--domain-color-bg, rgba(16,185,129,0.05));
+      transform: translateY(-2px);
+    }
+    .domain-emoji { font-size: 22px; display: block; margin-bottom: 10px; line-height: 1; }
+    .domain-name {
+      font-family: var(--mono);
+      font-size: 11.5px;
+      font-weight: 700;
+      color: var(--text);
+      margin-bottom: 3px;
+      letter-spacing: -0.01em;
+    }
+    .domain-tag { font-size: 11px; color: var(--text-muted); line-height: 1.4; }
 
     /* ─── Demo ────────────────────────────────────────── */
     #demo { border-bottom: 1px solid var(--border); }
@@ -309,23 +713,24 @@
       border: 1px solid var(--border);
       border-radius: var(--r);
       overflow: hidden;
-      background: var(--bg);
+      background: var(--surface);
       margin-top: 2rem;
       margin-bottom: 1.75rem;
     }
     .tab {
       background: none;
       border: none;
-      padding: 0.45rem 1.15rem;
-      font-size: 13px;
+      padding: 0.5rem 1.2rem;
+      font-family: var(--mono);
+      font-size: 12px;
       font-weight: 500;
-      font-family: var(--sans);
       color: var(--muted);
       cursor: pointer;
       transition: background 0.15s, color 0.15s;
+      letter-spacing: 0.02em;
     }
     .tab + .tab { border-left: 1px solid var(--border); }
-    .tab.active { background: var(--text); color: var(--bg); }
+    .tab.active { background: var(--accent); color: #fff; }
     .tab:not(.active):hover { background: var(--surface-2); color: var(--text); }
 
     /* Comparison container */
@@ -333,7 +738,7 @@
       border: 1px solid var(--border);
       border-radius: var(--r);
       overflow: hidden;
-      background: var(--bg);
+      background: var(--surface);
       transition: opacity 0.2s ease;
     }
     .cmp.fading { opacity: 0; }
@@ -344,14 +749,14 @@
       align-items: baseline;
       gap: 0.85rem;
       padding: 0.9rem 1.25rem;
-      background: var(--surface);
+      background: var(--surface-2);
       border-bottom: 1px solid var(--border);
     }
     .req-you {
       font-family: var(--mono);
-      font-size: 10.5px;
-      font-weight: 500;
-      letter-spacing: 0.07em;
+      font-size: 10px;
+      font-weight: 600;
+      letter-spacing: 0.1em;
       text-transform: uppercase;
       color: var(--muted);
       flex-shrink: 0;
@@ -364,15 +769,8 @@
     .req-text.muted { color: var(--muted); font-style: italic; }
 
     /* Split columns */
-    .cmp-split {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-    }
-    .cmp-col {
-      display: flex;
-      flex-direction: column;
-      min-width: 0;
-    }
+    .cmp-split { display: grid; grid-template-columns: 1fr 1fr; }
+    .cmp-col { display: flex; flex-direction: column; min-width: 0; }
     .cmp-col + .cmp-col { border-left: 1px solid var(--border); }
     .cmp-head {
       display: flex;
@@ -382,15 +780,16 @@
       flex-shrink: 0;
     }
     .cmp-col.no  .cmp-head { background: var(--red-bg); }
-    .cmp-col.yes .cmp-head { background: var(--green-bg); }
+    .cmp-col.yes .cmp-head { background: var(--emerald-dim); }
     .cmp-title {
-      font-size: 11.5px;
+      font-family: var(--mono);
+      font-size: 10.5px;
       font-weight: 600;
-      letter-spacing: 0.07em;
+      letter-spacing: 0.08em;
       text-transform: uppercase;
     }
     .cmp-col.no  .cmp-title { color: var(--red); }
-    .cmp-col.yes .cmp-title { color: var(--green); }
+    .cmp-col.yes .cmp-title { color: var(--emerald); }
     .cmp-body {
       padding: 1rem 1.25rem 1.25rem;
       flex: 1;
@@ -399,13 +798,14 @@
       gap: 0.55rem;
     }
     .resp-label {
-      font-size: 11px;
+      font-family: var(--mono);
+      font-size: 10px;
       font-weight: 600;
-      letter-spacing: 0.06em;
+      letter-spacing: 0.08em;
       text-transform: uppercase;
     }
     .resp-label.asking    { color: var(--muted); }
-    .resp-label.answering { color: var(--green); }
+    .resp-label.answering { color: var(--emerald); }
     .cmp-prompt {
       font-family: var(--mono);
       font-size: 12.5px;
@@ -423,20 +823,20 @@
       align-items: center;
       gap: 0.5rem;
       padding: 0.6rem 1.25rem;
-      border-top: 1px solid var(--green-border);
-      background: var(--green-bg);
+      border-top: 1px solid var(--emerald-border);
+      background: var(--emerald-dim);
       overflow: hidden;
     }
-    .ctx-icon  { color: var(--green); flex-shrink: 0; line-height: 0; }
+    .ctx-icon  { color: var(--emerald); flex-shrink: 0; line-height: 0; }
     .ctx-label {
       font-family: var(--mono);
       font-size: 10.5px;
-      font-weight: 500;
-      color: var(--green);
+      font-weight: 600;
+      color: var(--emerald);
       white-space: nowrap;
       flex-shrink: 0;
     }
-    .ctx-sep  { font-size: 10.5px; color: var(--green-border); flex-shrink: 0; }
+    .ctx-sep  { font-size: 10.5px; color: var(--emerald-border); flex-shrink: 0; }
     .ctx-text {
       font-family: var(--mono);
       font-size: 10.5px;
@@ -450,25 +850,39 @@
     .p-grid {
       display: grid;
       grid-template-columns: 1fr 1fr;
-      gap: 1px;
-      background: var(--border);
-      border: 1px solid var(--border);
-      border-radius: var(--r);
-      overflow: hidden;
+      gap: 14px;
       margin-top: 2.5rem;
     }
-    .p-card { background: var(--bg); padding: 2rem; }
+    .p-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 32px;
+      transition: border-color 0.2s, transform 0.2s, background 0.2s;
+      position: relative;
+      overflow: hidden;
+    }
+    .p-card:hover { border-color: var(--border-bright); transform: translateY(-2px); background: var(--bg-card-hover); }
+    .p-file {
+      font-family: var(--mono);
+      font-size: 10px;
+      color: var(--text-muted);
+      letter-spacing: 0.05em;
+      margin-bottom: 16px;
+    }
     .p-num {
       font-family: var(--mono);
-      font-size: 11px;
-      color: var(--muted);
+      font-size: 10px;
+      color: var(--accent);
       margin-bottom: 0.75rem;
+      letter-spacing: 0.15em;
     }
     .p-name {
-      font-size: 17px;
-      font-weight: 600;
-      letter-spacing: -0.025em;
-      margin-bottom: 0.5rem;
+      font-family: var(--display);
+      font-size: 18px;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      margin-bottom: 0.6rem;
     }
     .p-desc {
       font-size: 14px;
@@ -477,19 +891,20 @@
       margin-bottom: 1.5rem;
     }
     .p-ex {
-      background: var(--surface);
-      border-radius: var(--r);
+      background: rgba(255,255,255,0.03);
+      border: 1px solid var(--border);
+      border-radius: 6px;
       padding: 1rem;
       font-family: var(--mono);
       font-size: 12px;
       line-height: 1.7;
     }
-    .ex-tag  { font-size: 10px; font-weight: 600; letter-spacing: 0.09em; text-transform: uppercase; color: var(--muted); margin-bottom: 0.2rem; }
-    .ex-bad  { color: var(--red);   margin-bottom: 0.75rem; }
-    .ex-good { color: var(--green); }
+    .ex-tag  { font-size: 10px; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted); margin-bottom: 0.3rem; }
+    .ex-bad  { color: var(--red); margin-bottom: 0.85rem; }
+    .ex-good { color: var(--emerald); }
     .p-footnote { margin-top: 1.5rem; font-size: 13px; color: var(--muted); }
-    .p-footnote a { color: var(--muted); }
-    .p-footnote a:hover { color: var(--text); }
+    .p-footnote a { color: var(--muted); text-decoration: none; transition: color 0.15s; }
+    .p-footnote a:hover { color: var(--accent); }
 
     /* ─── CTA ─────────────────────────────────────────── */
     #cta { text-align: center; border-top: 1px solid var(--border); }
@@ -499,34 +914,62 @@
       display: inline-flex;
       align-items: center;
       gap: 0.5rem;
-      background: var(--text);
-      color: var(--bg);
-      padding: 0.7rem 1.6rem;
+      background: var(--accent);
+      color: #fff;
+      padding: 0.75rem 1.75rem;
       border-radius: var(--r);
-      font-size: 14.5px;
-      font-weight: 500;
+      font-family: var(--mono);
+      font-size: 13px;
+      font-weight: 600;
       text-decoration: none;
-      transition: opacity 0.15s;
+      transition: opacity 0.15s, transform 0.15s;
       margin-top: 2rem;
+      letter-spacing: 0.02em;
     }
-    .btn-lg:hover { opacity: 0.8; }
+    .btn-lg:hover { opacity: 0.88; transform: translateY(-1px); }
 
     /* ─── Footer ──────────────────────────────────────── */
-    footer { border-top: 1px solid var(--border); padding: 1.75rem 2rem; }
+    footer { border-top: 1px solid var(--border); padding: 3rem 2rem; position: relative; z-index: 1; }
     .footer-inner {
       max-width: var(--max);
       margin: 0 auto;
       display: flex;
-      align-items: center;
+      align-items: flex-start;
       justify-content: space-between;
-      font-size: 13px;
-      color: var(--muted);
+      gap: 2rem;
+    }
+    .footer-stats {
+      font-family: var(--mono);
+      font-size: 12px;
+      color: var(--text-muted);
+      text-align: right;
+      line-height: 1.8;
+    }
+    .footer-stats span { color: var(--amber); font-weight: 700; }
+    .footer-brand {
+      font-family: var(--display);
+      font-size: 16px;
+      font-weight: 800;
+      background: linear-gradient(135deg, #fff, #a5b4fc);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
     }
     footer a { color: var(--muted); text-decoration: none; transition: color 0.15s; }
-    footer a:hover { color: var(--text); }
+    footer a:hover { color: var(--accent); }
 
     /* ─── SVG icons ───────────────────────────────────── */
     .icon { display: inline-block; vertical-align: middle; flex-shrink: 0; }
+
+    /* ─── Responsive ──────────────────────────────────── */
+    @media (max-width: 700px) {
+      .compare-grid { grid-template-columns: 1fr; }
+      .composition-wrap { grid-template-columns: 1fr; gap: 32px; }
+      .cmd-grid-section { grid-template-columns: 1fr; }
+      .p-grid { grid-template-columns: 1fr; }
+      .cmp-split { grid-template-columns: 1fr; }
+      .cmp-col + .cmp-col { border-left: none; border-top: 1px solid var(--border); }
+    }
   </style>
 </head>
 <body>
@@ -534,11 +977,13 @@
   <!-- ─── Nav ─────────────────────────────────────────── -->
   <nav>
     <div class="nav-inner">
-      <a href="#" class="wordmark">promptarc</a>
+      <a href="#" class="wordmark">ARC</a>
       <div class="nav-right">
-        <a href="#how"      class="nav-link">How it works</a>
-        <a href="#commands" class="nav-link">Commands</a>
-        <a href="#demo"     class="nav-link">Demo</a>
+        <a href="#how"         class="nav-link">How it works</a>
+        <a href="#commands"    class="nav-link">Commands</a>
+        <a href="#composition" class="nav-link">Composition</a>
+        <a href="#modules"     class="nav-link">Modules</a>
+        <a href="#demo"        class="nav-link">Demo</a>
         <a href="https://github.com/aizzaku/promptarc" class="btn-nav" target="_blank" rel="noopener">
           <svg class="icon" width="14" height="14" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
             <path d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.531 1.032 1.531 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.942.359.31.678.921.678 1.856 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z"/>
@@ -554,6 +999,14 @@
     <!-- ─── Hero ───────────────────────────────────────── -->
     <section id="hero">
       <div class="wrap">
+        <div class="hero-eyebrow">Prompt Engineering Framework</div>
+        <h1 class="hero-title">ARC</h1>
+        <div class="hero-full-name">A Runtime Configuration Framework</div>
+        <p class="hero-tagline">
+          A modular system that configures Claude once and <em>eliminates friction</em> for every project after.<br>
+          Composable layers. Domain awareness. Zero re-explanation.
+        </p>
+
         <div class="cmd-wrap">
           <div class="cmd-text">
             <span class="cmd-dollar">$</span>
@@ -566,10 +1019,25 @@
           </button>
         </div>
 
-        <h1>Consistent Claude output,<br>from the first message.</h1>
-        <p class="hero-desc">
-          A modular framework for Claude Code. Teach Claude about your project once. Every session after that starts in two sentences, every request gets a direct answer, and every output gets verified.
-        </p>
+        <div class="stats-row">
+          <div class="stat-box" style="--stat-color:var(--amber)">
+            <div class="stat-num">6</div>
+            <div class="stat-label">Skills</div>
+          </div>
+          <div class="stat-box" style="--stat-color:var(--violet)">
+            <div class="stat-num">11</div>
+            <div class="stat-label">Task Overlays</div>
+          </div>
+          <div class="stat-box" style="--stat-color:var(--emerald)">
+            <div class="stat-num">27</div>
+            <div class="stat-label">Domain Modules</div>
+          </div>
+          <div class="stat-box" style="--stat-color:var(--accent)">
+            <div class="stat-num">47</div>
+            <div class="stat-label">Prompt Patterns</div>
+          </div>
+        </div>
+
         <a href="https://github.com/aizzaku/promptarc" class="link-arrow" target="_blank" rel="noopener">
           View on GitHub
           <svg class="icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
@@ -579,48 +1047,41 @@
       </div>
     </section>
 
+    <div class="section-divider"></div>
+
     <!-- ─── How it works ─────────────────────────────── -->
     <section id="how">
       <div class="wrap">
         <p class="kicker">How it works</p>
-        <h2>Four steps. Then you just work.</h2>
-        <p class="sub">ARC does one thing upfront: teaches Claude about your project. Every request after that gets a targeted answer — because Claude already knows your stack, quality bar, and constraints.</p>
+        <h2>Before vs after.</h2>
+        <p class="sub">Same task, different setup. ARC loads project context before the first message — so Claude skips the questions and goes straight to the work.</p>
 
-        <div class="flow-grid">
-          <div class="flow-step">
-            <div class="step-n">01</div>
-            <div class="step-cmd">$ npx arc-setup</div>
-            <div class="step-head">Install</div>
-            <div class="step-time">Once · ~10 seconds</div>
-            <p class="step-desc">Copies ARC's templates into your Claude Code project. Run it once and forget it.</p>
+        <div class="compare-grid">
+          <div class="compare-col no">
+            <div class="compare-head">× Without ARC</div>
+            <div class="compare-body">
+              <div class="compare-step"><span class="cs-n">1</span>Open new Claude session</div>
+              <div class="compare-step"><span class="cs-n">2</span>Re-explain project, stack, constraints</div>
+              <div class="compare-step"><span class="cs-n">3</span>Answer clarifying questions before any output</div>
+              <div class="compare-step"><span class="cs-n">4</span>Receive generic, context-free response</div>
+              <div class="compare-step"><span class="cs-n">5</span>Manually spot-check for correctness</div>
+            </div>
           </div>
-
-          <div class="flow-step">
-            <div class="step-n">02</div>
-            <div class="step-cmd">/arc-init</div>
-            <div class="step-head">Initialize</div>
-            <div class="step-time">Once per project · ~1 min</div>
-            <p class="step-desc">Pick your domain and quality bar. ARC writes CLAUDE.md and STATE.md — your project's permanent memory.</p>
-          </div>
-
-          <div class="flow-step">
-            <div class="step-n">03</div>
-            <div class="step-cmd">/arc-kickoff</div>
-            <div class="step-head">Interview <span style="font-weight:400;color:var(--muted)">(optional)</span></div>
-            <div class="step-time">Optional · ~15 min</div>
-            <p class="step-desc">8 questions. Claude learns your voice and constraints, then tests its own output to close gaps before you start.</p>
-          </div>
-
-          <div class="flow-step flow-step--last">
-            <div class="step-n">04</div>
-            <div class="step-cmd">/arc-resume</div>
-            <div class="step-head">Work</div>
-            <div class="step-time">Every session · forever</div>
-            <p class="step-desc">Start each session with one command. Claude reads STATE.md and orients in two sentences — no re-explaining required.</p>
+          <div class="compare-col yes">
+            <div class="compare-head">✓ With ARC</div>
+            <div class="compare-body">
+              <div class="compare-step"><span class="cs-n">1</span><code>$ npx arc-setup</code><span class="cs-note">once ever</span></div>
+              <div class="compare-step"><span class="cs-n">2</span><code>/arc-init</code><span class="cs-note">once per project</span></div>
+              <div class="compare-step"><span class="cs-n">3</span><code>/arc-kickoff</code><span class="cs-note">optional, 15 min</span></div>
+              <div class="compare-step"><span class="cs-n">4</span><code>/arc-resume</code><span class="cs-note">every session</span></div>
+              <div class="compare-step"><span class="cs-n">5</span><code>/arc-check</code><span class="cs-note">any artifact</span></div>
+            </div>
           </div>
         </div>
       </div>
     </section>
+
+    <div class="section-divider"></div>
 
     <!-- ─── Commands ─────────────────────────────────── -->
     <section id="commands">
@@ -630,44 +1091,393 @@
         <p class="sub">Three to set up, three to keep going. After setup, the daily loop is <code style="font-family:var(--mono);font-size:14px">/arc-resume → work → /arc-check</code>.</p>
 
         <div class="cmd-grid-section">
-          <div class="cmd-card">
-            <span class="cmd-badge setup">Setup</span>
+          <div class="cmd-card" style="--card-color:var(--amber);--card-glow:rgba(245,158,11,0.08)">
+            <span class="cmd-badge setup">Setup phase</span>
             <div class="cmd-card-name">/arc-init</div>
             <p class="cmd-card-desc">Pick domain and quality bar. Writes CLAUDE.md and initializes STATE.md in under a minute. Run once per project.</p>
+            <div class="cmd-card-footer">
+              <span>~2 min</span>
+              <span class="cmd-card-trigger">new project</span>
+            </div>
           </div>
 
-          <div class="cmd-card">
-            <span class="cmd-badge setup">Setup</span>
+          <div class="cmd-card" style="--card-color:var(--amber);--card-glow:rgba(245,158,11,0.08)">
+            <span class="cmd-badge setup">Setup phase</span>
             <div class="cmd-card-name">/arc-kickoff</div>
             <p class="cmd-card-desc">8-question interview. Calibrates voice, captures constraints, validates CLAUDE.md with a synthetic test, and closes any gaps it finds.</p>
+            <div class="cmd-card-footer">
+              <span>15–30 min</span>
+              <span class="cmd-card-trigger">after init</span>
+            </div>
           </div>
 
-          <div class="cmd-card">
-            <span class="cmd-badge setup">When pivoting</span>
+          <div class="cmd-card" style="--card-color:var(--violet);--card-glow:rgba(139,92,246,0.08)">
+            <span class="cmd-badge pivot">When pivoting</span>
             <div class="cmd-card-name">/arc-rekickoff</div>
             <p class="cmd-card-desc">Re-orient after scope changes. Targeted Q&amp;A on what's changed, then updates CLAUDE.md, task files, and STATE.md.</p>
+            <div class="cmd-card-footer">
+              <span>~10 min</span>
+              <span class="cmd-card-trigger">scope change</span>
+            </div>
           </div>
 
-          <div class="cmd-card">
-            <span class="cmd-badge daily">Daily</span>
+          <div class="cmd-card" style="--card-color:var(--emerald);--card-glow:rgba(16,185,129,0.08)">
+            <span class="cmd-badge daily">Ongoing</span>
             <div class="cmd-card-name">/arc-resume</div>
             <p class="cmd-card-desc">Start every session. Reads STATE.md and orients in two sentences — last session, current focus, what's next. No re-explaining the project.</p>
+            <div class="cmd-card-footer">
+              <span>&lt;1 min</span>
+              <span class="cmd-card-trigger">every session</span>
+            </div>
           </div>
 
-          <div class="cmd-card">
-            <span class="cmd-badge daily">Daily</span>
+          <div class="cmd-card" style="--card-color:var(--emerald);--card-glow:rgba(16,185,129,0.08)">
+            <span class="cmd-badge daily">Quality</span>
             <div class="cmd-card-name">/arc-check</div>
             <p class="cmd-card-desc">Goal-backward output verification. Detects stubs, wiring failures, and domain-specific anti-patterns. Produces a structured gap list.</p>
+            <div class="cmd-card-footer">
+              <span>~2 min</span>
+              <span class="cmd-card-trigger">anytime</span>
+            </div>
           </div>
 
-          <div class="cmd-card">
-            <span class="cmd-badge daily">Anytime</span>
+          <div class="cmd-card" style="--card-color:var(--emerald);--card-glow:rgba(16,185,129,0.08)">
+            <span class="cmd-badge daily">Quality</span>
             <div class="cmd-card-name">/arc-progress</div>
             <p class="cmd-card-desc">Project health dashboard. Context completeness, open decisions, todo summary, and exactly one recommended next action.</p>
+            <div class="cmd-card-footer">
+              <span>~1 min</span>
+              <span class="cmd-card-trigger">anytime</span>
+            </div>
           </div>
         </div>
       </div>
     </section>
+
+    <div class="section-divider"></div>
+
+    <!-- ─── Composition ───────────────────────────────── -->
+    <section id="composition">
+      <div class="wrap">
+        <p class="kicker">Architecture</p>
+        <h2>Layered composition</h2>
+        <p class="sub">A CLAUDE.md is assembled from independent layers. Each layer adds without overwriting. Upper layers take precedence.</p>
+
+        <div class="composition-wrap">
+          <div>
+            <div class="formula-box">
+              <strong>base.md</strong><br>
+              + [task-type overlay]<br>
+              + [industry overlay]<br>
+              + [domain module]<br>
+              + [project overrides]<br>
+              ─────────────────────<br>
+              = CLAUDE.md (&lt; 3,500 words)
+            </div>
+            <div class="layers-stack">
+              <div class="layer" style="--layer-color: var(--red); --layer-color-dim: var(--rose-dim)">
+                <div class="layer-bar"></div>
+                <div class="layer-content">
+                  <div class="layer-meta">
+                    <span class="layer-name">project-overrides.md</span>
+                    <span class="layer-badge" style="--layer-color: var(--red); --layer-color-dim: var(--rose-dim)">yours</span>
+                  </div>
+                  <div class="layer-desc">Your rules for this specific project</div>
+                </div>
+              </div>
+              <div class="layer" style="--layer-color: var(--emerald)">
+                <div class="layer-bar"></div>
+                <div class="layer-content">
+                  <div class="layer-meta">
+                    <span class="layer-name">domains/fintech.md</span>
+                    <span class="layer-badge" style="--layer-color: var(--emerald); --layer-color-dim: var(--emerald-dim)">industry</span>
+                  </div>
+                  <div class="layer-desc">Domain vocabulary, pitfalls, stack context</div>
+                </div>
+              </div>
+              <div class="layer" style="--layer-color: var(--violet)">
+                <div class="layer-bar"></div>
+                <div class="layer-content">
+                  <div class="layer-meta">
+                    <span class="layer-name">claude-md/saas.md</span>
+                    <span class="layer-badge" style="--layer-color: var(--violet); --layer-color-dim: var(--violet-dim)">overlay</span>
+                  </div>
+                  <div class="layer-desc">NON-NEGOTIABLE rules, defaults, voice</div>
+                </div>
+              </div>
+              <div class="layer" style="--layer-color: var(--accent)">
+                <div class="layer-bar"></div>
+                <div class="layer-content">
+                  <div class="layer-meta">
+                    <span class="layer-name">claude-md/software-eng.md</span>
+                    <span class="layer-badge" style="--layer-color: var(--accent); --layer-color-dim: var(--indigo-dim)">task</span>
+                  </div>
+                  <div class="layer-desc">Work-type behavior and code standards</div>
+                </div>
+              </div>
+              <div class="layer" style="--layer-color: var(--text-dim)">
+                <div class="layer-bar" style="background: var(--text-muted)"></div>
+                <div class="layer-content">
+                  <div class="layer-meta">
+                    <span class="layer-name" style="color: var(--text-dim)">base.md</span>
+                    <span class="layer-badge" style="color: var(--text-muted); background: rgba(255,255,255,0.05); border: 1px solid var(--border)">foundation</span>
+                  </div>
+                  <div class="layer-desc">Universal identity, tone, anti-slop rules</div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="composition-examples">
+            <div class="comp-examples-label">Example compositions</div>
+            <div class="comp-example">
+              <div class="comp-name">Fintech SaaS startup</div>
+              <div class="comp-layers">
+                <span class="comp-layer-pill" style="background:rgba(255,255,255,0.04);color:var(--text-dim)">base.md</span>
+                <span class="comp-layer-pill" style="background:var(--indigo-dim);color:var(--accent)">software-eng.md</span>
+                <span class="comp-layer-pill" style="background:var(--violet-dim);color:var(--violet)">saas.md</span>
+                <span class="comp-layer-pill" style="background:var(--emerald-dim);color:var(--emerald)">domains/fintech.md</span>
+              </div>
+            </div>
+            <div class="comp-example">
+              <div class="comp-name">YouTube education channel</div>
+              <div class="comp-layers">
+                <span class="comp-layer-pill" style="background:rgba(255,255,255,0.04);color:var(--text-dim)">base.md</span>
+                <span class="comp-layer-pill" style="background:var(--indigo-dim);color:var(--accent)">content-publishing.md</span>
+                <span class="comp-layer-pill" style="background:var(--emerald-dim);color:var(--emerald)">domains/education.md</span>
+              </div>
+            </div>
+            <div class="comp-example">
+              <div class="comp-name">Healthcare market analysis</div>
+              <div class="comp-layers">
+                <span class="comp-layer-pill" style="background:rgba(255,255,255,0.04);color:var(--text-dim)">base.md</span>
+                <span class="comp-layer-pill" style="background:var(--indigo-dim);color:var(--accent)">business-strategy.md</span>
+                <span class="comp-layer-pill" style="background:var(--emerald-dim);color:var(--emerald)">domains/healthcare.md</span>
+              </div>
+            </div>
+            <div class="comp-example">
+              <div class="comp-name">IoT security platform</div>
+              <div class="comp-layers">
+                <span class="comp-layer-pill" style="background:rgba(255,255,255,0.04);color:var(--text-dim)">base.md</span>
+                <span class="comp-layer-pill" style="background:var(--indigo-dim);color:var(--accent)">software-eng.md</span>
+                <span class="comp-layer-pill" style="background:var(--violet-dim);color:var(--violet)">cybersecurity.md</span>
+                <span class="comp-layer-pill" style="background:var(--emerald-dim);color:var(--emerald)">domains/iot-embedded.md</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <div class="section-divider"></div>
+
+    <!-- ─── Modules ───────────────────────────────────── -->
+    <section id="modules">
+      <div class="wrap">
+        <p class="kicker">The modules</p>
+        <h2>38 files. Pick what fits.</h2>
+        <p class="sub">Eleven task-type overlays and twenty-seven industry domain modules. Stack the ones that match your project — nothing else loads.</p>
+
+        <!-- Overlays -->
+        <div class="overlays-wrap">
+          <div class="modules-sub-kicker">Templates / claude-md/</div>
+          <div class="modules-sub-h">11 task-type overlays</div>
+          <div class="modules-sub-desc">Each defines NON-NEGOTIABLE rules, strong DEFAULTS, and a tuned voice. Stack above base.md.</div>
+          <div class="overlays-grid">
+            <div class="overlay-pill"><span class="overlay-icon">💻</span><span class="overlay-name">software-eng</span></div>
+            <div class="overlay-pill"><span class="overlay-icon">✍️</span><span class="overlay-name">content-publishing</span></div>
+            <div class="overlay-pill"><span class="overlay-icon">📊</span><span class="overlay-name">business-strategy</span></div>
+            <div class="overlay-pill"><span class="overlay-icon">📚</span><span class="overlay-name">learning-research</span></div>
+            <div class="overlay-pill"><span class="overlay-icon">✅</span><span class="overlay-name">productivity</span></div>
+            <div class="overlay-pill"><span class="overlay-icon">⚖️</span><span class="overlay-name">decision-frameworks</span></div>
+            <div class="overlay-pill"><span class="overlay-icon">🎨</span><span class="overlay-name">design-ux</span></div>
+            <div class="overlay-pill"><span class="overlay-icon">📈</span><span class="overlay-name">data-analytics</span></div>
+            <div class="overlay-pill"><span class="overlay-icon">⚖️</span><span class="overlay-name">legal-compliance</span></div>
+            <div class="overlay-pill"><span class="overlay-icon">📣</span><span class="overlay-name">sales-gtm</span></div>
+            <div class="overlay-pill"><span class="overlay-icon">◻️</span><span class="overlay-name">generic</span></div>
+          </div>
+        </div>
+
+        <!-- Domains -->
+        <div class="modules-sub-kicker">Domains/</div>
+        <div class="modules-sub-h">27 industry domain modules</div>
+        <div class="modules-sub-desc">Pre-built knowledge layers — vocabulary, regulatory surface, common pitfalls, and recommended stack. Only load what matches your vertical.</div>
+
+        <div class="domains-section">
+
+          <!-- Tech Products -->
+          <div class="domain-group">
+            <div class="domain-group-header">
+              <span class="domain-group-label" style="--group-color:var(--accent)">Tech Products</span>
+              <span class="domain-group-count" style="--group-color:var(--accent);--group-color-dim:var(--indigo-dim)">16</span>
+              <div class="domain-group-line"></div>
+            </div>
+            <div class="domains-grid">
+              <div class="domain-card" style="--domain-color-border:rgba(99,102,241,0.3);--domain-color-bg:rgba(99,102,241,0.05)">
+                <span class="domain-emoji">🏢</span>
+                <div class="domain-name">SaaS</div>
+                <div class="domain-tag">Multi-tenancy, ARR, churn</div>
+              </div>
+              <div class="domain-card" style="--domain-color-border:rgba(99,102,241,0.3);--domain-color-bg:rgba(99,102,241,0.05)">
+                <span class="domain-emoji">💳</span>
+                <div class="domain-name">Fintech</div>
+                <div class="domain-tag">Payment rails, KYC/AML</div>
+              </div>
+              <div class="domain-card" style="--domain-color-border:rgba(99,102,241,0.3);--domain-color-bg:rgba(99,102,241,0.05)">
+                <span class="domain-emoji">🛒</span>
+                <div class="domain-name">E-commerce</div>
+                <div class="domain-tag">Inventory, payments, DTC</div>
+              </div>
+              <div class="domain-card" style="--domain-color-border:rgba(99,102,241,0.3);--domain-color-bg:rgba(99,102,241,0.05)">
+                <span class="domain-emoji">🛠️</span>
+                <div class="domain-name">Developer Tools</div>
+                <div class="domain-tag">DX, CLIs, SDKs, adoption</div>
+              </div>
+              <div class="domain-card" style="--domain-color-border:rgba(99,102,241,0.3);--domain-color-bg:rgba(99,102,241,0.05)">
+                <span class="domain-emoji">📱</span>
+                <div class="domain-name">Mobile App</div>
+                <div class="domain-tag">iOS/Android, IAP, release</div>
+              </div>
+              <div class="domain-card" style="--domain-color-border:rgba(99,102,241,0.3);--domain-color-bg:rgba(99,102,241,0.05)">
+                <span class="domain-emoji">🤖</span>
+                <div class="domain-name">AI / ML</div>
+                <div class="domain-tag">LLMs, RAG, evals, cost</div>
+              </div>
+              <div class="domain-card" style="--domain-color-border:rgba(99,102,241,0.3);--domain-color-bg:rgba(99,102,241,0.05)">
+                <span class="domain-emoji">🏪</span>
+                <div class="domain-name">Marketplace</div>
+                <div class="domain-tag">Cold start, liquidity, trust</div>
+              </div>
+              <div class="domain-card" style="--domain-color-border:rgba(99,102,241,0.3);--domain-color-bg:rgba(99,102,241,0.05)">
+                <span class="domain-emoji">🎮</span>
+                <div class="domain-name">Gaming</div>
+                <div class="domain-tag">Netcode, F2P, cert</div>
+              </div>
+              <div class="domain-card" style="--domain-color-border:rgba(99,102,241,0.3);--domain-color-bg:rgba(99,102,241,0.05)">
+                <span class="domain-emoji">🛡️</span>
+                <div class="domain-name">Cybersecurity</div>
+                <div class="domain-tag">SIEM, IAM, zero trust</div>
+              </div>
+              <div class="domain-card" style="--domain-color-border:rgba(99,102,241,0.3);--domain-color-bg:rgba(99,102,241,0.05)">
+                <span class="domain-emoji">⚙️</span>
+                <div class="domain-name">DevOps Platform</div>
+                <div class="domain-tag">IaC, K8s, SRE, DORA</div>
+              </div>
+              <div class="domain-card" style="--domain-color-border:rgba(99,102,241,0.3);--domain-color-bg:rgba(99,102,241,0.05)">
+                <span class="domain-emoji">🏛️</span>
+                <div class="domain-name">Enterprise Software</div>
+                <div class="domain-tag">SSO/SCIM, RBAC, procurement</div>
+              </div>
+              <div class="domain-card" style="--domain-color-border:rgba(99,102,241,0.3);--domain-color-bg:rgba(99,102,241,0.05)">
+                <span class="domain-emoji">⛓️</span>
+                <div class="domain-name">Blockchain / Web3</div>
+                <div class="domain-tag">Smart contracts, DeFi, DAOs</div>
+              </div>
+              <div class="domain-card" style="--domain-color-border:rgba(99,102,241,0.3);--domain-color-bg:rgba(99,102,241,0.05)">
+                <span class="domain-emoji">📲</span>
+                <div class="domain-name">Consumer App</div>
+                <div class="domain-tag">Retention, growth, push</div>
+              </div>
+              <div class="domain-card" style="--domain-color-border:rgba(99,102,241,0.3);--domain-color-bg:rgba(99,102,241,0.05)">
+                <span class="domain-emoji">👥</span>
+                <div class="domain-name">Social / Community</div>
+                <div class="domain-tag">Fan-out, moderation, CSAM</div>
+              </div>
+              <div class="domain-card" style="--domain-color-border:rgba(99,102,241,0.3);--domain-color-bg:rgba(99,102,241,0.05)">
+                <span class="domain-emoji">🎬</span>
+                <div class="domain-name">Media Streaming</div>
+                <div class="domain-tag">CDN, ABR, DRM, rights</div>
+              </div>
+              <div class="domain-card" style="--domain-color-border:rgba(99,102,241,0.3);--domain-color-bg:rgba(99,102,241,0.05)">
+                <span class="domain-emoji">🌐</span>
+                <div class="domain-name">IoT / Embedded</div>
+                <div class="domain-tag">OTA, secure boot, MQTT</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Industry Verticals -->
+          <div class="domain-group">
+            <div class="domain-group-header">
+              <span class="domain-group-label">Industry Verticals</span>
+              <span class="domain-group-count">7</span>
+              <div class="domain-group-line"></div>
+            </div>
+            <div class="domains-grid">
+              <div class="domain-card">
+                <span class="domain-emoji">🏥</span>
+                <div class="domain-name">Healthcare</div>
+                <div class="domain-tag">HIPAA, FHIR, EHR, SaMD</div>
+              </div>
+              <div class="domain-card">
+                <span class="domain-emoji">📚</span>
+                <div class="domain-name">Education</div>
+                <div class="domain-tag">FERPA/COPPA, LTI, LMS</div>
+              </div>
+              <div class="domain-card">
+                <span class="domain-emoji">📦</span>
+                <div class="domain-name">Logistics</div>
+                <div class="domain-tag">OMS/WMS/TMS, EDI, last-mile</div>
+              </div>
+              <div class="domain-card">
+                <span class="domain-emoji">👔</span>
+                <div class="domain-name">HR / Talent</div>
+                <div class="domain-tag">ATS, HRIS, payroll, EEO</div>
+              </div>
+              <div class="domain-card">
+                <span class="domain-emoji">🏠</span>
+                <div class="domain-name">Real Estate</div>
+                <div class="domain-tag">MLS, transactions, Fair Housing</div>
+              </div>
+              <div class="domain-card">
+                <span class="domain-emoji">🌱</span>
+                <div class="domain-name">Climate / Sustainability</div>
+                <div class="domain-tag">Carbon accounting, ESG, MRV</div>
+              </div>
+              <div class="domain-card">
+                <span class="domain-emoji">🗳️</span>
+                <div class="domain-name">Government / Civic</div>
+                <div class="domain-tag">FedRAMP, 508, benefits</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Cross-cutting -->
+          <div class="domain-group">
+            <div class="domain-group-header">
+              <span class="domain-group-label" style="--group-color:var(--violet)">Cross-cutting</span>
+              <span class="domain-group-count" style="--group-color:var(--violet);--group-color-dim:var(--violet-dim)">4</span>
+              <div class="domain-group-line"></div>
+            </div>
+            <div class="domains-grid" style="grid-template-columns:repeat(auto-fill,minmax(200px,1fr))">
+              <div class="domain-card" style="--domain-color-border:rgba(139,92,246,0.3);--domain-color-bg:rgba(139,92,246,0.05)">
+                <span class="domain-emoji">🎨</span>
+                <div class="domain-name">Design / UX</div>
+                <div class="domain-tag">Systems, accessibility, patterns</div>
+              </div>
+              <div class="domain-card" style="--domain-color-border:rgba(139,92,246,0.3);--domain-color-bg:rgba(139,92,246,0.05)">
+                <span class="domain-emoji">📊</span>
+                <div class="domain-name">Data Analytics</div>
+                <div class="domain-tag">Pipelines, BI, metrics</div>
+              </div>
+              <div class="domain-card" style="--domain-color-border:rgba(139,92,246,0.3);--domain-color-bg:rgba(139,92,246,0.05)">
+                <span class="domain-emoji">⚖️</span>
+                <div class="domain-name">Legal / Compliance</div>
+                <div class="domain-tag">Contracts, IP, risk</div>
+              </div>
+              <div class="domain-card" style="--domain-color-border:rgba(139,92,246,0.3);--domain-color-bg:rgba(139,92,246,0.05)">
+                <span class="domain-emoji">📣</span>
+                <div class="domain-name">Sales / GTM</div>
+                <div class="domain-tag">Pipeline, positioning, ICP</div>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+    <div class="section-divider"></div>
 
     <!-- ─── Demo ─────────────────────────────────────── -->
     <section id="demo">
@@ -696,6 +1506,7 @@
 
         <div class="p-grid">
           <div class="p-card">
+            <div class="p-file">core/principles.md</div>
             <div class="p-num">01 / 08</div>
             <div class="p-name">Specificity Amplification</div>
             <p class="p-desc">Generic input produces generic output. Always. Every detail you add eliminates an entire category of wrong answers — because it narrows the space of likely responses Claude can produce.</p>
@@ -710,6 +1521,7 @@ handles plus addressing and international domains"</div>
           </div>
 
           <div class="p-card">
+            <div class="p-file">core/principles.md</div>
             <div class="p-num">07 / 08</div>
             <div class="p-name">Negative Examples</div>
             <p class="p-desc">Showing Claude what you don't want is more instructive than describing what you do. There are infinite ways to be "clear" — but you can enumerate the specific failure modes you're trying to avoid.</p>
@@ -737,7 +1549,7 @@ handles plus addressing and international domains"</div>
         <p class="kicker">Get started</p>
         <h2>The full framework is in the repo.</h2>
         <p class="cta-meta">
-          8 principles. 11 domain templates. 6 commands. Anti-slop guardrails.<br>
+          8 principles. 11 domain overlays. 27 domain modules. 6 commands. Anti-slop guardrails.<br>
           A kickoff that tests its own output. A verifier that catches stubs and wiring failures.
         </p>
         <a href="https://github.com/aizzaku/promptarc" class="btn-lg" target="_blank" rel="noopener">
@@ -754,8 +1566,16 @@ handles plus addressing and international domains"</div>
   <!-- ─── Footer ───────────────────────────────────────── -->
   <footer>
     <div class="footer-inner">
-      <span>promptarc</span>
-      <a href="https://github.com/aizzaku/promptarc" target="_blank" rel="noopener">GitHub</a>
+      <div>
+        <span class="footer-brand">ARC</span>
+        <div style="font-family:var(--mono);font-size:11px;color:var(--text-muted);margin-top:6px">
+          <a href="https://github.com/aizzaku/promptarc" target="_blank" rel="noopener">github.com/aizzaku/promptarc</a>
+        </div>
+      </div>
+      <div class="footer-stats">
+        <span>6</span> skills · <span>27</span> domains · <span>47</span> patterns<br>
+        <span>&lt; 5 min</span> to first quality output
+      </div>
     </div>
   </footer>
 
@@ -856,93 +1676,64 @@ Last session: added robustness layer — STATE.md,
 arc-resume, arc-progress, and arc-check improvements.
 Working on: website update to reflect the new commands.
 
-What should we tackle?`,
+Next: update README with the new skill list.`,
           contextLabel: 'STATE.md',
-          context: 'Last updated: today  ·  Focus: website update  ·  6 decisions locked'
+          context: 'Project: promptarc  ·  Status: in progress  ·  Focus: website + docs'
         }
       }
     };
 
-    /* ─── HTML escaping ──────────────────────────────── */
-    function esc(str) {
-      return str
-        .replace(/&/g,  '&amp;')
-        .replace(/</g,  '&lt;')
-        .replace(/>/g,  '&gt;')
-        .replace(/"/g,  '&quot;');
-    }
-
-    /* ─── Render comparison ──────────────────────────── */
-    function render(domain) {
+    function renderCmp(domain) {
       const d = domains[domain];
-      const reqClass = d.requestMuted ? ' muted' : '';
+      const reqClass = d.requestMuted ? 'req-text muted' : 'req-text';
       return `
         <div class="cmp-request">
-          <span class="req-you">You</span>
-          <span class="req-text${reqClass}">${esc(d.request)}</span>
+          <span class="req-you">you</span>
+          <span class="${reqClass}">${d.request}</span>
         </div>
         <div class="cmp-split">
           <div class="cmp-col no">
-            <div class="cmp-head">
-              <span class="cmp-title">Without ARC</span>
-            </div>
+            <div class="cmp-head"><span class="cmp-title">Without ARC</span></div>
             <div class="cmp-body">
-              <div class="resp-label asking">${esc(d.without.label)}</div>
-              <pre class="cmp-prompt">${esc(d.without.text)}</pre>
+              <span class="resp-label asking">${d.without.label}</span>
+              <span class="cmp-prompt">${d.without.text}</span>
             </div>
           </div>
           <div class="cmp-col yes">
-            <div class="cmp-head">
-              <span class="cmp-title">With ARC</span>
-            </div>
+            <div class="cmp-head"><span class="cmp-title">With ARC</span></div>
             <div class="cmp-body">
-              <div class="resp-label answering">${esc(d.with.label)}</div>
-              <pre class="cmp-prompt">${esc(d.with.text)}</pre>
+              <span class="resp-label answering">${d.with.label}</span>
+              <span class="cmp-prompt">${d.with.text}</span>
             </div>
             <div class="cmp-context">
-              <span class="ctx-icon">
-                <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-                  <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
-                  <polyline points="14 2 14 8 20 8"/>
-                </svg>
-              </span>
-              <span class="ctx-label">${esc(d.with.contextLabel)}</span>
+              <svg class="ctx-icon" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+              <span class="ctx-label">${d.with.contextLabel}</span>
               <span class="ctx-sep">·</span>
-              <span class="ctx-text">${esc(d.with.context)}</span>
+              <span class="ctx-text">${d.with.context}</span>
             </div>
           </div>
         </div>`;
     }
 
-    /* ─── Domain switcher ────────────────────────────── */
-    const cmp  = document.getElementById('cmp');
-    const tabs = document.querySelectorAll('.tab');
-    let active = 'software';
+    const cmpEl = document.getElementById('cmp');
+    const tabs  = document.querySelectorAll('.tab');
 
-    cmp.innerHTML = render(active);
+    cmpEl.innerHTML = renderCmp('software');
 
     tabs.forEach(tab => {
       tab.addEventListener('click', () => {
-        const domain = tab.dataset.domain;
-        if (domain === active) return;
-
-        tabs.forEach(t => {
-          t.classList.remove('active');
-          t.setAttribute('aria-selected', 'false');
-        });
+        tabs.forEach(t => { t.classList.remove('active'); t.setAttribute('aria-selected', 'false'); });
         tab.classList.add('active');
         tab.setAttribute('aria-selected', 'true');
-
-        cmp.classList.add('fading');
+        cmpEl.classList.add('fading');
         setTimeout(() => {
-          cmp.innerHTML = render(domain);
-          active = domain;
-          cmp.classList.remove('fading');
-        }, 200);
+          cmpEl.innerHTML = renderCmp(tab.dataset.domain);
+          cmpEl.classList.remove('fading');
+        }, 160);
       });
     });
 
-    /* ─── Copy command ───────────────────────────────── */
+    /* ─── Copy button ────────────────────────────────── */
     const copyBtn = document.getElementById('copyBtn');
     copyBtn.addEventListener('click', () => {
       navigator.clipboard.writeText('npx arc-setup').then(() => {

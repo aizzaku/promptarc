@@ -1,15 +1,29 @@
 # ARC Installation Guide
 
-Two ways to install: clone directly, or copy only the pieces you need.
+Three ways to install: the one-line setup command (recommended), clone directly, or copy only the pieces you need.
 
 ---
 
-## Option A: Full install (recommended)
+## Option A: npx (recommended, one-time)
+
+```bash
+npx arc-setup
+```
+
+Clones the repo, copies skills to `~/.claude/skills/`, and prints next steps. Requires git and Node 16+.
+
+### Verify
+
+In any Claude Code session, run `/arc-init`. If the skill loads and starts asking questions, installation is complete.
+
+---
+
+## Option B: git clone (manual)
 
 Clone the repo to a permanent location:
 
 ```bash
-git clone https://github.com/yourusername/arc ~/.arc
+git clone https://github.com/aizzaku/promptarc ~/.arc
 ```
 
 ### Install skills

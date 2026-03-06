@@ -31,6 +31,19 @@ Skip domain modules when you're building something truly cross-industry (a gener
 | `education.md` | EdTech — LMS integration, FERPA/COPPA, assessment, learning outcomes |
 | `marketplace.md` | Two-sided marketplaces — cold start, liquidity, take rate, leakage |
 | `gaming.md` | Games — engines, netcode, F2P economics, platform certification |
+| `cybersecurity.md` | Security products — SIEM, IAM, pen testing, vulnerability management, zero trust |
+| `devops-platform.md` | Platform engineering — IaC, Kubernetes, CI/CD, SRE, DORA metrics |
+| `enterprise-software.md` | Enterprise B2B — RBAC, SSO/SCIM, multi-tenant, procurement, audit compliance |
+| `blockchain-web3.md` | Web3 — smart contracts, DeFi, NFTs, DAOs, on-chain/off-chain patterns |
+| `consumer-app.md` | B2C apps — retention loops, growth mechanics, push notifications, viral mechanics |
+| `social-community.md` | Social networks and communities — moderation, fan-out, cold start, CSAM compliance |
+| `media-streaming.md` | Video/audio platforms — CDN delivery, ABR streaming, DRM, transcoding, rights |
+| `iot-embedded.md` | IoT and embedded — device management, OTA updates, secure boot, edge computing |
+| `logistics-supply-chain.md` | Supply chain and fulfillment — OMS/WMS/TMS, EDI, carrier integration, last-mile |
+| `hr-talent.md` | HR tech — ATS, HRIS, payroll, benefits, EEO compliance, org hierarchy |
+| `real-estate-proptech.md` | Proptech — MLS data, transaction workflows, property management, Fair Housing |
+| `climate-sustainability.md` | Climate tech — carbon accounting, ESG reporting, carbon markets, energy management |
+| `government-civic.md` | GovTech — FedRAMP, Section 508, benefits eligibility, civic services, procurement |
 
 ---
 
