@@ -1,0 +1,1041 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ARC — User Journey</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;700&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --bg: #07070d;
+  --bg-card: rgba(255,255,255,0.03);
+  --bg-card-hover: rgba(255,255,255,0.05);
+  --border: rgba(255,255,255,0.07);
+  --border-bright: rgba(255,255,255,0.13);
+  --text: #e8e8f0;
+  --text-dim: #7a7a96;
+  --text-muted: #3a3a50;
+  --indigo: #6366f1;
+  --indigo-dim: rgba(99,102,241,0.12);
+  --violet: #8b5cf6;
+  --violet-dim: rgba(139,92,246,0.1);
+  --emerald: #10b981;
+  --emerald-dim: rgba(16,185,129,0.1);
+  --amber: #f59e0b;
+  --amber-dim: rgba(245,158,11,0.1);
+  --cyan: #06b6d4;
+  --cyan-dim: rgba(6,182,212,0.1);
+  --rose: #f43f5e;
+}
+
+html { scroll-behavior: smooth; }
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: 'DM Sans', system-ui, sans-serif;
+  font-size: 15px;
+  line-height: 1.6;
+  overflow-x: hidden;
+}
+
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background-image:
+    linear-gradient(rgba(255,255,255,0.025) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255,255,255,0.025) 1px, transparent 1px);
+  background-size: 48px 48px;
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* ─── LAYOUT ─── */
+.page {
+  position: relative;
+  z-index: 1;
+  max-width: 860px;
+  margin: 0 auto;
+  padding: 80px 32px 120px;
+}
+
+/* ─── HEADER ─── */
+.header {
+  text-align: center;
+  margin-bottom: 80px;
+}
+
+.header-eyebrow {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--indigo);
+  margin-bottom: 16px;
+}
+
+.header h1 {
+  font-family: 'Syne', sans-serif;
+  font-size: clamp(32px, 5vw, 52px);
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  line-height: 1.1;
+  color: #fff;
+  margin-bottom: 16px;
+}
+
+.header h1 span {
+  background: linear-gradient(135deg, var(--indigo), var(--violet));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.header p {
+  font-size: 17px;
+  color: var(--text-dim);
+  max-width: 480px;
+  margin: 0 auto;
+}
+
+/* ─── TIMELINE SPINE ─── */
+.flow {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+
+.flow::before {
+  content: '';
+  position: absolute;
+  left: 27px;
+  top: 32px;
+  bottom: 32px;
+  width: 1px;
+  background: linear-gradient(
+    to bottom,
+    transparent,
+    var(--cyan) 8%,
+    var(--indigo) 28%,
+    var(--violet) 52%,
+    var(--emerald) 76%,
+    var(--amber) 92%,
+    transparent
+  );
+  opacity: 0.3;
+}
+
+/* ─── STAGE ─── */
+.stage {
+  display: flex;
+  gap: 28px;
+  margin-bottom: 0;
+}
+
+.stage-connector {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0;
+  height: 48px;
+  padding-left: 16px;
+}
+
+.connector-line {
+  width: 1px;
+  flex: 1;
+  opacity: 0.2;
+}
+
+.connector-arrow {
+  font-size: 12px;
+  opacity: 0.35;
+  margin-bottom: 2px;
+}
+
+/* ─── STAGE NODE ─── */
+.stage-node {
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: 'Syne', sans-serif;
+  font-weight: 800;
+  font-size: 18px;
+  flex-shrink: 0;
+  position: relative;
+  z-index: 2;
+  border: 1px solid;
+  margin-top: 4px;
+}
+
+.stage-node::after {
+  content: '';
+  position: absolute;
+  inset: -6px;
+  border-radius: 50%;
+  opacity: 0.15;
+}
+
+.s-cyan .stage-node  { color: var(--cyan);    border-color: rgba(6,182,212,0.35);   background: rgba(6,182,212,0.08);   }
+.s-indigo .stage-node { color: var(--indigo);  border-color: rgba(99,102,241,0.35);  background: rgba(99,102,241,0.08);  }
+.s-violet .stage-node { color: var(--violet);  border-color: rgba(139,92,246,0.35);  background: rgba(139,92,246,0.08);  }
+.s-emerald .stage-node{ color: var(--emerald); border-color: rgba(16,185,129,0.35);  background: rgba(16,185,129,0.08);  }
+.s-amber .stage-node  { color: var(--amber);   border-color: rgba(245,158,11,0.35);  background: rgba(245,158,11,0.08);  }
+
+.s-cyan   .connector-line { background: var(--cyan);    }
+.s-indigo .connector-line { background: var(--indigo);  }
+.s-violet .connector-line { background: var(--violet);  }
+.s-emerald .connector-line{ background: var(--emerald); }
+.s-amber  .connector-line { background: var(--amber);   }
+
+.s-cyan   .connector-arrow { color: var(--cyan);    }
+.s-indigo .connector-arrow { color: var(--indigo);  }
+.s-violet .connector-arrow { color: var(--violet);  }
+.s-emerald .connector-arrow{ color: var(--emerald); }
+.s-amber  .connector-arrow { color: var(--amber);   }
+
+/* ─── STAGE BODY ─── */
+.stage-body {
+  flex: 1;
+  padding-bottom: 48px;
+}
+
+.stage-meta {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 12px;
+  margin-top: 8px;
+}
+
+.badge {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  padding: 3px 8px;
+  border-radius: 4px;
+  border: 1px solid;
+}
+
+.s-cyan   .badge { color: var(--cyan);    border-color: rgba(6,182,212,0.3);   background: rgba(6,182,212,0.08);   }
+.s-indigo .badge { color: var(--indigo);  border-color: rgba(99,102,241,0.3);  background: rgba(99,102,241,0.08);  }
+.s-violet .badge { color: var(--violet);  border-color: rgba(139,92,246,0.3);  background: rgba(139,92,246,0.08);  }
+.s-emerald .badge{ color: var(--emerald); border-color: rgba(16,185,129,0.3);  background: rgba(16,185,129,0.08);  }
+.s-amber  .badge { color: var(--amber);   border-color: rgba(245,158,11,0.3);  background: rgba(245,158,11,0.08);  }
+
+.stage-time {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px;
+  color: var(--text-muted);
+}
+
+.stage-title {
+  font-family: 'Syne', sans-serif;
+  font-size: 22px;
+  font-weight: 700;
+  color: #fff;
+  margin-bottom: 4px;
+  letter-spacing: -0.01em;
+}
+
+.stage-subtitle {
+  font-size: 14px;
+  color: var(--text-dim);
+  margin-bottom: 20px;
+}
+
+/* ─── CARD ─── */
+.card {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 20px 24px;
+  margin-bottom: 12px;
+}
+
+.card:last-child { margin-bottom: 0; }
+
+/* ─── COMMAND BAR ─── */
+.cmd-bar {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: rgba(0,0,0,0.4);
+  border: 1px solid var(--border-bright);
+  border-radius: 8px;
+  padding: 12px 16px;
+  margin-bottom: 20px;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 14px;
+}
+
+.cmd-prompt { color: var(--text-muted); }
+.s-cyan   .cmd-bar .cmd-text { color: var(--cyan);    }
+.s-indigo .cmd-bar .cmd-text { color: var(--indigo);  }
+.s-violet .cmd-bar .cmd-text { color: var(--violet);  }
+.s-emerald .cmd-bar .cmd-text{ color: var(--emerald); }
+.s-amber  .cmd-bar .cmd-text { color: var(--amber);   }
+
+/* ─── STEPS ─── */
+.steps {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.step {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+}
+
+.step-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  flex-shrink: 0;
+  margin-top: 7px;
+}
+
+.s-cyan   .step-dot { background: var(--cyan);    }
+.s-indigo .step-dot { background: var(--indigo);  }
+.s-violet .step-dot { background: var(--violet);  }
+.s-emerald .step-dot{ background: var(--emerald); }
+.s-amber  .step-dot { background: var(--amber);   }
+
+.step-text { font-size: 14px; color: var(--text-dim); line-height: 1.5; }
+.step-text strong { color: var(--text); font-weight: 500; }
+.step-text .mono {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 12px;
+  color: var(--text-dim);
+  background: rgba(255,255,255,0.05);
+  padding: 1px 6px;
+  border-radius: 4px;
+}
+
+/* ─── OUTPUT ROW ─── */
+.output-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 16px;
+  padding-top: 16px;
+  border-top: 1px solid var(--border);
+}
+
+.output-label {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  width: 100%;
+  margin-bottom: 2px;
+}
+
+.file-pill {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px;
+  padding: 3px 10px;
+  border-radius: 5px;
+  border: 1px solid var(--border-bright);
+  color: var(--text-dim);
+  background: rgba(255,255,255,0.03);
+}
+
+.file-pill.new {
+  border-color: rgba(16,185,129,0.25);
+  color: var(--emerald);
+  background: rgba(16,185,129,0.06);
+}
+
+/* ─── QUESTION CARDS ─── */
+.q-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.q-card {
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+.q-header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 14px;
+  background: rgba(255,255,255,0.02);
+  border-bottom: 1px solid var(--border);
+}
+
+.q-num {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px;
+  color: var(--text-muted);
+  font-weight: 700;
+}
+
+.q-label { font-size: 13px; color: var(--text); font-weight: 500; }
+
+.q-type {
+  margin-left: auto;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 9px;
+  padding: 2px 7px;
+  border-radius: 4px;
+  font-weight: 600;
+  letter-spacing: 0.05em;
+}
+
+.q-type.click {
+  background: var(--indigo-dim);
+  color: var(--indigo);
+  border: 1px solid rgba(99,102,241,0.2);
+}
+.q-type.type {
+  background: rgba(255,255,255,0.04);
+  color: var(--text-muted);
+  border: 1px solid var(--border);
+}
+
+.q-options {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  padding: 10px 14px;
+}
+
+.q-opt {
+  font-size: 12px;
+  padding: 4px 10px;
+  border-radius: 6px;
+  border: 1px solid var(--border-bright);
+  color: var(--text-dim);
+  background: rgba(255,255,255,0.02);
+  cursor: default;
+}
+
+.q-opt.selected {
+  border-color: rgba(99,102,241,0.4);
+  color: var(--indigo);
+  background: rgba(99,102,241,0.1);
+}
+
+/* ─── PHASE MINI ─── */
+.phases {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+
+.phase-card {
+  background: rgba(255,255,255,0.02);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 14px 16px;
+}
+
+.phase-tag {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  margin-bottom: 6px;
+}
+
+.phase-title {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text);
+  margin-bottom: 4px;
+}
+
+.phase-desc {
+  font-size: 12px;
+  color: var(--text-dim);
+  line-height: 1.4;
+}
+
+/* ─── BRANCH ─── */
+.branch {
+  display: flex;
+  gap: 10px;
+  margin: 12px 0;
+  align-items: stretch;
+}
+
+.branch-line {
+  width: 1px;
+  background: rgba(139,92,246,0.2);
+  flex-shrink: 0;
+  margin-left: 16px;
+}
+
+.branch-body { flex: 1; }
+
+.branch-label {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  margin-bottom: 8px;
+  padding-left: 4px;
+}
+
+.branch-opts {
+  display: flex;
+  gap: 8px;
+}
+
+.branch-opt {
+  flex: 1;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 10px 14px;
+  font-size: 13px;
+  color: var(--text-dim);
+}
+
+.branch-opt.primary {
+  border-color: rgba(139,92,246,0.3);
+  background: rgba(139,92,246,0.06);
+  color: var(--violet);
+}
+
+.branch-opt .opt-label { font-weight: 600; font-size: 13px; }
+.branch-opt .opt-desc  { font-size: 11px; margin-top: 2px; opacity: 0.7; }
+
+/* ─── LOOP DIAGRAM ─── */
+.loop {
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  gap: 8px;
+  align-items: center;
+}
+
+.loop-step {
+  background: rgba(16,185,129,0.05);
+  border: 1px solid rgba(16,185,129,0.15);
+  border-radius: 10px;
+  padding: 12px 16px;
+  font-size: 13px;
+}
+
+.loop-step .ls-label {
+  font-weight: 600;
+  color: var(--text);
+  margin-bottom: 3px;
+}
+
+.loop-step .ls-desc {
+  font-size: 12px;
+  color: var(--text-dim);
+  line-height: 1.4;
+}
+
+.loop-arrow {
+  font-size: 16px;
+  color: rgba(16,185,129,0.4);
+  text-align: center;
+}
+
+.loop-return {
+  grid-column: 1 / -1;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 16px;
+  margin-top: 4px;
+  border: 1px dashed rgba(16,185,129,0.2);
+  border-radius: 8px;
+  font-size: 12px;
+  color: var(--emerald);
+  opacity: 0.7;
+}
+
+.loop-return-line {
+  flex: 1;
+  height: 1px;
+  background: rgba(16,185,129,0.2);
+}
+
+/* ─── ONGOING GRID ─── */
+.ongoing-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+
+.ongoing-card {
+  background: rgba(255,255,255,0.02);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 16px 18px;
+}
+
+.ongoing-cmd {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 13px;
+  font-weight: 600;
+  margin-bottom: 8px;
+}
+
+.s-amber .ongoing-cmd { color: var(--amber); }
+
+.ongoing-when {
+  font-size: 11px;
+  font-family: 'JetBrains Mono', monospace;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  margin-bottom: 4px;
+}
+
+.ongoing-desc {
+  font-size: 13px;
+  color: var(--text-dim);
+  line-height: 1.4;
+}
+
+/* ─── FOOTER ─── */
+.footer {
+  text-align: center;
+  margin-top: 80px;
+  padding-top: 40px;
+  border-top: 1px solid var(--border);
+}
+
+.footer-logo {
+  font-family: 'Syne', sans-serif;
+  font-weight: 800;
+  font-size: 20px;
+  letter-spacing: 0.08em;
+  background: linear-gradient(135deg, var(--indigo), var(--violet));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  margin-bottom: 8px;
+}
+
+.footer p {
+  font-size: 13px;
+  color: var(--text-muted);
+}
+</style>
+</head>
+<body>
+<div class="page">
+
+  <!-- ─── HEADER ─── -->
+  <div class="header">
+    <div class="header-eyebrow">ARC Framework</div>
+    <h1>From install to<br><span>first shipped task</span></h1>
+    <p>The complete user journey — one-time setup, per-project init, and the daily work loop.</p>
+  </div>
+
+  <!-- ─── FLOW ─── -->
+  <div class="flow">
+
+    <!-- ══════════════════════════════════════════ -->
+    <!-- STAGE 1: INSTALL -->
+    <!-- ══════════════════════════════════════════ -->
+    <div class="stage s-cyan">
+      <div style="display:flex;flex-direction:column;align-items:center;gap:0;">
+        <div class="stage-node">1</div>
+      </div>
+      <div class="stage-body">
+        <div class="stage-meta">
+          <span class="badge">One-time</span>
+          <span class="stage-time">~30 seconds</span>
+        </div>
+        <div class="stage-title">Install</div>
+        <div class="stage-subtitle">Run once. Skills are global — work across every project.</div>
+
+        <div class="card">
+          <div class="cmd-bar">
+            <span class="cmd-prompt">$</span>
+            <span class="cmd-text">npx arc-setup</span>
+          </div>
+          <div class="steps">
+            <div class="step">
+              <div class="step-dot"></div>
+              <div class="step-text">Checks git is available — if not, prints manual install fallback</div>
+            </div>
+            <div class="step">
+              <div class="step-dot"></div>
+              <div class="step-text">Shallow-clones <span class="mono">github.com/aizzaku/promptarc</span> to a temp directory</div>
+            </div>
+            <div class="step">
+              <div class="step-dot"></div>
+              <div class="step-text">Copies all skills into <span class="mono">~/.claude/skills/</span> and cleans up</div>
+            </div>
+          </div>
+          <div class="output-row">
+            <div class="output-label">Result</div>
+            <div class="file-pill new">7 skills installed</div>
+            <div class="file-pill new">~/.claude/skills/arc-*/</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- connector -->
+    <div class="stage s-cyan" style="height:48px;">
+      <div class="stage-connector"><div class="connector-line"></div><div class="connector-arrow">↓</div></div>
+      <div style="flex:1;display:flex;align-items:center;padding-bottom:4px;">
+        <span style="font-size:12px;color:var(--text-muted);">Open Claude Code in your project folder</span>
+      </div>
+    </div>
+
+    <!-- ══════════════════════════════════════════ -->
+    <!-- STAGE 2: ARC-INIT -->
+    <!-- ══════════════════════════════════════════ -->
+    <div class="stage s-indigo">
+      <div style="display:flex;flex-direction:column;align-items:center;gap:0;">
+        <div class="stage-node">2</div>
+      </div>
+      <div class="stage-body">
+        <div class="stage-meta">
+          <span class="badge">Per project</span>
+          <span class="stage-time">~2 minutes</span>
+        </div>
+        <div class="stage-title">Project Init</div>
+        <div class="stage-subtitle">3 questions. Creates your CLAUDE.md and task files.</div>
+
+        <div class="card">
+          <div class="cmd-bar">
+            <span class="cmd-prompt">/</span>
+            <span class="cmd-text">arc-init</span>
+          </div>
+          <div class="q-grid">
+            <!-- Q1 -->
+            <div class="q-card">
+              <div class="q-header">
+                <span class="q-num">Q1</span>
+                <span class="q-label">What's the project name AND what does it do?</span>
+                <span class="q-type type">Type</span>
+              </div>
+            </div>
+            <!-- Q2 -->
+            <div class="q-card">
+              <div class="q-header">
+                <span class="q-num">Q2a</span>
+                <span class="q-label">What's the primary domain?</span>
+                <span class="q-type click">Click</span>
+              </div>
+              <div class="q-options">
+                <div class="q-opt">Technical</div>
+                <div class="q-opt">Business</div>
+                <div class="q-opt">Content & Knowledge</div>
+                <div class="q-opt">Generic</div>
+              </div>
+            </div>
+            <div class="q-card">
+              <div class="q-header">
+                <span class="q-num">Q2b</span>
+                <span class="q-label">Which technical domain?</span>
+                <span class="q-type click">Click</span>
+              </div>
+              <div class="q-options">
+                <div class="q-opt selected">Software Engineering</div>
+                <div class="q-opt">Data & Analytics</div>
+                <div class="q-opt">Design & UX</div>
+              </div>
+            </div>
+            <!-- Q3 -->
+            <div class="q-card">
+              <div class="q-header">
+                <span class="q-num">Q3</span>
+                <span class="q-label">What's the quality bar?</span>
+                <span class="q-type click">Click</span>
+              </div>
+              <div class="q-options">
+                <div class="q-opt">Prototype</div>
+                <div class="q-opt selected">MVP</div>
+                <div class="q-opt">Production</div>
+                <div class="q-opt">Polished</div>
+              </div>
+            </div>
+          </div>
+          <div class="output-row">
+            <div class="output-label">Files created</div>
+            <div class="file-pill new">CLAUDE.md</div>
+            <div class="file-pill new">tasks/STATE.md</div>
+            <div class="file-pill new">tasks/plan.md</div>
+            <div class="file-pill new">tasks/todo.md</div>
+            <div class="file-pill new">tasks/decisions.md</div>
+            <div class="file-pill new">tasks/lessons.md</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- connector -->
+    <div class="stage s-indigo" style="height:48px;">
+      <div class="stage-connector"><div class="connector-line"></div><div class="connector-arrow">↓</div></div>
+      <div style="flex:1;display:flex;align-items:center;padding-bottom:4px;">
+        <span style="font-size:12px;color:var(--text-muted);">Optional but recommended for serious projects</span>
+      </div>
+    </div>
+
+    <!-- ══════════════════════════════════════════ -->
+    <!-- STAGE 3: ARC-KICKOFF -->
+    <!-- ══════════════════════════════════════════ -->
+    <div class="stage s-violet">
+      <div style="display:flex;flex-direction:column;align-items:center;gap:0;">
+        <div class="stage-node">3</div>
+      </div>
+      <div class="stage-body">
+        <div class="stage-meta">
+          <span class="badge">Optional</span>
+          <span class="stage-time">~15 minutes</span>
+        </div>
+        <div class="stage-title">Kickoff Interview</div>
+        <div class="stage-subtitle">Deep context, voice calibration, and a portable project export.</div>
+
+        <div class="card">
+          <div class="cmd-bar">
+            <span class="cmd-prompt">/</span>
+            <span class="cmd-text">arc-kickoff</span>
+          </div>
+
+          <!-- Phase 1 -->
+          <div style="margin-bottom:14px;">
+            <div style="font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--text-muted);text-transform:uppercase;letter-spacing:.1em;margin-bottom:10px;">Phase 1 — 8 Core Questions</div>
+            <div class="phases">
+              <div class="phase-card">
+                <div class="phase-tag">Q1–2 · type</div>
+                <div class="phase-title">Project & user</div>
+                <div class="phase-desc">What this is, who it's for — in your words, not a pitch</div>
+              </div>
+              <div class="phase-card">
+                <div class="phase-tag">Q3–4 · type</div>
+                <div class="phase-title">Scope</div>
+                <div class="phase-desc">What it must do well, what's explicitly out of scope</div>
+              </div>
+              <div class="phase-card">
+                <div class="phase-tag">Q5 · click</div>
+                <div class="phase-title">Quality bar</div>
+                <div class="phase-desc">Prototype / MVP / Production / Polished</div>
+              </div>
+              <div class="phase-card">
+                <div class="phase-tag">Q6–8 · type</div>
+                <div class="phase-title">Constraints & success</div>
+                <div class="phase-desc">Hard blockers, biggest risk, how success is measured</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Branch -->
+          <div style="margin-bottom:14px;">
+            <div style="font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--text-muted);text-transform:uppercase;letter-spacing:.1em;margin-bottom:8px;">Opt-in · click</div>
+            <div class="branch-opts">
+              <div class="branch-opt primary">
+                <div class="opt-label">Continue →</div>
+                <div class="opt-desc">8–12 domain-specific questions, ~10 more min</div>
+              </div>
+              <div class="branch-opt">
+                <div class="opt-label">Generate brief now</div>
+                <div class="opt-desc">Skip to output with Phase 1 answers</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Phase 2 -->
+          <div style="margin-bottom:14px;">
+            <div style="font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--text-muted);text-transform:uppercase;letter-spacing:.1em;margin-bottom:8px;">Phase 2 — Domain Questions (optional)</div>
+            <div class="steps">
+              <div class="step">
+                <div class="step-dot"></div>
+                <div class="step-text">8–12 domain-specific questions from checklists, asked 3 at a time</div>
+              </div>
+              <div class="step">
+                <div class="step-dot"></div>
+                <div class="step-text">Reads domain from CLAUDE.md — or two-step selection if not set</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Outputs -->
+          <div style="display:flex;flex-direction:column;gap:8px;margin-top:4px;padding-top:16px;border-top:1px solid var(--border);">
+            <div style="font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--text-muted);text-transform:uppercase;letter-spacing:.1em;margin-bottom:4px;">Then Claude does — automatically</div>
+            <div class="steps">
+              <div class="step">
+                <div class="step-dot"></div>
+                <div class="step-text"><strong>Writes project brief</strong> — user confirms accuracy, saved to <span class="mono">tasks/brief.md</span></div>
+              </div>
+              <div class="step">
+                <div class="step-dot"></div>
+                <div class="step-text"><strong>Calibrates voice</strong> — observes vocabulary, tone, length from interview → updates CLAUDE.md Voice section</div>
+              </div>
+              <div class="step">
+                <div class="step-dot"></div>
+                <div class="step-text"><strong>Logs decisions</strong> → <span class="mono">tasks/decisions.md</span></div>
+              </div>
+              <div class="step">
+                <div class="step-dot"></div>
+                <div class="step-text"><strong>Validates CLAUDE.md</strong> — runs synthetic test, closes any gaps found</div>
+              </div>
+              <div class="step">
+                <div class="step-dot"></div>
+                <div class="step-text"><strong>Exports context</strong> — assembles portable prompt, shows it in chat, saves to <span class="mono">tasks/context-export.md</span></div>
+              </div>
+            </div>
+          </div>
+
+          <div class="output-row">
+            <div class="output-label">Files created / updated</div>
+            <div class="file-pill new">tasks/brief.md</div>
+            <div class="file-pill new">tasks/context-export.md</div>
+            <div class="file-pill">CLAUDE.md (voice + gaps)</div>
+            <div class="file-pill">tasks/decisions.md</div>
+            <div class="file-pill">tasks/STATE.md</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- connector -->
+    <div class="stage s-violet" style="height:48px;">
+      <div class="stage-connector"><div class="connector-line"></div><div class="connector-arrow">↓</div></div>
+      <div style="flex:1;display:flex;align-items:center;padding-bottom:4px;">
+        <span style="font-size:12px;color:var(--text-muted);">Run at the start of every working session</span>
+      </div>
+    </div>
+
+    <!-- ══════════════════════════════════════════ -->
+    <!-- STAGE 4: DAILY LOOP -->
+    <!-- ══════════════════════════════════════════ -->
+    <div class="stage s-emerald">
+      <div style="display:flex;flex-direction:column;align-items:center;gap:0;">
+        <div class="stage-node">4</div>
+      </div>
+      <div class="stage-body">
+        <div class="stage-meta">
+          <span class="badge">Daily loop</span>
+          <span class="stage-time">every session</span>
+        </div>
+        <div class="stage-title">Session Start</div>
+        <div class="stage-subtitle">Picks up exactly where you left off.</div>
+
+        <div class="card">
+          <div class="cmd-bar">
+            <span class="cmd-prompt">/</span>
+            <span class="cmd-text">arc-resume</span>
+          </div>
+
+          <div class="loop">
+            <div class="loop-step">
+              <div class="ls-label">Read context</div>
+              <div class="ls-desc">STATE.md + CLAUDE.md + todo.md — silently</div>
+            </div>
+            <div class="loop-arrow">→</div>
+            <div class="loop-step">
+              <div class="ls-label">Orient</div>
+              <div class="ls-desc">Last session · Current focus · Open questions · Blockers</div>
+            </div>
+          </div>
+
+          <div style="margin-top:10px;">
+            <div class="loop-step" style="margin-bottom:10px;">
+              <div class="ls-label">Pick task <span style="font-size:11px;font-family:'JetBrains Mono',monospace;font-weight:400;color:var(--emerald);opacity:0.7;margin-left:6px;">click</span></div>
+              <div class="ls-desc" style="margin-top:4px;">AskUserQuestion surfaces up to 3 active / blocked todos as clickable options — or type anything new</div>
+            </div>
+            <div class="loop-step" style="margin-bottom:10px;">
+              <div class="ls-label">Work</div>
+              <div class="ls-desc">Claude marks task in_progress → works → marks complete</div>
+            </div>
+            <div class="loop-step">
+              <div class="ls-label">Auto-save ↻</div>
+              <div class="ls-desc">STATE.md updates silently after each completed task — no command needed</div>
+            </div>
+          </div>
+
+          <div style="margin-top:14px;padding:10px 14px;border:1px dashed rgba(16,185,129,0.2);border-radius:8px;display:flex;align-items:center;gap:10px;">
+            <span style="font-size:18px;color:rgba(16,185,129,0.5);">↺</span>
+            <span style="font-size:12px;color:var(--text-muted);">Next session, <span style="color:var(--emerald);font-family:'JetBrains Mono',monospace;font-size:11px;">/arc-resume</span> reads the updated STATE.md and picks up exactly here</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- connector -->
+    <div class="stage s-emerald" style="height:48px;">
+      <div class="stage-connector"><div class="connector-line"></div><div class="connector-arrow">↓</div></div>
+      <div style="flex:1;display:flex;align-items:center;padding-bottom:4px;">
+        <span style="font-size:12px;color:var(--text-muted);">Run as needed throughout the project lifecycle</span>
+      </div>
+    </div>
+
+    <!-- ══════════════════════════════════════════ -->
+    <!-- STAGE 5: ONGOING -->
+    <!-- ══════════════════════════════════════════ -->
+    <div class="stage s-amber">
+      <div style="display:flex;flex-direction:column;align-items:center;gap:0;">
+        <div class="stage-node">5</div>
+      </div>
+      <div class="stage-body">
+        <div class="stage-meta">
+          <span class="badge">Ongoing</span>
+          <span class="stage-time">as needed</span>
+        </div>
+        <div class="stage-title">Maintenance Skills</div>
+        <div class="stage-subtitle">Quality, health, pivots, and portability.</div>
+
+        <div class="card">
+          <div class="ongoing-grid">
+            <div class="ongoing-card">
+              <div class="ongoing-cmd" style="color:var(--amber);">/arc-check</div>
+              <div class="ongoing-when">After any significant output</div>
+              <div class="ongoing-desc">Structured quality review — PASS, NEEDS WORK, or FAIL with specific issues</div>
+            </div>
+            <div class="ongoing-card">
+              <div class="ongoing-cmd" style="color:var(--amber);">/arc-progress</div>
+              <div class="ongoing-when">When you need a project snapshot</div>
+              <div class="ongoing-desc">Health dashboard — context status, open questions, todo summary, recommended next action</div>
+            </div>
+            <div class="ongoing-card">
+              <div class="ongoing-cmd" style="color:var(--amber);">/arc-rekickoff</div>
+              <div class="ongoing-when">When the project pivots</div>
+              <div class="ongoing-desc">6 targeted questions to re-sync context. Updates decisions, plan, todo, STATE.md</div>
+            </div>
+            <div class="ongoing-card">
+              <div class="ongoing-cmd" style="color:var(--amber);">/arc-export</div>
+              <div class="ongoing-when">After major project changes</div>
+              <div class="ongoing-desc">Rebuilds portable context prompt. Paste into Claude.ai or share with teammates</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div><!-- end .flow -->
+
+  <!-- ─── FOOTER ─── -->
+  <div class="footer">
+    <div class="footer-logo">ARC</div>
+    <p>A Runtime Configuration Framework for Claude Code</p>
+  </div>
+
+</div><!-- end .page -->
+</body>
+</html>
