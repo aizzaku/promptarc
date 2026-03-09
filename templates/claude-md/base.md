@@ -64,6 +64,15 @@ When the user corrects your output, capture the pattern in `tasks/lessons.md` wi
 ### Decision Logging
 Log significant decisions in `tasks/decisions.md` with: context, options considered (with tradeoffs), what was chosen, rationale, and conditions that would trigger revisiting.
 
+### Session State
+After completing any task or todo item, update `tasks/STATE.md` silently:
+- `Current focus` → what was just completed or what's next
+- `Last session → Completed` → one-sentence summary of what finished
+- `Last session → Next up` → next planned action
+- `Open questions` → add any that surfaced; remove any resolved
+
+Do not announce the update. Do not ask permission.
+
 ### Elegance Check
 Before presenting non-trivial work, self-review: "Knowing what I know now, would I build this the same way?" If no, refactor before presenting. The user never sees the rough version. Skip for trivial fixes.
 

@@ -8,39 +8,37 @@ A modular prompt engineering system for Claude Code. Stop re-explaining your pre
 
 ## Quickstart (2 minutes)
 
-### 1. Clone this repo
+### 1. Install
 
 ```bash
-git clone https://github.com/yourusername/arc ~/.arc
+npx arc-setup
 ```
 
-### 2. Install the skills in Claude Code
+Installs all skills into `~/.claude/skills/`. Requires Node 16+ and git.
 
-Copy the skill files into your Claude Code skills directory:
+### 2. Set up a new project
 
-```bash
-cp -r ~/.arc/skills/* ~/.claude/skills/
-```
-
-Or configure the skills path in Claude Code settings to point at `~/.arc/skills/`.
-
-### 3. Start a new project
-
-In Claude Code, on any new project:
+Open Claude Code in your project folder, then:
 
 ```
 /arc-init
 ```
 
-This runs a 2-minute guided setup that creates `CLAUDE.md` and `tasks/` for your project. Answer 6 questions. Done.
+3 quick questions. Creates `CLAUDE.md` and `tasks/`. Done.
 
-### 4. Optional: Full kickoff interview
+### 3. Optional: Full kickoff interview
 
 ```
 /arc-kickoff
 ```
 
-15-30 minute structured interview that builds deep project context. Strongly recommended for anything beyond a one-off script.
+~15 minute structured interview that builds deep project context — project brief, voice calibration, CLAUDE.md validation, and a portable context export. Strongly recommended for anything beyond a one-off script.
+
+### 4. Start every session with
+
+```
+/arc-resume
+```
 
 ---
 
@@ -102,8 +100,11 @@ arc/
 ├── skills/                      ← Claude Code skills
 │   ├── arc-init/skill.md        ← /arc-init: project setup
 │   ├── arc-kickoff/skill.md     ← /arc-kickoff: full interview
+│   ├── arc-resume/skill.md      ← /arc-resume: session start
 │   ├── arc-rekickoff/skill.md   ← /arc-rekickoff: mid-project reset
-│   └── arc-check/skill.md       ← /arc-check: quality checker
+│   ├── arc-check/skill.md       ← /arc-check: quality checker
+│   ├── arc-progress/skill.md    ← /arc-progress: health dashboard
+│   └── arc-export/skill.md      ← /arc-export: portable context export
 │
 ├── tasks-template/              ← Per-project task tracking
 │   ├── plan.md
@@ -137,9 +138,12 @@ arc/
 | Skill | When to use |
 |-------|------------|
 | `/arc-init` | Start of any new project. Creates `CLAUDE.md` + `tasks/`. Takes 2 minutes. |
-| `/arc-kickoff` | After init, for serious projects. Full 15-30 minute interview. Builds deep context. |
+| `/arc-kickoff` | After init, for serious projects. ~15 minute interview. Builds deep context, calibrates voice, exports portable context. |
+| `/arc-resume` | Start of every working session. Reads context, surfaces blockers, asks what to work on. |
 | `/arc-rekickoff` | Mid-project when scope changes, direction pivots, or you need to re-orient. |
 | `/arc-check` | After generating any significant output. Runs a structured quality review. |
+| `/arc-progress` | Project health dashboard. Shows context health, open questions, todo summary. |
+| `/arc-export` | Assembles a portable context prompt. Paste into Claude.ai or share with teammates. |
 
 ---
 

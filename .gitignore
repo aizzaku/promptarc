@@ -1,3 +1,6 @@
+# Claude Code local settings (permissions, personal config)
+.claude/settings.local.json
+
 # Node
 node_modules/
 dist/

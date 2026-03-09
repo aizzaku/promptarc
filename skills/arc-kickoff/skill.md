@@ -28,15 +28,21 @@ Ask 2 questions at a time. Give a one-sentence acknowledgment before the next ba
 
 ---
 
-**Q5–6** *(Phase 1 — Core | Q5 of 8)*
+**Q5** *(Phase 1 — Core | Q5 of 8)*
 
-- What's the quality bar? Present as a numbered list:
-  1. Prototype — fastest path, rough edges OK
-  2. MVP — functional and shippable, not polished
-  3. Production — reliable, maintainable, ready for real users
-  4. Polished — high craft, presentation and detail matter
+Use `AskUserQuestion`:
+- question: "What's the quality bar?"
+- header: "Quality"
+- options:
+  1. label "Prototype" — description "Fastest path, rough edges OK"
+  2. label "MVP" — description "Functional and shippable, not polished"
+  3. label "Production" — description "Reliable, maintainable, ready for real users"
+  4. label "Polished" — description "High craft, presentation and detail matter"
 
-- What hard constraints exist that aren't negotiable? (Tech stack, budget, regulation, timeline, team skills.) If none, say none.
+**Q6** *(Phase 1 — Core | Q6 of 8)*
+
+Ask as a plain message:
+> "What hard constraints exist that aren't negotiable? (Tech stack, budget, regulation, timeline, team skills.) If none, say none."
 
 ---
 
@@ -49,15 +55,15 @@ Ask 2 questions at a time. Give a one-sentence acknowledgment before the next ba
 
 ## Opt-in to Phase 2
 
-After Phase 1, tell the user:
+After Phase 1, use `AskUserQuestion`:
+- question: "Core complete. Want to go deeper? Domain-specific questions sharpen context further and unlock more tailored templates — about 10 more minutes."
+- header: "Phase 2"
+- options:
+  1. label "Continue" — description "8-12 domain-specific questions"
+  2. label "Generate brief now" — description "Skip to Phase 3 with what we have"
 
-"Core complete. Want to go deeper? I'll ask 8-12 domain-specific questions that sharpen the context further and unlock more tailored templates. It takes about 10 more minutes.
-
-1. Yes — continue to domain-specific questions
-2. No — generate the brief now"
-
-If they say **No** (or anything equivalent): skip to Phase 3.
-If they say **Yes**: continue to Phase 2.
+If they select **Generate brief now**: skip to Phase 3.
+If they select **Continue**: proceed to Phase 2.
 
 ---
 
@@ -67,18 +73,45 @@ If they say **Yes**: continue to Phase 2.
 
 Identify the domain from:
 1. `CLAUDE.md` if it exists and has a domain set
-2. If not, ask: "What's the primary domain for this project?" — present as a numbered list:
-   1. Software Engineering
-   2. Content & Writing
-   3. Business Strategy
-   4. Design / UX
-   5. Data & Analytics
-   6. Legal & Compliance
-   7. Sales / GTM
-   8. Learning & Research
-   9. Productivity
-   10. Decision-Making
-   11. Generic (skip to Phase 3)
+2. If not, use a two-step `AskUserQuestion` to determine domain:
+
+**Step a — Domain area:**
+- question: "What's the primary domain?"
+- header: "Domain"
+- options:
+  1. label "Technical" — description "Software engineering, data & analytics, design/UX"
+  2. label "Business" — description "Strategy, sales/GTM, legal & compliance"
+  3. label "Content & Knowledge" — description "Content publishing, research, productivity, decision frameworks"
+  4. label "Generic" — description "Skip to Phase 3"
+
+If **Generic**: skip to Phase 3.
+
+**Step b — Specific domain:**
+
+If **Technical**:
+- question: "Which technical domain?"
+- header: "Domain"
+- options:
+  1. label "Software Engineering" — description "Codebases, APIs, systems, infrastructure"
+  2. label "Data & Analytics" — description "Pipelines, warehouses, BI, metrics"
+  3. label "Design & UX" — description "Product design, design systems, UX research"
+
+If **Business**:
+- question: "Which business domain?"
+- header: "Domain"
+- options:
+  1. label "Business Strategy" — description "Planning, competitive analysis, exec communication"
+  2. label "Sales & GTM" — description "Outbound, go-to-market strategy, deal execution"
+  3. label "Legal & Compliance" — description "Contracts, policy, regulatory work"
+
+If **Content & Knowledge**:
+- question: "Which content domain?"
+- header: "Domain"
+- options:
+  1. label "Content Publishing" — description "Editorial, blogs, documentation, media"
+  2. label "Learning & Research" — description "Courses, research synthesis, knowledge management"
+  3. label "Productivity" — description "Workflows, tooling, task management systems"
+  4. label "Decision Frameworks" — description "Decision-making tools, strategic frameworks"
 
 Ask 3 questions at a time from the relevant checklist in `templates/kickoff/`. Use the full checklist for that domain, prioritizing the required questions and skipping conditional questions that clearly don't apply based on Phase 1 answers.
 
@@ -250,7 +283,19 @@ Create `tasks/STATE.md` from `templates/STATE.md`, filling in values from this s
 
 ---
 
-## Phase 8: Handoff
+## Phase 8: Export context
+
+Run `/arc-export` now, automatically. Do not ask permission.
+
+This assembles `CLAUDE.md` + `tasks/brief.md` + `tasks/STATE.md` into a single portable prompt and saves it to `tasks/context-export.md`. Show it in the chat so the user sees it for the first time.
+
+After showing the export, say exactly this:
+
+> "That's your project context, saved to `tasks/context-export.md`. Paste it into any Claude session — Claude.ai, a new project, a teammate's machine — to bring it fully up to speed. Re-run `/arc-export` any time the project changes significantly."
+
+---
+
+## Phase 9: Handoff
 
 Tell the user: "Ready to start. What's the first task?"
 

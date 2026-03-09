@@ -101,6 +101,11 @@ Updated:
 - CLAUDE.md — updated [section] (or "no changes needed")
 ```
 
-Then ask: "What's the first task in the new phase?"
+Then use `AskUserQuestion` to ask what to start with:
+- question: "What's the first task in the new phase?"
+- header: "Next task"
+- Build options dynamically from `tasks/todo.md`: take up to 3 active tasks in listed order. Use the task title as the label.
+- If fewer than 3 tasks exist, add a "Something new" option — description "Start a task not in the list".
+- The auto-added "Other" handles free-text input.
 
-Nothing else. No summary of the re-kickoff. No "great, we're all set!" Just ask what's next.
+Nothing else. No summary of the re-kickoff. No "great, we're all set!"

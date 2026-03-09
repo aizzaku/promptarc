@@ -28,9 +28,14 @@ Last session: {{STATE.md "Last session → Completed" field, condensed to 1 sent
 Working on: {{STATE.md "Current focus" field, 1 sentence}}.
 {{IF open questions exist: "Open question: {{FIRST_OPEN_QUESTION}}"}}
 {{IF blocked tasks exist: "Blocked: {{FIRST_BLOCKED_TASK}}"}}
-
-What should we work on?
 ```
+
+Then use `AskUserQuestion` to ask what to work on:
+- question: "What should we work on?"
+- header: "Next task"
+- Build options dynamically from `tasks/todo.md`: take up to 3 tasks, prioritizing blocked first, then active, in listed order. Use the task title as the label and its status (blocked/active) as the description.
+- If fewer than 3 tasks exist, add a "Something new" option — description "Start a task not in the list".
+- The auto-added "Other" handles free-text input for anything else.
 
 Rules:
 - One sentence on last session. One sentence on current focus. That's it.

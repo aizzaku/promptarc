@@ -2,68 +2,95 @@
 
 You are setting up a new project with the ARC framework. This takes about 2 minutes.
 
-Tell the user: "Setting up ARC for this project. I'll ask 6 quick questions — answer as briefly as you like."
+Tell the user: "Setting up ARC for this project. Three quick questions."
 
 ---
 
-## Step 1: Ask questions in groups
+## Step 1: Gather project details
 
-Ask group 1, wait for the answer, then ask group 2, and so on. Never ask all questions at once.
+### Q1 — Project name and description
 
-**Group 1 (ask together):**
-- "What's the project name and what does it do? (one sentence)"
+Ask as a plain message:
+> "What's the project name AND what does it do?"
 
-**Group 2 (after group 1 answer):**
-- "What's the primary domain?
-  1. Software Engineering
-  2. Content Publishing
-  3. Business Strategy
-  4. Design / UX
-  5. Data & Analytics
-  6. Legal & Compliance
-  7. Sales / GTM
-  8. Learning / Research
-  9. Productivity
-  10. Decision Frameworks
-  11. Generic"
+Wait for the answer before proceeding.
 
-**Group 3 (after group 2 answer):**
-- "Is there a secondary domain? For example, a SaaS product that also needs content strategy. (type 1-11 or 'none')"
+### Q2 — Primary domain (two-step)
 
-**Group 4 (after group 3 answer):**
-- "Quality bar?
-  1. Quick prototype — move fast, cut corners deliberately
-  2. Functional MVP — works reliably, not polished
-  3. Production-ready — correctness, error handling, maintainability
-  4. Polished — high craft bar, presentation and detail matter"
+**Step 2a — Domain area**
 
-**Group 5 (after group 4 answer):**
-- "Team size? (solo / small team 2-5 / larger)"
+Use `AskUserQuestion`:
+- question: "What's the primary domain?"
+- header: "Domain"
+- options:
+  1. label "Technical" — description "Software engineering, data & analytics, design/UX"
+  2. label "Business" — description "Strategy, sales/GTM, legal & compliance"
+  3. label "Content & Knowledge" — description "Content publishing, research, productivity, decision frameworks"
+  4. label "Generic" — description "Doesn't fit a specific domain"
 
-**Group 6 (after group 5 answer):**
-- "Any hard constraints? Tech stack locked, regulatory requirements, timeline, budget ceiling. Type 'none' if not applicable."
+If the user selects **Generic**: skip Step 2b. Domain = Generic (#11).
+
+**Step 2b — Specific domain**
+
+Use `AskUserQuestion` with the sub-options matching their Step 2a answer:
+
+If **Technical**:
+- question: "Which technical domain?"
+- header: "Domain"
+- options:
+  1. label "Software Engineering" — description "Codebases, APIs, systems, infrastructure"
+  2. label "Data & Analytics" — description "Pipelines, warehouses, BI, metrics"
+  3. label "Design & UX" — description "Product design, design systems, UX research"
+
+If **Business**:
+- question: "Which business domain?"
+- header: "Domain"
+- options:
+  1. label "Business Strategy" — description "Planning, competitive analysis, exec communication"
+  2. label "Sales & GTM" — description "Outbound, go-to-market strategy, deal execution"
+  3. label "Legal & Compliance" — description "Contracts, policy, regulatory work"
+
+If **Content & Knowledge**:
+- question: "Which content domain?"
+- header: "Domain"
+- options:
+  1. label "Content Publishing" — description "Editorial, blogs, documentation, media"
+  2. label "Learning & Research" — description "Courses, research synthesis, knowledge management"
+  3. label "Productivity" — description "Workflows, tooling, task management systems"
+  4. label "Decision Frameworks" — description "Decision-making tools, strategic frameworks"
+
+### Q3 — Quality bar
+
+Use `AskUserQuestion`:
+- question: "What's the quality bar?"
+- header: "Quality"
+- options:
+  1. label "Prototype" — description "Move fast, cut corners deliberately"
+  2. label "MVP" — description "Works reliably, not polished"
+  3. label "Production" — description "Correctness, error handling, maintainability"
+  4. label "Polished" — description "High craft bar, presentation and detail matter"
 
 ---
 
-## Step 2: Determine overlays and modules
+## Step 2: Determine overlay and module
 
-Map the domain number to its overlay file (in `templates/claude-md/`). Domain modules are optional add-ons from `domains/` — pick one if it matches the project's industry vertical (e.g., saas.md, fintech.md).
+Map the selected domain to its overlay file (in `templates/claude-md/`):
 
-| # | Domain | Overlay file |
-|---|--------|-------------|
-| 1 | Software Engineering | templates/claude-md/software-eng.md |
-| 2 | Content Publishing | templates/claude-md/content-publishing.md |
-| 3 | Business Strategy | templates/claude-md/business-strategy.md |
-| 4 | Design / UX | templates/claude-md/design-ux.md |
-| 5 | Data & Analytics | templates/claude-md/data-analytics.md |
-| 6 | Legal & Compliance | templates/claude-md/legal-compliance.md |
-| 7 | Sales / GTM | templates/claude-md/sales-gtm.md |
-| 8 | Learning / Research | templates/claude-md/learning-research.md |
-| 9 | Productivity | templates/claude-md/productivity.md |
-| 10 | Decision Frameworks | templates/claude-md/decision-frameworks.md |
-| 11 | Generic | templates/claude-md/generic.md |
+| Domain | Overlay file |
+|--------|-------------|
+| Software Engineering | templates/claude-md/software-eng.md |
+| Content Publishing | templates/claude-md/content-publishing.md |
+| Business Strategy | templates/claude-md/business-strategy.md |
+| Design & UX | templates/claude-md/design-ux.md |
+| Data & Analytics | templates/claude-md/data-analytics.md |
+| Legal & Compliance | templates/claude-md/legal-compliance.md |
+| Sales & GTM | templates/claude-md/sales-gtm.md |
+| Learning & Research | templates/claude-md/learning-research.md |
+| Productivity | templates/claude-md/productivity.md |
+| Decision Frameworks | templates/claude-md/decision-frameworks.md |
+| Generic | templates/claude-md/generic.md |
 
-**Domain modules** (optional, stack on top of overlays):
+**Domain modules** (optional, applied during /arc-kickoff based on deeper context):
 - `domains/saas.md` — B2B SaaS products
 - `domains/fintech.md` — financial technology
 - `domains/e-commerce.md` — online retail and marketplaces
@@ -78,8 +105,6 @@ Map the domain number to its overlay file (in `templates/claude-md/`). Domain mo
 - `domains/data-analytics.md` — data warehouses, BI, metrics, pipelines
 - `domains/legal-compliance.md` — contracts, policy, regulatory work
 - `domains/sales-gtm.md` — outbound, GTM strategy, deal execution
-
-If a secondary domain was specified, identify the same overlay for it. Domain modules can be stacked (e.g., saas.md + fintech.md for a fintech SaaS).
 
 ---
 
@@ -98,13 +123,10 @@ Build the CLAUDE.md with this structure, filling real values from the answers:
 
 [Include rules from base.md NON-NEGOTIABLE section]
 [Add hard rules from the primary domain overlay's NON-NEGOTIABLE section]
-[If secondary domain: add its hard rules, prefixed with "({{SECONDARY_DOMAIN}}):"]
 
 ## DEFAULTS
 
 Quality bar: {{QUALITY_BAR_LABEL}}
-Team: {{TEAM_SIZE}}
-Constraints: {{CONSTRAINTS or "None specified"}}
 
 [Include defaults from base.md DEFAULTS section]
 [Add domain-specific defaults from primary overlay]
@@ -113,7 +135,6 @@ Constraints: {{CONSTRAINTS or "None specified"}}
 
 [Include suggestions from base.md SUGGESTED section]
 [Add domain-specific suggestions from primary overlay]
-[If secondary domain: add relevant suggestions]
 
 ## Voice
 
@@ -122,7 +143,7 @@ _Calibrated during /arc-kickoff. Until then, default to: direct, concise, no fil
 ## Project Context
 
 ### Stack
-{{If Group 6 specified a tech stack, list it here. Otherwise write: "Not yet specified — will be defined during /arc-kickoff."}}
+_Not yet specified — will be defined during /arc-kickoff._
 
 ### Architecture
 _Not yet defined. Update with: service boundaries, data flow, key integration points._
@@ -134,10 +155,10 @@ _Not yet defined. Follow existing code style until this is defined._
 Replace all `{{VARIABLE}}` placeholders with actual values. Do not leave any placeholders unfilled.
 
 Quality bar label mapping:
-- 1 → "Prototype (speed over correctness)"
-- 2 → "MVP (functional reliability)"
-- 3 → "Production (correctness, error handling, maintainability)"
-- 4 → "Polished (high craft, presentation and detail matter)"
+- Prototype → "Prototype (speed over correctness)"
+- MVP → "MVP (functional reliability)"
+- Production → "Production (correctness, error handling, maintainability)"
+- Polished → "Polished (high craft, presentation and detail matter)"
 
 ---
 
@@ -156,14 +177,14 @@ Create four files using the tasks-template/ formats:
 
 Create `tasks/STATE.md` from `templates/STATE.md`, filling in values from the setup answers:
 
-- `{{PROJECT_NAME}}` → project name from Group 1
+- `{{PROJECT_NAME}}` → project name from Q1
 - `{{DATE}}` → today's date
-- `{{DOMAIN}}` → primary domain name (not number)
+- `{{DOMAIN}}` → selected domain name
 - `{{QUALITY_BAR}}` → quality bar label
 - `{{CURRENT_FOCUS}}` → "Project initialized — awaiting first task"
 - `{{WHAT_FINISHED}}` → "arc-init: CLAUDE.md and tasks/ directory created"
 - `{{NEXT_ACTION}}` → "Run /arc-kickoff for deeper context, or start working"
-- `{{KEY_DECISIONS}}` → "Domain: {{DOMAIN}}, Quality bar: {{QUALITY_BAR}}, Constraints: {{CONSTRAINTS}}"
+- `{{KEY_DECISIONS}}` → "Domain: {{DOMAIN}}, Quality bar: {{QUALITY_BAR}}"
 - `{{OPEN_QUESTIONS}}` → "Voice not yet calibrated — run /arc-kickoff to set"
 - `{{CLAUDE_MD_STATUS}}` → "✅ active (voice not yet calibrated)"
 - `{{BRIEF_STATUS}}` → "❌ not created — run /arc-kickoff"
@@ -182,8 +203,7 @@ Tell the user exactly this (substituting values):
 
 - Primary domain: {{DOMAIN_NAME}}
 - Quality bar: {{QUALITY_BAR_LABEL}}
-- Constraints noted: {{CONSTRAINTS or "none"}}
 
-Run **/arc-kickoff** for a full project interview that builds deeper context, or start working — CLAUDE.md is already active."
+Run **/arc-kickoff** for a full project interview, or start working — CLAUDE.md is already active."
 
 Do not offer to do anything else unless the user asks.
