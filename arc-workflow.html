@@ -1,0 +1,1015 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>ARC Framework — Workflow Overview</title>
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=DM+Sans:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <script src="https://unpkg.com/@phosphor-icons/web@2.1.1"></script>
+  <style>
+    :root {
+      --bg:             #07070d;
+      --surface:        rgba(255,255,255,0.03);
+      --surface-2:      rgba(255,255,255,0.055);
+      --surface-hover:  rgba(255,255,255,0.07);
+      --border:         rgba(255,255,255,0.07);
+      --border-bright:  rgba(255,255,255,0.14);
+      --text:           #e8e8f0;
+      --muted:          #7a7a96;
+      --dim:            #4a4a62;
+      --accent:         #6366f1;
+      --accent-dim:     rgba(99,102,241,0.14);
+      --accent-border:  rgba(99,102,241,0.28);
+      --emerald:        #10b981;
+      --emerald-dim:    rgba(16,185,129,0.12);
+      --emerald-border: rgba(16,185,129,0.28);
+      --amber:          #f59e0b;
+      --amber-dim:      rgba(245,158,11,0.12);
+      --amber-border:   rgba(245,158,11,0.28);
+      --violet:         #8b5cf6;
+      --violet-dim:     rgba(139,92,246,0.12);
+      --violet-border:  rgba(139,92,246,0.28);
+      --cyan:           #06b6d4;
+      --cyan-dim:       rgba(6,182,212,0.12);
+      --cyan-border:    rgba(6,182,212,0.28);
+      --rose:           #f43f5e;
+      --rose-dim:       rgba(244,63,94,0.12);
+      --rose-border:    rgba(244,63,94,0.28);
+      --mono:           'JetBrains Mono', ui-monospace, monospace;
+      --display:        'Syne', system-ui, sans-serif;
+      --sans:           'DM Sans', system-ui, sans-serif;
+      --r:              8px;
+      --max:            1060px;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      background: var(--bg);
+      font-family: var(--sans);
+      color: var(--text);
+      width: var(--max);
+      margin: 0 auto;
+      padding: 56px 48px 64px;
+      position: relative;
+      overflow-x: hidden;
+    }
+
+    /* Background grid */
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background-image:
+        linear-gradient(rgba(99,102,241,0.04) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(99,102,241,0.04) 1px, transparent 1px);
+      background-size: 40px 40px;
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    /* Hero glow */
+    body::after {
+      content: '';
+      position: fixed;
+      top: -200px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 800px;
+      height: 600px;
+      background: radial-gradient(circle, rgba(99,102,241,0.07) 0%, transparent 65%);
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    /* ─── SHARED ───────────────────────────────────────────────── */
+    .z1 { position: relative; z-index: 1; }
+
+    .section-label {
+      font-family: var(--mono);
+      font-size: 10px;
+      font-weight: 600;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 20px;
+    }
+
+    .section-title {
+      font-family: var(--display);
+      font-size: 28px;
+      font-weight: 700;
+      color: var(--text);
+      letter-spacing: -0.02em;
+      margin-bottom: 4px;
+    }
+
+    .section-sub {
+      font-size: 13px;
+      color: var(--muted);
+      font-weight: 400;
+    }
+
+    .section-header {
+      display: flex;
+      align-items: baseline;
+      gap: 16px;
+      margin-bottom: 20px;
+    }
+
+    .divider {
+      height: 1px;
+      background: linear-gradient(90deg, transparent, var(--border-bright) 20%, var(--border-bright) 80%, transparent);
+      margin: 44px 0;
+    }
+
+    /* ─── HEADER ─────────────────────────────────────────────── */
+    .header {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 32px;
+      align-items: flex-start;
+      margin-bottom: 52px;
+      position: relative;
+      z-index: 1;
+    }
+
+    .eyebrow {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-family: var(--mono);
+      font-size: 10px;
+      font-weight: 600;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 16px;
+    }
+
+    .eyebrow-dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: var(--accent);
+      animation: pulse 2s infinite;
+    }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50%       { opacity: 0.4; transform: scale(0.7); }
+    }
+
+    .hero-title {
+      font-family: var(--display);
+      font-size: clamp(72px, 10vw, 120px);
+      font-weight: 800;
+      line-height: 0.9;
+      letter-spacing: -0.04em;
+      background: linear-gradient(135deg, #fff 0%, #a5b4fc 60%, #c4b5fd 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      margin-bottom: 16px;
+    }
+
+    .hero-desc {
+      font-size: 15px;
+      color: var(--muted);
+      line-height: 1.65;
+      max-width: 440px;
+    }
+
+    .hero-desc strong {
+      color: var(--text);
+      font-weight: 500;
+    }
+
+    .header-stats {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      padding-top: 24px;
+    }
+
+    .stat-chip {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--r);
+      padding: 10px 16px;
+      min-width: 160px;
+    }
+
+    .stat-chip .n {
+      font-family: var(--display);
+      font-size: 26px;
+      font-weight: 700;
+      color: var(--accent);
+      line-height: 1;
+    }
+
+    .stat-chip .l {
+      font-size: 12px;
+      color: var(--muted);
+      font-weight: 400;
+    }
+
+    /* ─── ARCHITECTURE LAYERS ─────────────────────────────────── */
+    .layers-grid {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 4px;
+      position: relative;
+      z-index: 1;
+    }
+
+    .layer {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--r);
+      padding: 20px 16px;
+      position: relative;
+      overflow: hidden;
+      transition: background 0.15s ease, border-color 0.15s ease;
+    }
+
+    .layer::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 1px;
+    }
+
+    .layer.c1::before { background: var(--amber); }
+    .layer.c2::before { background: var(--accent); }
+    .layer.c3::before { background: var(--emerald); }
+    .layer.c4::before { background: var(--violet); }
+    .layer.c5::before { background: var(--rose); }
+
+    /* radial card glow */
+    .layer::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+      border-radius: var(--r);
+      opacity: 0.6;
+    }
+    .layer.c1::after { background: radial-gradient(circle at 80% 20%, rgba(245,158,11,0.06), transparent 60%); }
+    .layer.c2::after { background: radial-gradient(circle at 80% 20%, rgba(99,102,241,0.07), transparent 60%); }
+    .layer.c3::after { background: radial-gradient(circle at 80% 20%, rgba(16,185,129,0.06), transparent 60%); }
+    .layer.c4::after { background: radial-gradient(circle at 80% 20%, rgba(139,92,246,0.06), transparent 60%); }
+    .layer.c5::after { background: radial-gradient(circle at 80% 20%, rgba(244,63,94,0.06), transparent 60%); }
+
+    .layer-icon {
+      font-size: 20px;
+      margin-bottom: 10px;
+      display: block;
+    }
+    .layer.c1 .layer-icon { color: var(--amber); }
+    .layer.c2 .layer-icon { color: var(--accent); }
+    .layer.c3 .layer-icon { color: var(--emerald); }
+    .layer.c4 .layer-icon { color: var(--violet); }
+    .layer.c5 .layer-icon { color: var(--rose); }
+
+    .layer-name {
+      font-family: var(--mono);
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      margin-bottom: 8px;
+    }
+    .layer.c1 .layer-name { color: var(--amber); }
+    .layer.c2 .layer-name { color: var(--accent); }
+    .layer.c3 .layer-name { color: var(--emerald); }
+    .layer.c4 .layer-name { color: var(--violet); }
+    .layer.c5 .layer-name { color: var(--rose); }
+
+    .layer-desc {
+      font-size: 11.5px;
+      color: var(--muted);
+      line-height: 1.55;
+      margin-bottom: 12px;
+    }
+
+    .layer-tags {
+      display: flex;
+      flex-direction: column;
+      gap: 3px;
+    }
+
+    .ltag {
+      font-family: var(--mono);
+      font-size: 9.5px;
+      font-weight: 600;
+      padding: 2px 6px;
+      border-radius: 4px;
+      width: fit-content;
+      letter-spacing: 0.02em;
+    }
+    .layer.c1 .ltag { background: var(--amber-dim);   color: var(--amber);   border: 1px solid var(--amber-border); }
+    .layer.c2 .ltag { background: var(--accent-dim);  color: var(--accent);  border: 1px solid var(--accent-border); }
+    .layer.c3 .ltag { background: var(--emerald-dim); color: var(--emerald); border: 1px solid var(--emerald-border); }
+    .layer.c4 .ltag { background: var(--violet-dim);  color: var(--violet);  border: 1px solid var(--violet-border); }
+    .layer.c5 .ltag { background: var(--rose-dim);    color: var(--rose);    border: 1px solid var(--rose-border); }
+
+    /* ─── WORKFLOW ─────────────────────────────────────────────── */
+    .workflow-table {
+      position: relative;
+      z-index: 1;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .wf-row {
+      display: flex;
+      align-items: stretch;
+      gap: 4px;
+    }
+
+    .wf-label {
+      width: 128px;
+      flex-shrink: 0;
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+      padding-right: 14px;
+    }
+
+    .wf-label-inner {
+      font-family: var(--mono);
+      font-size: 9px;
+      font-weight: 700;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      padding: 4px 10px;
+      border-radius: 100px;
+      line-height: 1;
+    }
+
+    .wf-row.new     .wf-label-inner { background: var(--amber-dim);   color: var(--amber);   border: 1px solid var(--amber-border); }
+    .wf-row.session .wf-label-inner { background: var(--accent-dim);  color: var(--accent);  border: 1px solid var(--accent-border); }
+    .wf-row.ship    .wf-label-inner { background: var(--emerald-dim); color: var(--emerald); border: 1px solid var(--emerald-border); }
+    .wf-row.sprint  .wf-label-inner { background: var(--violet-dim);  color: var(--violet);  border: 1px solid var(--violet-border); }
+
+    .wf-steps {
+      flex: 1;
+      display: flex;
+      align-items: stretch;
+      gap: 4px;
+    }
+
+    .wf-step {
+      flex: 1;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--r);
+      padding: 12px 14px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      text-align: center;
+      position: relative;
+    }
+
+    .wf-cmd {
+      font-family: var(--mono);
+      font-size: 11px;
+      font-weight: 700;
+      margin-bottom: 3px;
+      letter-spacing: 0.02em;
+    }
+
+    .wf-hint {
+      font-size: 10px;
+      color: var(--muted);
+      line-height: 1.35;
+    }
+
+    .wf-row.new     .wf-step { border-color: rgba(245,158,11,0.14); }
+    .wf-row.new     .wf-cmd  { color: var(--amber); }
+    .wf-row.session .wf-step { border-color: rgba(99,102,241,0.14); }
+    .wf-row.session .wf-cmd  { color: var(--accent); }
+    .wf-row.ship    .wf-step { border-color: rgba(16,185,129,0.14); }
+    .wf-row.ship    .wf-cmd  { color: var(--emerald); }
+    .wf-row.sprint  .wf-step { border-color: rgba(139,92,246,0.14); }
+    .wf-row.sprint  .wf-cmd  { color: var(--violet); }
+
+    .wf-arrow {
+      display: flex;
+      align-items: center;
+      color: var(--dim);
+      font-size: 10px;
+      flex-shrink: 0;
+      padding: 0 1px;
+    }
+
+    /* wide step */
+    .wf-step.wide { flex: 2; }
+    .wf-step.wider { flex: 2.5; }
+
+    /* ─── SKILLS REFERENCE ──────────────────────────────────── */
+    .skills-cols {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 8px;
+      position: relative;
+      z-index: 1;
+    }
+
+    .skill-group {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--r);
+      overflow: hidden;
+    }
+
+    .sg-header {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 16px 18px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .sg-icon {
+      width: 30px;
+      height: 30px;
+      border-radius: 6px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 15px;
+      flex-shrink: 0;
+    }
+
+    .sg-title {
+      font-family: var(--display);
+      font-size: 13px;
+      font-weight: 700;
+      letter-spacing: -0.01em;
+    }
+
+    .sg-body {
+      padding: 12px 18px 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .cmd-row {
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+    }
+
+    .cmd-badge {
+      font-family: var(--mono);
+      font-size: 10px;
+      font-weight: 700;
+      white-space: nowrap;
+      padding: 2px 7px;
+      border-radius: 4px;
+      flex-shrink: 0;
+      margin-top: 1px;
+    }
+
+    .cmd-desc {
+      font-size: 11.5px;
+      color: var(--muted);
+      line-height: 1.45;
+    }
+
+    /* group color theming */
+    .sg-setup .sg-icon       { background: var(--amber-dim);   color: var(--amber); }
+    .sg-setup .sg-title      { color: var(--amber); }
+    .sg-setup .cmd-badge     { background: var(--amber-dim);   color: var(--amber);   border: 1px solid var(--amber-border); }
+
+    .sg-exec .sg-icon        { background: var(--emerald-dim); color: var(--emerald); }
+    .sg-exec .sg-title       { color: var(--emerald); }
+    .sg-exec .cmd-badge      { background: var(--emerald-dim); color: var(--emerald); border: 1px solid var(--emerald-border); }
+
+    .sg-quality .sg-icon     { background: var(--violet-dim);  color: var(--violet); }
+    .sg-quality .sg-title    { color: var(--violet); }
+    .sg-quality .cmd-badge   { background: var(--violet-dim);  color: var(--violet);  border: 1px solid var(--violet-border); }
+
+    /* ─── BOTTOM ROW ────────────────────────────────────────── */
+    .bottom-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+      position: relative;
+      z-index: 1;
+    }
+
+    .bot-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--r);
+      padding: 22px 20px;
+    }
+
+    .bot-card-title {
+      font-family: var(--display);
+      font-size: 16px;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      color: var(--text);
+      margin-bottom: 14px;
+    }
+
+    /* composition */
+    .comp-formula {
+      font-family: var(--mono);
+      font-size: 11.5px;
+      background: var(--surface-2);
+      border: 1px solid var(--border);
+      border-radius: var(--r);
+      padding: 11px 14px;
+      margin-bottom: 14px;
+      color: var(--muted);
+      line-height: 1.7;
+    }
+
+    .comp-formula .hl { color: var(--accent); font-weight: 600; }
+    .comp-formula .hl-e { color: var(--emerald); font-weight: 600; }
+
+    .comp-list {
+      display: flex;
+      flex-direction: column;
+      gap: 7px;
+    }
+
+    .comp-row {
+      display: flex;
+      align-items: baseline;
+      gap: 12px;
+    }
+
+    .comp-key {
+      font-family: var(--mono);
+      font-size: 10px;
+      font-weight: 700;
+      color: var(--accent);
+      white-space: nowrap;
+      min-width: 88px;
+      flex-shrink: 0;
+    }
+
+    .comp-val {
+      font-family: var(--mono);
+      font-size: 10.5px;
+      color: var(--muted);
+      line-height: 1.45;
+    }
+
+    /* non-negotiables */
+    .nn-list {
+      display: flex;
+      flex-direction: column;
+      gap: 13px;
+    }
+
+    .nn-item {
+      display: flex;
+      gap: 12px;
+      align-items: flex-start;
+    }
+
+    .nn-num {
+      font-family: var(--mono);
+      font-size: 10px;
+      font-weight: 700;
+      color: var(--accent);
+      background: var(--accent-dim);
+      border: 1px solid var(--accent-border);
+      border-radius: 5px;
+      width: 24px;
+      height: 24px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+
+    .nn-title {
+      font-size: 12.5px;
+      font-weight: 600;
+      color: var(--text);
+      margin-bottom: 3px;
+    }
+
+    .nn-desc {
+      font-size: 11px;
+      color: var(--muted);
+      line-height: 1.5;
+    }
+
+    .nn-code {
+      font-family: var(--mono);
+      font-size: 9.5px;
+      background: var(--surface-2);
+      padding: 1px 5px;
+      border-radius: 3px;
+      color: var(--muted);
+    }
+
+    /* ─── FOOTER ─────────────────────────────────────────────── */
+    .footer {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding-top: 28px;
+      border-top: 1px solid var(--border);
+      position: relative;
+      z-index: 1;
+    }
+
+    .install-block {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      background: var(--surface);
+      border: 1px solid var(--accent-border);
+      border-radius: var(--r);
+      padding: 10px 18px;
+      font-family: var(--mono);
+      font-size: 12.5px;
+    }
+
+    .install-block .prompt { color: var(--dim); }
+    .install-block .cmd    { color: var(--accent); font-weight: 600; }
+
+    .footer-right {
+      text-align: right;
+    }
+
+    .footer-tagline {
+      font-size: 12px;
+      color: var(--dim);
+      margin-bottom: 3px;
+    }
+
+    .footer-sub {
+      font-family: var(--mono);
+      font-size: 10px;
+      color: var(--muted);
+    }
+
+    /* section spacing */
+    .section { margin-bottom: 44px; }
+  </style>
+</head>
+<body>
+
+  <!-- ─── HEADER ──────────────────────────────────────────────── -->
+  <div class="header z1">
+    <div>
+      <div class="eyebrow">
+        <div class="eyebrow-dot"></div>
+        Anthropic Runtime Configuration
+      </div>
+      <div class="hero-title">ARC</div>
+      <div class="hero-desc">
+        A complete <strong>development operating system</strong> for Claude Code —
+        setup, planning, execution, quality, and retrospectives in one coherent framework.
+      </div>
+    </div>
+    <div class="header-stats">
+      <div class="stat-chip">
+        <span class="n">11</span>
+        <span class="l">Skills</span>
+      </div>
+      <div class="stat-chip">
+        <span class="n">23</span>
+        <span class="l">Domain Modules</span>
+      </div>
+      <div class="stat-chip">
+        <span class="n">5</span>
+        <span class="l">Framework Layers</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ─── ARCHITECTURE ─────────────────────────────────────────── -->
+  <div class="section">
+    <div class="z1" style="margin-bottom:16px">
+      <div class="section-label">Architecture</div>
+      <div class="section-header">
+        <div class="section-title">Five Integrated Layers</div>
+        <div class="section-sub">No re-explaining between sessions</div>
+      </div>
+    </div>
+
+    <div class="layers-grid">
+      <div class="layer c1">
+        <i class="ph-bold ph-brain layer-icon"></i>
+        <div class="layer-name">Context</div>
+        <div class="layer-desc">Domain expertise, project brief, CLAUDE.md, voice calibration. Every session starts fully loaded.</div>
+        <div class="layer-tags">
+          <span class="ltag">/arc-init</span>
+          <span class="ltag">/arc-kickoff</span>
+          <span class="ltag">/arc-resume</span>
+          <span class="ltag">/arc-export</span>
+        </div>
+      </div>
+      <div class="layer c2">
+        <i class="ph-bold ph-blueprint layer-icon"></i>
+        <div class="layer-name">Planning</div>
+        <div class="layer-desc">Architectural rigor before code. Maps failure modes, delight opportunities, reversibility index.</div>
+        <div class="layer-tags">
+          <span class="ltag">/arc-plan</span>
+          <span class="ltag" style="font-size:8.5px;opacity:0.6">EXPAND / HOLD / REDUCE</span>
+        </div>
+      </div>
+      <div class="layer c3">
+        <i class="ph-bold ph-rocket-launch layer-icon"></i>
+        <div class="layer-name">Execution</div>
+        <div class="layer-desc">Pre-PR code review, automated ship pipeline, changelog and PR creation.</div>
+        <div class="layer-tags">
+          <span class="ltag">/arc-review</span>
+          <span class="ltag">/arc-ship</span>
+        </div>
+      </div>
+      <div class="layer c4">
+        <i class="ph-bold ph-shield-check layer-icon"></i>
+        <div class="layer-name">Quality</div>
+        <div class="layer-desc">Anti-slop enforcement, stub detection, deployment safety, wiring verification.</div>
+        <div class="layer-tags">
+          <span class="ltag">/arc-check</span>
+          <span class="ltag">/arc-rekickoff</span>
+        </div>
+      </div>
+      <div class="layer c5">
+        <i class="ph-bold ph-archive layer-icon"></i>
+        <div class="layer-name">Memory</div>
+        <div class="layer-desc">STATE.md keeps sessions continuous. Lessons accumulate. Retros extract the signal.</div>
+        <div class="layer-tags">
+          <span class="ltag">/arc-retro</span>
+          <span class="ltag">/arc-progress</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ─── WORKFLOW ─────────────────────────────────────────────── -->
+  <div class="section">
+    <div class="z1" style="margin-bottom:16px">
+      <div class="section-label">The Workflow</div>
+      <div class="section-header">
+        <div class="section-title">Four Standard Loops</div>
+        <div class="section-sub">Covering the full development cycle</div>
+      </div>
+    </div>
+
+    <div class="workflow-table">
+
+      <div class="wf-row new">
+        <div class="wf-label"><div class="wf-label-inner">New Project</div></div>
+        <div class="wf-steps">
+          <div class="wf-step">
+            <div class="wf-cmd">/arc-init</div>
+            <div class="wf-hint">3 questions<br>CLAUDE.md + tasks/</div>
+          </div>
+          <div class="wf-arrow"><i class="ph-bold ph-caret-right"></i></div>
+          <div class="wf-step">
+            <div class="wf-cmd">/arc-kickoff</div>
+            <div class="wf-hint">15-min interview<br>brief + arch diagram</div>
+          </div>
+          <div class="wf-arrow"><i class="ph-bold ph-caret-right"></i></div>
+          <div class="wf-step">
+            <div class="wf-cmd">/arc-plan</div>
+            <div class="wf-hint">EXPAND mode<br>failure map + roadmap</div>
+          </div>
+          <div class="wf-arrow"><i class="ph-bold ph-caret-right"></i></div>
+          <div class="wf-step">
+            <div class="wf-cmd">Build</div>
+            <div class="wf-hint">Informed by plan<br>STATE.md tracking</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="wf-row session">
+        <div class="wf-label"><div class="wf-label-inner">Every Session</div></div>
+        <div class="wf-steps">
+          <div class="wf-step">
+            <div class="wf-cmd">/arc-resume</div>
+            <div class="wf-hint">STATE.md loaded<br>git + PR signals</div>
+          </div>
+          <div class="wf-arrow"><i class="ph-bold ph-caret-right"></i></div>
+          <div class="wf-step wide">
+            <div class="wf-cmd">Work</div>
+            <div class="wf-hint">Full context loaded — domain, constraints, voice, history</div>
+          </div>
+          <div class="wf-arrow"><i class="ph-bold ph-caret-right"></i></div>
+          <div class="wf-step">
+            <div class="wf-cmd">/arc-check</div>
+            <div class="wf-hint">After any significant<br>output</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="wf-row ship">
+        <div class="wf-label"><div class="wf-label-inner">Before Ship</div></div>
+        <div class="wf-steps">
+          <div class="wf-step">
+            <div class="wf-cmd">/arc-check</div>
+            <div class="wf-hint">Stubs, security<br>wiring, deploy safety</div>
+          </div>
+          <div class="wf-arrow"><i class="ph-bold ph-caret-right"></i></div>
+          <div class="wf-step">
+            <div class="wf-cmd">/arc-review</div>
+            <div class="wf-hint">Two-pass diff<br>CRITICAL → INFO</div>
+          </div>
+          <div class="wf-arrow"><i class="ph-bold ph-caret-right"></i></div>
+          <div class="wf-step wide">
+            <div class="wf-cmd">/arc-ship</div>
+            <div class="wf-hint">Tests → version → changelog → commits → push → PR (fully automated)</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="wf-row sprint">
+        <div class="wf-label"><div class="wf-label-inner">Sprint Close</div></div>
+        <div class="wf-steps">
+          <div class="wf-step">
+            <div class="wf-cmd">/arc-retro</div>
+            <div class="wf-hint">What shipped, broke<br>+ what to change</div>
+          </div>
+          <div class="wf-arrow"><i class="ph-bold ph-caret-right"></i></div>
+          <div class="wf-step">
+            <div class="wf-cmd">/arc-progress</div>
+            <div class="wf-hint">Context health<br>open questions count</div>
+          </div>
+          <div class="wf-arrow"><i class="ph-bold ph-caret-right"></i></div>
+          <div class="wf-step wide">
+            <div class="wf-cmd">lessons.md ↑</div>
+            <div class="wf-hint">Lessons append — never overwrite. Institutional knowledge accumulates across sprints.</div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ─── SKILLS REFERENCE ──────────────────────────────────── -->
+  <div class="section">
+    <div class="z1" style="margin-bottom:16px">
+      <div class="section-label">Skills Reference</div>
+      <div class="section-header">
+        <div class="section-title">11 Skills, Three Groups</div>
+        <div class="section-sub">Run by Claude Code in your project directory</div>
+      </div>
+    </div>
+
+    <div class="skills-cols">
+      <div class="skill-group sg-setup">
+        <div class="sg-header">
+          <div class="sg-icon"><i class="ph-bold ph-compass"></i></div>
+          <div class="sg-title">Setup &amp; Context</div>
+        </div>
+        <div class="sg-body">
+          <div class="cmd-row">
+            <span class="cmd-badge">/arc-init</span>
+            <span class="cmd-desc">Start of any new project. Creates CLAUDE.md + tasks/. Takes 2 minutes.</span>
+          </div>
+          <div class="cmd-row">
+            <span class="cmd-badge">/arc-kickoff</span>
+            <span class="cmd-desc">Deep context: 15-min interview, project brief, arch diagram, portable export.</span>
+          </div>
+          <div class="cmd-row">
+            <span class="cmd-badge">/arc-resume</span>
+            <span class="cmd-desc">Start of every session. Reads STATE.md, surfaces blockers, uncommitted changes, open PRs.</span>
+          </div>
+          <div class="cmd-row">
+            <span class="cmd-badge">/arc-rekickoff</span>
+            <span class="cmd-desc">Mid-project pivot or scope change. Re-orients context without a full restart.</span>
+          </div>
+          <div class="cmd-row">
+            <span class="cmd-badge">/arc-export</span>
+            <span class="cmd-desc">Portable context prompt. Paste into Claude.ai or share with teammates.</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="skill-group sg-exec">
+        <div class="sg-header">
+          <div class="sg-icon"><i class="ph-bold ph-rocket-launch"></i></div>
+          <div class="sg-title">Planning &amp; Execution</div>
+        </div>
+        <div class="sg-body">
+          <div class="cmd-row">
+            <span class="cmd-badge">/arc-plan</span>
+            <span class="cmd-desc">Before writing code. Default EXPAND: finds the real product, maps delight opportunities, failure modes, reversibility index.</span>
+          </div>
+          <div class="cmd-row">
+            <span class="cmd-badge">/arc-review</span>
+            <span class="cmd-desc">Before creating a PR. Two-pass diff: CRITICAL (security, auth, IDOR) then INFORMATIONAL (quality, wiring, tests).</span>
+          </div>
+          <div class="cmd-row">
+            <span class="cmd-badge">/arc-ship</span>
+            <span class="cmd-desc">Fully automated: merge → tests → review → version bump → changelog → commits → push → PR.</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="skill-group sg-quality">
+        <div class="sg-header">
+          <div class="sg-icon"><i class="ph-bold ph-medal"></i></div>
+          <div class="sg-title">Quality &amp; Retro</div>
+        </div>
+        <div class="sg-body">
+          <div class="cmd-row">
+            <span class="cmd-badge">/arc-check</span>
+            <span class="cmd-desc">After any significant output. Stubs, wiring, specificity, deployment safety. Domain-specific checks.</span>
+          </div>
+          <div class="cmd-row">
+            <span class="cmd-badge">/arc-progress</span>
+            <span class="cmd-desc">Project health dashboard. Context health, open questions count, todo summary.</span>
+          </div>
+          <div class="cmd-row">
+            <span class="cmd-badge">/arc-retro</span>
+            <span class="cmd-desc">End of sprint. Reviews what shipped, what broke. Extracts lessons. Appends to tasks/lessons.md.</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ─── BOTTOM ROW ─────────────────────────────────────────── -->
+  <div class="bottom-row section">
+
+    <div class="bot-card">
+      <div class="bot-card-title">Composition Model</div>
+      <div class="comp-formula"><span class="hl">base.md</span> + <span class="hl">overlay</span> + <span class="hl">[domain]</span> + <span class="hl">overrides</span><br>→ your project's <span class="hl-e">CLAUDE.md</span></div>
+      <div class="comp-list">
+        <div class="comp-row">
+          <span class="comp-key">Fintech SaaS</span>
+          <span class="comp-val">base + software-eng + fintech + saas</span>
+        </div>
+        <div class="comp-row">
+          <span class="comp-key">YouTube</span>
+          <span class="comp-val">base + content-publishing + education</span>
+        </div>
+        <div class="comp-row">
+          <span class="comp-key">Market Analysis</span>
+          <span class="comp-val">base + business-strategy + saas</span>
+        </div>
+        <div class="comp-row">
+          <span class="comp-key">Learning Rust</span>
+          <span class="comp-val">base + learning-research + developer-tools</span>
+        </div>
+      </div>
+      <div style="margin-top:14px; font-family:var(--mono); font-size:10px; color:var(--dim)">
+        Target: &lt;3,000 words · /arc-init composes automatically
+      </div>
+    </div>
+
+    <div class="bot-card">
+      <div class="bot-card-title">Three Non-Negotiables</div>
+      <div class="nn-list">
+        <div class="nn-item">
+          <div class="nn-num">1</div>
+          <div>
+            <div class="nn-title">Plan before building</div>
+            <div class="nn-desc">Non-trivial tasks start with a written plan in <span class="nn-code">tasks/plan.md</span>. Prevents the most common Claude failure: implementing before understanding the problem.</div>
+          </div>
+        </div>
+        <div class="nn-item">
+          <div class="nn-num">2</div>
+          <div>
+            <div class="nn-title">Anti-slop enforced</div>
+            <div class="nn-desc">Every output must contain project-specific information. If it could apply to any project in the same category, it's generic — it gets rejected and redone.</div>
+          </div>
+        </div>
+        <div class="nn-item">
+          <div class="nn-num">3</div>
+          <div>
+            <div class="nn-title">Evidence before done</div>
+            <div class="nn-desc">Code needs clean diagnostics. Builds need exit code 0. Plans need verification steps. Nothing is marked complete without proof.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- ─── FOOTER ─────────────────────────────────────────────── -->
+  <div class="footer">
+    <div class="install-block">
+      <span class="prompt">$</span>
+      <span class="cmd">npx arc-setup</span>
+    </div>
+    <div class="footer-right">
+      <div class="footer-tagline">Setup, plan, build, review, ship, retro — one coherent loop.</div>
+      <div class="footer-sub">MIT License · Requires Node 16+ and git</div>
+    </div>
+  </div>
+
+</body>
+</html>

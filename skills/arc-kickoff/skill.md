@@ -172,6 +172,38 @@ Once confirmed accurate, write the brief to `tasks/brief.md`.
 
 If `tasks/brief.md` already exists (from a previous kickoff), prepend the new brief above the old one — do not overwrite it. Add a `---` divider between entries.
 
+### 3c — Architecture diagram (Software Engineering domain only)
+
+If the domain is Software Engineering (selected in Phase 1 or Phase 2):
+
+Use `AskUserQuestion`:
+- question: "Want a system architecture diagram based on what you've described?"
+- header: "Architecture"
+- options:
+  1. label "Yes" — description "ASCII diagram of components, data flows, and trust boundaries"
+  2. label "No" — description "Skip it, I'll design as I build"
+
+If **Yes**: generate an ASCII architecture diagram based on the project description. Use the structure:
+
+```
+[User / Client]
+      │ HTTP/WebSocket
+      ▼
+[Frontend / API Gateway]
+      │
+      ├──▶ [Service A] ──▶ [DB / Cache]
+      │
+      └──▶ [Service B] ──▶ [External API]
+```
+
+Constraints:
+- Only draw what the user described — no invented components
+- Label each arrow with the protocol or data type if mentioned
+- Mark trust boundaries (where auth/validation happens) with `[AUTH]`
+- Show the primary data store for each service
+
+Append the diagram to `tasks/brief.md` under a `### System Architecture` heading.
+
 ---
 
 ## Phase 4: Calibrate voice and update CLAUDE.md

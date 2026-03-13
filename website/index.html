@@ -418,6 +418,38 @@
 
     /* ─── Commands ────────────────────────────────────── */
     #commands { border-bottom: 1px solid var(--border); }
+    .wf-cell {
+      flex: 1;
+      background: var(--surface);
+      border: 1px solid var(--wf-border, var(--border));
+      border-radius: 8px;
+      padding: 12px 14px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      text-align: center;
+    }
+    .wf-cmd {
+      font-family: var(--mono);
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--wf-color, var(--accent));
+      margin-bottom: 4px;
+      letter-spacing: 0.01em;
+    }
+    .wf-hint {
+      font-size: 10px;
+      color: var(--text-dim);
+      line-height: 1.35;
+    }
+    .wf-sep {
+      display: flex;
+      align-items: center;
+      color: var(--border-bright);
+      font-size: 12px;
+      flex-shrink: 0;
+      padding: 0 1px;
+    }
     .cmd-grid-section {
       display: grid;
       grid-template-columns: repeat(3, 1fr);
@@ -1013,8 +1045,8 @@
     <section id="commands">
       <div class="wrap">
         <p class="kicker">The commands</p>
-        <h2>Six commands. Two phases.</h2>
-        <p class="sub">Three to set up, three to keep going. After setup, the daily loop is <code style="font-family:var(--mono);font-size:14px">/arc-resume → work → /arc-check</code>.</p>
+        <h2>11 skills. Full cycle.</h2>
+        <p class="sub">Setup, plan, build, review, ship, retro — one coherent loop. The daily minimum is <code style="font-family:var(--mono);font-size:14px">/arc-resume → work → /arc-check</code>.</p>
 
         <div class="cmd-grid-section">
           <div class="cmd-card" style="--card-color:var(--amber);--card-glow:rgba(245,158,11,0.08)">
@@ -1076,6 +1108,125 @@
               <span class="cmd-card-trigger">anytime</span>
             </div>
           </div>
+
+          <div class="cmd-card" style="--card-color:var(--accent);--card-glow:rgba(99,102,241,0.08)">
+            <span class="cmd-badge" style="color:var(--accent)">Planning</span>
+            <div class="cmd-card-name">/arc-plan</div>
+            <p class="cmd-card-desc">Before writing code. Default EXPAND mode: finds the real product hiding in the request, maps delight opportunities, failure modes, and reversibility. Also: HOLD and REDUCE modes.</p>
+            <div class="cmd-card-footer">
+              <span>~10 min</span>
+              <span class="cmd-card-trigger">before coding</span>
+            </div>
+          </div>
+
+          <div class="cmd-card" style="--card-color:var(--cyan);--card-glow:rgba(6,182,212,0.08)">
+            <span class="cmd-badge" style="color:var(--cyan)">Pre-PR</span>
+            <div class="cmd-card-name">/arc-review</div>
+            <p class="cmd-card-desc">Two-pass diff-based code review. Pass 1 CRITICAL: security, auth, IDOR, SQL injection. Pass 2 INFORMATIONAL: quality, tests, wiring. Domain-aware. Never commits or pushes.</p>
+            <div class="cmd-card-footer">
+              <span>~3 min</span>
+              <span class="cmd-card-trigger">before PR</span>
+            </div>
+          </div>
+
+          <div class="cmd-card" style="--card-color:var(--cyan);--card-glow:rgba(6,182,212,0.08)">
+            <span class="cmd-badge" style="color:var(--cyan)">Ship</span>
+            <div class="cmd-card-name">/arc-ship</div>
+            <p class="cmd-card-desc">Fully automated deployment pipeline. Tests → review → version bump → changelog → logical commits → push → PR creation. No confirmation unless CRITICAL issues are found.</p>
+            <div class="cmd-card-footer">
+              <span>~5 min</span>
+              <span class="cmd-card-trigger">ready to land</span>
+            </div>
+          </div>
+
+          <div class="cmd-card" style="--card-color:var(--violet);--card-glow:rgba(139,92,246,0.08)">
+            <span class="cmd-badge pivot">Retrospective</span>
+            <div class="cmd-card-name">/arc-retro</div>
+            <p class="cmd-card-desc">End-of-sprint retrospective. Reviews what shipped, what broke, what was learned. Appends lessons to tasks/lessons.md. Checks context health — recommends rekickoff if stale.</p>
+            <div class="cmd-card-footer">
+              <span>~5 min</span>
+              <span class="cmd-card-trigger">sprint close</span>
+            </div>
+          </div>
+
+          <div class="cmd-card" style="--card-color:var(--amber);--card-glow:rgba(245,158,11,0.08)">
+            <span class="cmd-badge setup">Export</span>
+            <div class="cmd-card-name">/arc-export</div>
+            <p class="cmd-card-desc">Assembles a portable context prompt from CLAUDE.md, brief, and STATE.md. Paste into Claude.ai, share with teammates, or use as a handoff document.</p>
+            <div class="cmd-card-footer">
+              <span>&lt;1 min</span>
+              <span class="cmd-card-trigger">anytime</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <div class="section-divider"></div>
+
+    <!-- ─── Workflow ─────────────────────────────────── -->
+    <section id="workflow">
+      <div class="wrap">
+        <p class="kicker">The workflow</p>
+        <h2>Four loops. Every scenario covered.</h2>
+        <p class="sub">From new project to sprint close — a complete development operating system for Claude Code.</p>
+
+        <div style="margin-top:2.5rem;display:flex;flex-direction:column;gap:6px">
+
+          <div style="display:flex;align-items:stretch;gap:6px">
+            <div style="width:128px;flex-shrink:0;display:flex;align-items:center;justify-content:flex-end;padding-right:14px">
+              <span style="font-family:var(--mono);font-size:9px;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;padding:4px 10px;border-radius:100px;background:rgba(245,158,11,0.12);color:var(--amber);border:1px solid rgba(245,158,11,0.28)">New Project</span>
+            </div>
+            <div style="flex:1;display:flex;align-items:stretch;gap:6px">
+              <div class="wf-cell" style="--wf-color:var(--amber);--wf-border:rgba(245,158,11,0.18)"><div class="wf-cmd">/arc-init</div><div class="wf-hint">3 questions<br>CLAUDE.md + tasks/</div></div>
+              <div class="wf-sep">›</div>
+              <div class="wf-cell" style="--wf-color:var(--amber);--wf-border:rgba(245,158,11,0.18)"><div class="wf-cmd">/arc-kickoff</div><div class="wf-hint">15-min interview<br>brief + arch diagram</div></div>
+              <div class="wf-sep">›</div>
+              <div class="wf-cell" style="--wf-color:var(--amber);--wf-border:rgba(245,158,11,0.18)"><div class="wf-cmd">/arc-plan</div><div class="wf-hint">EXPAND mode<br>failure map + roadmap</div></div>
+              <div class="wf-sep">›</div>
+              <div class="wf-cell" style="--wf-color:var(--amber);--wf-border:rgba(245,158,11,0.18)"><div class="wf-cmd">Build</div><div class="wf-hint">Informed by plan<br>STATE.md tracking</div></div>
+            </div>
+          </div>
+
+          <div style="display:flex;align-items:stretch;gap:6px">
+            <div style="width:128px;flex-shrink:0;display:flex;align-items:center;justify-content:flex-end;padding-right:14px">
+              <span style="font-family:var(--mono);font-size:9px;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;padding:4px 10px;border-radius:100px;background:var(--accent-dim);color:var(--accent);border:1px solid var(--accent-border)">Every Session</span>
+            </div>
+            <div style="flex:1;display:flex;align-items:stretch;gap:6px">
+              <div class="wf-cell" style="--wf-color:var(--accent);--wf-border:rgba(99,102,241,0.18)"><div class="wf-cmd">/arc-resume</div><div class="wf-hint">STATE.md loaded<br>git + PR signals</div></div>
+              <div class="wf-sep">›</div>
+              <div class="wf-cell" style="--wf-color:var(--accent);--wf-border:rgba(99,102,241,0.18);flex:2"><div class="wf-cmd">Work</div><div class="wf-hint">Full context loaded — domain, constraints, voice, history</div></div>
+              <div class="wf-sep">›</div>
+              <div class="wf-cell" style="--wf-color:var(--accent);--wf-border:rgba(99,102,241,0.18)"><div class="wf-cmd">/arc-check</div><div class="wf-hint">After any significant<br>output</div></div>
+            </div>
+          </div>
+
+          <div style="display:flex;align-items:stretch;gap:6px">
+            <div style="width:128px;flex-shrink:0;display:flex;align-items:center;justify-content:flex-end;padding-right:14px">
+              <span style="font-family:var(--mono);font-size:9px;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;padding:4px 10px;border-radius:100px;background:rgba(16,185,129,0.12);color:var(--emerald);border:1px solid rgba(16,185,129,0.28)">Before Ship</span>
+            </div>
+            <div style="flex:1;display:flex;align-items:stretch;gap:6px">
+              <div class="wf-cell" style="--wf-color:var(--emerald);--wf-border:rgba(16,185,129,0.18)"><div class="wf-cmd">/arc-check</div><div class="wf-hint">Stubs, security<br>wiring, deploy safety</div></div>
+              <div class="wf-sep">›</div>
+              <div class="wf-cell" style="--wf-color:var(--emerald);--wf-border:rgba(16,185,129,0.18)"><div class="wf-cmd">/arc-review</div><div class="wf-hint">Two-pass diff<br>CRITICAL → INFO</div></div>
+              <div class="wf-sep">›</div>
+              <div class="wf-cell" style="--wf-color:var(--emerald);--wf-border:rgba(16,185,129,0.18);flex:2"><div class="wf-cmd">/arc-ship</div><div class="wf-hint">Tests → version → changelog → commits → push → PR (automated)</div></div>
+            </div>
+          </div>
+
+          <div style="display:flex;align-items:stretch;gap:6px">
+            <div style="width:128px;flex-shrink:0;display:flex;align-items:center;justify-content:flex-end;padding-right:14px">
+              <span style="font-family:var(--mono);font-size:9px;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;padding:4px 10px;border-radius:100px;background:rgba(139,92,246,0.12);color:var(--violet);border:1px solid rgba(139,92,246,0.28)">Sprint Close</span>
+            </div>
+            <div style="flex:1;display:flex;align-items:stretch;gap:6px">
+              <div class="wf-cell" style="--wf-color:var(--violet);--wf-border:rgba(139,92,246,0.18)"><div class="wf-cmd">/arc-retro</div><div class="wf-hint">What shipped, broke<br>+ what to change</div></div>
+              <div class="wf-sep">›</div>
+              <div class="wf-cell" style="--wf-color:var(--violet);--wf-border:rgba(139,92,246,0.18)"><div class="wf-cmd">/arc-progress</div><div class="wf-hint">Context health<br>open questions</div></div>
+              <div class="wf-sep">›</div>
+              <div class="wf-cell" style="--wf-color:var(--violet);--wf-border:rgba(139,92,246,0.18);flex:2"><div class="wf-cmd">lessons.md ↑</div><div class="wf-hint">Lessons append — never overwrite. Institutional knowledge accumulates across sprints.</div></div>
+            </div>
+          </div>
+
         </div>
       </div>
     </section>
@@ -1257,8 +1408,8 @@
         <p class="kicker">Get started</p>
         <h2>The full framework is in the repo.</h2>
         <p class="cta-meta">
-          8 principles. 11 domain overlays. 27 domain modules. 6 commands. Anti-slop guardrails.<br>
-          A kickoff that tests its own output. A verifier that catches stubs and wiring failures.
+          11 skills. 27 domain modules. Anti-slop guardrails. Deployment safety checks.<br>
+          Plan before building. Review before shipping. Retro after every sprint. Institutional knowledge that accumulates.
         </p>
         <a href="https://github.com/aizzaku/promptarc" class="btn-lg" target="_blank" rel="noopener">
           <svg class="icon" width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">

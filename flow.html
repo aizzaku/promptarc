@@ -12,7 +12,7 @@
 
 :root {
   --bg:      #07070d;
-  --surface: rgba(255,255,255,0.03);
+  --surface: rgba(14,13,26,0.90);
   --border:  rgba(255,255,255,0.07);
   --border2: rgba(255,255,255,0.12);
   --text:    #e8e8f0;
@@ -327,11 +327,12 @@ header {
   font-size: 11px;
   color: var(--dim);
   line-height: 1.3;
+  background: rgba(14,13,26,0.88);
 }
 
 .branch-opt.primary {
-  border-color: rgba(139,92,246,0.3);
-  background: rgba(139,92,246,0.06);
+  border-color: rgba(139,92,246,0.4);
+  background: rgba(18,13,32,0.90);
   color: var(--violet);
 }
 
@@ -348,8 +349,8 @@ header {
 .loop-step {
   padding: 7px 10px;
   border-radius: 6px;
-  border: 1px solid rgba(16,185,129,0.12);
-  background: rgba(16,185,129,0.04);
+  border: 1px solid rgba(16,185,129,0.2);
+  background: rgba(12,20,16,0.90);
 }
 
 .ls-name {
@@ -402,7 +403,7 @@ header {
   padding: 8px 10px;
   border-radius: 6px;
   border: 1px solid var(--border);
-  background: rgba(255,255,255,0.02);
+  background: rgba(14,13,26,0.90);
 }
 
 .sk-cmd {
@@ -510,9 +511,8 @@ footer {
       <div class="cmd"><span class="cmd-prompt">$</span><span class="cmd-text">npx arc-setup</span></div>
       <div class="card">
         <div class="bullets">
-          <div class="bullet">Checks git is available</div>
-          <div class="bullet">Clones repo into <span class="mono">/tmp</span></div>
-          <div class="bullet">Copies into <span class="mono">~/.claude/skills/</span></div>
+          <div class="bullet">Clones ARC repo to <span class="mono">/tmp</span></div>
+          <div class="bullet">Copies skills to <span class="mono">~/.claude/skills/</span></div>
         </div>
         <div class="outputs">
           <div class="out-label">Result</div>
@@ -598,9 +598,9 @@ footer {
       <div class="card">
         <div class="card-label">Phase 1 — 8 core questions</div>
         <div class="bullets">
-          <div class="bullet">Q1–4 · <strong>Type</strong> — project, user, scope, out-of-scope</div>
-          <div class="bullet">Q5 · <strong>Click</strong> — quality bar</div>
-          <div class="bullet">Q6–8 · <strong>Type</strong> — constraints, risk, success metric</div>
+          <div class="bullet">Q1–4 · project, users, scope, out-of-scope</div>
+          <div class="bullet">Q5 · quality bar <strong>(click)</strong></div>
+          <div class="bullet">Q6–8 · constraints, risk, success</div>
         </div>
         <div class="branch" style="margin-top:8px;">
           <div class="branch-opt primary">
@@ -613,12 +613,12 @@ footer {
           </div>
         </div>
         <div style="margin-top:8px;padding-top:8px;border-top:1px solid var(--border);">
-          <div class="card-label" style="margin-bottom:6px;">Then Claude does — automatically</div>
+          <div class="card-label" style="margin-bottom:6px;">Auto outputs</div>
           <div class="bullets">
             <div class="bullet"><strong>Writes</strong> project brief</div>
-            <div class="bullet"><strong>Calibrates</strong> voice from interview</div>
-            <div class="bullet"><strong>Validates</strong> CLAUDE.md — synthetic test</div>
-            <div class="bullet"><strong>Exports</strong> context — shown in chat</div>
+            <div class="bullet"><strong>Calibrates</strong> voice</div>
+            <div class="bullet"><strong>Validates</strong> CLAUDE.md</div>
+            <div class="bullet"><strong>Exports</strong> context to chat</div>
           </div>
         </div>
         <div class="outputs">
@@ -649,15 +649,15 @@ footer {
           </div>
           <div class="loop-step">
             <div class="ls-name">Orient</div>
-            <div class="ls-desc">Last session · focus · blockers · open questions</div>
+            <div class="ls-desc">Last session · focus · blockers</div>
           </div>
           <div class="loop-step">
             <div class="ls-name">Pick task <span class="ls-tag">click</span></div>
-            <div class="ls-desc">Live todo items as options — or type anything new</div>
+            <div class="ls-desc">Live todos as click options</div>
           </div>
           <div class="loop-step">
             <div class="ls-name">Work</div>
-            <div class="ls-desc">in_progress → complete → STATE.md auto-updates</div>
+            <div class="ls-desc">todo → done · STATE.md updates</div>
           </div>
         </div>
         <div class="loop-back">
@@ -681,19 +681,19 @@ footer {
         <div class="skill-rows">
           <div class="skill-row">
             <div class="sk-cmd">/arc-check</div>
-            <div class="sk-desc">Quality verdict after any output — PASS / NEEDS WORK / FAIL</div>
+            <div class="sk-desc">Quality verdict — PASS / NEEDS WORK / FAIL</div>
           </div>
           <div class="skill-row">
             <div class="sk-cmd">/arc-progress</div>
-            <div class="sk-desc">Health dashboard — context status, todos, recommended action</div>
+            <div class="sk-desc">Health dashboard — context, todos, next action</div>
           </div>
           <div class="skill-row">
             <div class="sk-cmd">/arc-rekickoff</div>
-            <div class="sk-desc">Re-sync when project pivots — 6 targeted questions</div>
+            <div class="sk-desc">Re-sync after pivot · 6 questions</div>
           </div>
           <div class="skill-row">
             <div class="sk-cmd">/arc-export</div>
-            <div class="sk-desc">Rebuild portable context prompt — paste into Claude.ai or share</div>
+            <div class="sk-desc">Portable context — paste into Claude.ai</div>
           </div>
         </div>
       </div>

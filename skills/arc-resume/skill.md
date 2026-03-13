@@ -15,6 +15,14 @@ Read in this order, silently:
 
 If STATE.md doesn't exist: read CLAUDE.md and tasks/brief.md as fallback. Note that STATE.md needs to be created.
 
+Also run silently:
+```bash
+git status --short
+gh pr list --state open --head $(git branch --show-current) 2>/dev/null
+```
+
+Note: uncommitted file count and any open PR on the current branch. Surface these in Step 2 if present.
+
 ---
 
 ## Step 2: Orient
@@ -28,6 +36,8 @@ Last session: {{STATE.md "Last session → Completed" field, condensed to 1 sent
 Working on: {{STATE.md "Current focus" field, 1 sentence}}.
 {{IF open questions exist: "Open question: {{FIRST_OPEN_QUESTION}}"}}
 {{IF blocked tasks exist: "Blocked: {{FIRST_BLOCKED_TASK}}"}}
+{{IF uncommitted changes exist: "Uncommitted: {{N}} files changed."}}
+{{IF open PR on current branch: "Open PR: {{PR title}} — {{URL}}"}}
 ```
 
 Then use `AskUserQuestion` to ask what to work on:
@@ -41,9 +51,12 @@ Rules:
 - One sentence on last session. One sentence on current focus. That's it.
 - If there are open questions: surface the most important one. One only.
 - If there are blocked tasks: name the first one. One only.
+- If there are uncommitted changes: surface the file count. One line only. Do not list files.
+- If there is an open PR on the current branch: surface it. One line only.
 - Do not summarize the brief, CLAUDE.md, or decisions log.
 - Do not list all todo items.
 - Do not acknowledge that you read STATE.md.
+- Do not run arc-review or any other skill automatically — just surface the signals.
 
 ---
 

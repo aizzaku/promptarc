@@ -228,6 +228,34 @@ Identify the active domain from `CLAUDE.md`. Apply the matching check group plus
 
 ---
 
+### Deployment safety checks
+
+Apply this section when the output involves code being shipped to production (new feature, refactor, dependency change, infrastructure change).
+
+**Migration safety**
+- If a DB migration is present: is it backward-compatible? (Old code still runs against new schema?)
+- Is the migration reversible? If not: is the rollback cost documented?
+- Does the migration lock a large table? If yes: is an online migration strategy planned?
+- Are there destructive operations (DROP, data transforms) without a backup step?
+
+**Deployment compatibility**
+- Can old and new code run simultaneously? (Zero-downtime deploy possible?)
+- Does this change an API contract? If yes: are existing clients handled during transition?
+- Are new environment variables required? If yes: are they in `.env.example`?
+- Are async job/queue formats changing? If yes: are old messages handled safely?
+
+**Feature flag / rollback**
+- For high-risk changes: is there a feature flag so behavior can be disabled without a redeploy?
+- Is there a documented rollback plan (code + database)?
+- What success signal confirms the deploy is healthy? (Name the specific metric or log.)
+
+**Observability**
+- New code paths have logging at decision points?
+- Error paths log enough context to debug without reproduction?
+- New user-facing features have at least one analytics event?
+
+---
+
 ## Phase 4: Produce the verdict
 
 Output in this exact format — no preamble, no softening:
