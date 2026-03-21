@@ -1,12 +1,16 @@
 # ARC — Anthropic Runtime Configuration Framework
 
-## Spec v1.0 — Comprehensive Prompt Engineering System for Claude Code
+## Spec v2.0 — Context & Quality Layer for Claude
 
 ---
 
 ## 1. Vision
 
-ARC is a modular, principle-based prompt engineering framework that eliminates friction when starting any project with Claude Code. It provides composable templates, anti-slop guardrails, domain-specific modules, and a layered learning system — all accessible via both an interactive Claude Code skill and a standalone git repository.
+ARC is the context and quality layer for Claude. It gives Claude everything it needs to know about your project before any work starts — domain context, voice calibration, anti-slop rules, composable `CLAUDE.md` templates — and enforces quality on every output.
+
+ARC is **not** a full SDLC orchestration engine. It pairs with execution engines (GSD, Superpowers) rather than competing with them. For non-code work — content, business strategy, learning — Arc is the only layer you need.
+
+**Three core domains**: Software Engineering · Content Publishing · Business Strategy
 
 **Success criteria** (all three must be met):
 1. **Speed**: Quality Claude output in <5 minutes on any new project
@@ -31,6 +35,8 @@ ARC is a modular, principle-based prompt engineering framework that eliminates f
 
 
 ### 2.3 Business Strategy & Market Analysis
+
+> **Note**: Domains 2.4 (Learning & Research), 2.5 (Personal Productivity), 2.6 (Decision Frameworks), and 2.7 (Generic) are supported via templates but are not core focus areas. The three primary domains are Software Engineering, Content Publishing, and Business Strategy.
 - Market sizing (TAM/SAM/SOM), competitive analysis, SWOT
 - Business model design and validation (lean canvas, BMC)
 - Go-to-market strategy, positioning, pricing
@@ -94,155 +100,68 @@ arc/
 │   ├── anti-slop.md                 # Anti-generic-output system
 │   ├── mental-models.md             # How to think about prompting
 │   ├── failure-modes.md             # Common failures + recovery patterns
-│   ├── execution-discipline.md      # Runtime behavior rules (plan-first, verification, elegance gate)
-│   └── prompt-debugging.md          # "My prompt isn't working" — systematic troubleshooting
+│   ├── execution-discipline.md      # Runtime behavior rules
+│   ├── deployment-safety.md         # Production deployment principles
+│   └── prompt-debugging.md          # Systematic prompt troubleshooting
 │
 ├── templates/                       # Template layer (composable)
-│   ├── claude-md/                   # CLAUDE.md templates
+│   ├── claude-md/                   # CLAUDE.md building blocks
 │   │   ├── base.md                  # Universal base (all projects)
 │   │   ├── software-eng.md          # Software engineering overlay
 │   │   ├── content-publishing.md    # Content publishing overlay
 │   │   ├── business-strategy.md     # Business & market analysis overlay
-│   │   ├── learning-research.md     # Learning & research synthesis overlay
-│   │   ├── productivity.md          # Personal productivity overlay
-│   │   ├── decision-frameworks.md   # Decision & problem-solving overlay
-│   │   └── generic.md               # Catch-all overlay
-│   │
+│   │   ├── learning-research.md     # Learning & research overlay
+│   │   ├── generic.md               # Catch-all overlay
+│   │   └── [industry overlays]      # saas, fintech, healthcare, ai-ml, gaming,
+│   │                                #   e-commerce, developer-tools, education,
+│   │                                #   marketplace, mobile-app
 │   ├── kickoff/                     # Project kickoff checklists
-│   │   ├── universal-checklist.md   # 30+ questions, every project
+│   │   ├── universal-checklist.md
 │   │   ├── software-eng-checklist.md
 │   │   ├── content-checklist.md
 │   │   ├── business-strategy-checklist.md
-│   │   ├── learning-research-checklist.md
-│   │   ├── productivity-checklist.md
-│   │   ├── decision-frameworks-checklist.md
 │   │   └── generic-checklist.md
-│   │
 │   └── prompts/                     # Prompt pattern library
-│       ├── README.md                # How to use patterns (goal-oriented index)
-│       ├── software-eng/            # SE-specific patterns
-│       │   ├── architecture.md
-│       │   ├── debugging.md
-│       │   ├── code-review.md
-│       │   ├── refactoring.md
-│       │   ├── greenfield.md
-│       │   └── stack-evaluation.md
-│       ├── content/                 # Content-specific patterns
-│       │   ├── ideation.md
-│       │   ├── research.md
-│       │   ├── outlining.md
-│       │   ├── drafting.md
-│       │   ├── editing.md
-│       │   ├── video-scripts.md
-│       │   └── social-media.md
-│       ├── business-strategy/       # Business & strategy patterns
-│       │   ├── market-analysis.md
-│       │   ├── competitive-intel.md
-│       │   ├── business-model.md
-│       │   ├── go-to-market.md
-│       │   ├── financial-modeling.md
-│       │   └── pitch-materials.md
-│       ├── learning-research/       # Learning & research patterns
-│       │   ├── deep-dive.md
-│       │   ├── source-synthesis.md
-│       │   ├── mental-model-building.md
-│       │   ├── curriculum-design.md
-│       │   ├── concept-explanation.md
-│       │   └── knowledge-gap-analysis.md
-│       ├── productivity/            # Personal productivity patterns
-│       │   ├── project-breakdown.md
-│       │   ├── planning-cycles.md
-│       │   ├── goal-setting.md
-│       │   ├── priority-frameworks.md
-│       │   ├── meeting-prep.md
-│       │   └── reflection-journaling.md
-│       ├── decision-frameworks/     # Decision & problem-solving patterns
-│       │   ├── structured-decisions.md
-│       │   ├── first-principles.md
-│       │   ├── risk-assessment.md
-│       │   ├── root-cause-analysis.md
-│       │   ├── red-team-steelman.md
-│       │   └── group-decisions.md
-│       ├── cross-domain/             # Multi-domain patterns
-│       │   ├── idea-to-architecture.md
-│       │   ├── market-to-build-decision.md
-│       │   ├── technical-content.md
-│       │   ├── product-launch.md
-│       │   ├── build-vs-buy.md
-│       │   └── learning-for-project.md
-│       └── generic/                 # Catch-all patterns
-│           ├── analysis.md
-│           ├── brainstorming.md
-│           └── synthesis.md
+│       ├── README.md                # Goal-oriented index
+│       ├── software-eng/
+│       ├── content/
+│       ├── business-strategy/
+│       ├── cross-domain/
+│       └── generic/
 │
-├── tasks-template/                  # Per-project task tracking (generated by arc-init)
-│   ├── plan.md                      # Current plan with checkable items
-│   ├── todo.md                      # Active task list with status
-│   ├── lessons.md                   # Mistakes + corrections (self-improvement loop)
-│   └── decisions.md                 # Key decisions with rationale
+├── tasks-template/                  # Per-project task tracking
+│   ├── plan.md
+│   ├── todo.md
+│   ├── lessons.md
+│   └── decisions.md
 │
-├── domains/                         # Domain expertise modules (pre-built)
-│   ├── README.md                    # How to use/create domain modules
-│   ├── saas.md
-│   ├── fintech.md
-│   ├── e-commerce.md
-│   ├── developer-tools.md
-│   ├── mobile-app.md
-│   ├── ai-ml.md
-│   ├── gaming.md
-│   ├── healthcare.md
-│   ├── education.md
-│   └── marketplace.md
+├── domains/                         # Industry expertise modules (10)
+│   ├── README.md
+│   ├── saas.md / fintech.md / healthcare.md / ai-ml.md / gaming.md
+│   ├── e-commerce.md / developer-tools.md / education.md
+│   ├── marketplace.md / mobile-app.md
 │
-├── claude-code/                     # Claude Code mastery layer
-│   ├── features-guide.md           # Every CC feature explained
-│   ├── claude-md-guide.md          # CLAUDE.md deep dive
-│   ├── skills-guide.md             # Building and using skills
-│   ├── hooks-guide.md              # Hook system mastery
-│   ├── mcp-guide.md                # MCP servers guide
-│   ├── memory-strategy.md          # What to persist where
-│   ├── subagents-guide.md          # When and how to delegate
-│   └── advanced-patterns.md        # Power user techniques
+├── skills/                          # Claude Code skills (6)
+│   ├── arc-init/skill.md            # /arc-init: project setup
+│   ├── arc-kickoff/skill.md         # /arc-kickoff: full interview + context export
+│   ├── arc-resume/skill.md          # /arc-resume: session start + health + lessons
+│   ├── arc-rekickoff/skill.md       # /arc-rekickoff: mid-project reset
+│   ├── arc-check/skill.md           # /arc-check: quality + anti-slop checker
+│   └── arc-export/skill.md          # /arc-export: portable context export
 │
-├── skills/                          # Claude Code skills
-│   ├── arc-init/                    # Interactive project setup skill
-│   │   └── skill.md
-│   ├── arc-kickoff/                 # Project kickoff interview skill
-│   │   └── skill.md
-│   ├── arc-rekickoff/                # Mid-project re-kickoff skill
-│   │   └── skill.md
-│   └── arc-check/                   # Output quality checker skill
-│       └── skill.md
-│
-├── examples/                        # Before/after examples
+├── examples/                        # Before/after prompt examples
 │   ├── software-eng/
-│   │   ├── bad-prompt-vs-good.md
-│   │   └── real-project-walkthrough.md
 │   ├── content/
-│   │   ├── bad-prompt-vs-good.md
-│   │   └── real-project-walkthrough.md
-│   ├── business-strategy/
-│   │   ├── bad-prompt-vs-good.md
-│   │   └── real-project-walkthrough.md
-│   ├── learning-research/
-│   │   ├── bad-prompt-vs-good.md
-│   │   └── real-project-walkthrough.md
-│   ├── productivity/
-│   │   ├── bad-prompt-vs-good.md
-│   │   └── real-project-walkthrough.md
-│   ├── decision-frameworks/
-│   │   ├── bad-prompt-vs-good.md
-│   │   └── real-project-walkthrough.md
-│   └── generic/
-│       ├── bad-prompt-vs-good.md
-│       └── real-project-walkthrough.md
+│   └── business-strategy/
+│
+├── references/
+│   ├── review-checklist.md          # Customizable quality checklist for arc-check
+│   ├── continuation-format.md
+│   └── verification-patterns.md
 │
 └── setup/                           # Setup and distribution
-    ├── npx-cli/                     # npx setup command
-    │   ├── package.json
-    │   ├── index.ts                 # Interactive CLI setup
-    │   └── templates/               # Template files for generation
-    └── install.md                   # Manual installation guide
+    ├── npx-cli/
+    └── install.md
 ```
 
 ### 3.2 Composition Model
@@ -819,21 +738,14 @@ Projects change. The kickoff system must handle pivots, not just starts.
 
 ---
 
-## 7. Claude Code Mastery Layer
+## 7. Claude Code Mastery
 
-### 7.1 Feature Coverage
+Arc does not bundle guides for Claude Code features (CLAUDE.md hierarchy, hooks, MCP, subagents, etc.) — these go stale as Anthropic ships updates. Instead:
 
-Complete guide to every Claude Code feature:
+- **Official docs**: [docs.anthropic.com/claude-code](https://docs.anthropic.com/claude-code)
+- **Claude Code memory strategy** is covered in `SPEC.md` Section 7.2 below — this is stable because it's about ARC's own layered persistence, not Claude Code internals.
 
-| Feature | Guide File | Depth |
-|---------|-----------|-------|
-| CLAUDE.md hierarchy | claude-md-guide.md | Deep — global, project, folder-level strategies |
-| Custom skills | skills-guide.md | Deep — building, installing, sharing skills |
-| Hooks system | hooks-guide.md | Full — pre/post hooks, validation, automation |
-| MCP servers | mcp-guide.md | Full — available servers, custom server creation |
-| Auto-memory | memory-strategy.md | Strategic — what to persist, layered system |
-| Subagent delegation | subagents-guide.md | Deep — when to use each agent type, prompt patterns |
-| Advanced patterns | advanced-patterns.md | Power user — combining features, workflows |
+> **Why removed**: Bundled feature guides created a maintenance burden with no unique value. The official docs are maintained by Anthropic and always accurate.
 
 ### 7.2 Memory Strategy (Layered Persistence)
 
@@ -983,48 +895,22 @@ When sharing with collaborators:
 
 ---
 
-## 13. Implementation Phases
+## 13. Implementation Status
 
-### Phase 1: Core Foundation
-- [ ] `core/principles.md` — Prompt engineering fundamentals
-- [ ] `core/anti-slop.md` — Anti-generic-output system
-- [ ] `core/mental-models.md` — How to think about prompting
-- [ ] `core/failure-modes.md` — Common failures + recovery
-- [ ] `core/execution-discipline.md` — Runtime behavior rules (Section 3A)
-- [ ] `core/prompt-debugging.md` — Systematic prompt troubleshooting (Section 5.3)
-- [ ] `templates/claude-md/base.md` — Universal CLAUDE.md base (includes execution discipline + voice profile skeleton)
-- [ ] `tasks-template/` — Plan, todo, lessons, decisions templates
+### ✅ Completed
+- `core/` — All 7 principle files
+- `templates/claude-md/` — base + 5 domain overlays + 10 industry overlays
+- `tasks-template/` — Plan, todo, lessons, decisions templates
+- `domains/` — 10 industry modules (saas, fintech, healthcare, ai-ml, gaming, e-commerce, developer-tools, education, marketplace, mobile-app)
+- `skills/` — 6 skills: arc-init, arc-kickoff, arc-resume, arc-rekickoff, arc-check, arc-export
+- `examples/` — software-eng, content, business-strategy
 
-### Phase 2: Domain Templates
-- [ ] `templates/claude-md/software-eng.md`
-- [ ] `templates/claude-md/content-publishing.md`
-- [ ] `templates/claude-md/business-strategy.md`
-- [ ] `templates/claude-md/learning-research.md`
-- [ ] `templates/claude-md/productivity.md`
-- [ ] `templates/claude-md/decision-frameworks.md`
-- [ ] `templates/claude-md/generic.md`
-- [ ] `templates/kickoff/` — All 8 checklists (universal + 7 domain-specific)
-- [ ] `templates/prompts/` — Pattern library (all 7 domains)
-
-### Phase 3: Domain Modules
-- [ ] All 10 pre-built domain modules in `domains/`
-
-### Phase 4: Claude Code Mastery
-- [ ] All guides in `claude-code/`
-
-### Phase 5: Examples
-- [ ] Before/after examples for all 7 domains
-- [ ] Real project walkthroughs for each domain
-
-### Phase 6: Distribution
-- [ ] Claude Code skills (`arc-init`, `arc-kickoff`)
-- [ ] npx CLI tool
-- [ ] README and installation guide
-
-### Phase 7: Polish
-- [ ] Cross-link everything (patterns → principles → examples)
-- [ ] Test with real projects across all three domains
-- [ ] Collaborator testing and feedback
+### 🔲 Remaining
+- `templates/kickoff/` — Domain interview checklists
+- `templates/prompts/` — Prompt pattern library (SE + content + business-strategy + cross-domain)
+- Plugin marketplace listing (Claude Code official marketplace)
+- npx CLI (`npx arc-setup`) — currently manual install only
+- Polish: cross-link patterns → principles → examples
 
 ---
 

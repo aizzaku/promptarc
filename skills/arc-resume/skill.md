@@ -1,8 +1,8 @@
 # /arc-resume — Session Resume
 
-You are resuming an in-progress project. This is the daily session-start skill — lightweight, no interview, no file rewrites. Read context, orient, ask what to work on.
+You are resuming an in-progress project. This is the daily session-start skill — lightweight, no interview, no file rewrites. Read context, check health, orient, and get to work.
 
-This is distinct from `/arc-rekickoff`, which is for significant project pivots. Use arc-resume when returning after a break (hours, days). Use arc-rekickoff when the project direction, scope, or constraints have changed.
+Distinct from `/arc-rekickoff`, which is for significant project pivots. Use arc-resume when returning after a break (hours, days). Use arc-rekickoff when the project direction, scope, or constraints have changed.
 
 ---
 
@@ -12,6 +12,7 @@ Read in this order, silently:
 1. `tasks/STATE.md`
 2. `CLAUDE.md`
 3. `tasks/todo.md` (active + blocked items only — skip completed)
+4. `tasks/lessons.md` (skim for entries — these are active constraints)
 
 If STATE.md doesn't exist: read CLAUDE.md and tasks/brief.md as fallback. Note that STATE.md needs to be created.
 
@@ -21,11 +22,25 @@ git status --short
 gh pr list --state open --head $(git branch --show-current) 2>/dev/null
 ```
 
-Note: uncommitted file count and any open PR on the current branch. Surface these in Step 2 if present.
+Note: uncommitted file count and any open PR on the current branch.
 
 ---
 
-## Step 2: Orient
+## Step 2: Context health check (silent)
+
+Before orienting, run a quick health check. Surface warnings in Step 3 only if 🔴.
+
+| Signal | Check | Status |
+|--------|-------|--------|
+| CLAUDE.md age | Last modified vs today | ✅ fresh / ⚠️ >30 days / 🔴 >90 days |
+| STATE.md age | Last updated vs today | ✅ <7 days / ⚠️ 7-14 days / 🔴 >14 days |
+| Open questions | Count in STATE.md | ✅ 0-2 / ⚠️ 3-5 / 🔴 6+ unresolved |
+
+Only surface 🔴 signals in Step 3. Do not report ✅ or ⚠️ — they don't need attention.
+
+---
+
+## Step 3: Orient
 
 Output exactly this — no more, no less:
 
@@ -38,6 +53,7 @@ Working on: {{STATE.md "Current focus" field, 1 sentence}}.
 {{IF blocked tasks exist: "Blocked: {{FIRST_BLOCKED_TASK}}"}}
 {{IF uncommitted changes exist: "Uncommitted: {{N}} files changed."}}
 {{IF open PR on current branch: "Open PR: {{PR title}} — {{URL}}"}}
+{{IF any 🔴 context health signal: "⚠️ [signal description] — run /arc-rekickoff to refresh."}}
 ```
 
 Then use `AskUserQuestion` to ask what to work on:
@@ -56,11 +72,10 @@ Rules:
 - Do not summarize the brief, CLAUDE.md, or decisions log.
 - Do not list all todo items.
 - Do not acknowledge that you read STATE.md.
-- Do not run arc-review or any other skill automatically — just surface the signals.
 
 ---
 
-## Step 3: Handle the user's response
+## Step 4: Handle the user's response
 
 When the user says what to work on:
 
@@ -70,7 +85,7 @@ When the user says what to work on:
 
 ---
 
-## Step 4: Update STATE.md
+## Step 5: Update STATE.md
 
 After the user confirms what to work on, update STATE.md:
 - Update `Current focus` to what the user said
@@ -82,12 +97,37 @@ Do this silently. Do not announce the update.
 
 ---
 
+## Step 6: End-of-session lessons capture (run when user signals "done for today")
+
+When the user indicates they are wrapping up (e.g., "done for today", "stopping here", "that's it"), ask one question:
+
+Use `AskUserQuestion`:
+- question: "Anything to capture before we stop? A mistake, a trick that worked, or an assumption that turned out wrong?"
+- header: "Lessons"
+- options:
+  1. label "Something to capture" — description "Tell me what"
+  2. label "Nothing this session" — description "No lessons to record"
+
+If "Something to capture": write the entry to `tasks/lessons.md` in this format:
+```
+---
+## Lesson — [date]
+**What**: [what happened — specific, not generic]
+**Rule**: [generalized rule to prevent recurrence or repeat the win]
+```
+
+Then update STATE.md `Last session → Completed` with a 1-sentence summary of what was accomplished.
+
+If "Nothing this session": update STATE.md only.
+
+---
+
 ## What not to do
 
 - Do not ask the user to remind you of the project. You read STATE.md.
 - Do not offer a menu of options ("Would you like to continue X, or start Y, or...?")
-- Do not run arc-check, arc-rekickoff, or any other skill unless the user asks.
-- Do not generate a progress report — that's `/arc-progress`.
+- Do not run arc-check or arc-rekickoff unless the user asks.
+- Do not generate a progress report unless the user asks for one.
 - Do not summarize the full STATE.md content to the user.
 
 ---

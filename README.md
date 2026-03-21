@@ -1,8 +1,10 @@
-# ARC — Anthropic Runtime Configuration Framework
+# ARC — Context & Quality Layer for Claude
 
-A complete development operating system for Claude Code. Setup, planning, execution, quality, and retrospectives — in one coherent framework.
+The setup and quality system for Claude Code. Gives Claude everything it needs to know about your project before writing a line — domain context, voice calibration, anti-slop rules, composition model. **Works alongside any execution engine** (GSD, Superpowers, or vanilla Claude Code).
 
-**What it solves**: Claude's output quality degrades when it lacks project context. And even with context, there's no standard workflow for planning before building, reviewing before shipping, or extracting lessons after shipping. ARC gives you the full cycle: context setup → plan → build → review → ship → retro.
+**What it solves**: Claude's output quality degrades when it lacks project context, and even with context there's no consistent quality baseline across domains. ARC fixes both: composable `CLAUDE.md` templates for any project type, an anti-slop system that enforces quality at the output level, and voice calibration so Claude sounds like you — not a chatbot.
+
+**Three core domains**: Software Engineering · Content Publishing · Business Strategy
 
 ---
 
@@ -44,15 +46,13 @@ Open Claude Code in your project folder, then:
 
 ## What you get
 
-**Context layer**: Every session starts loaded — domain, stack, constraints, quality bar, voice calibration. No re-explaining.
+**Context layer**: Every session starts loaded — domain, stack, voice, constraints, quality bar. Zero re-explaining.
 
-**Planning layer**: `/arc-plan` surfaces the real product before a line of code is written, maps failure modes, and produces a sequenced implementation plan.
+**Anti-slop layer**: `/arc-check` enforces banned phrases, structural anti-patterns, and domain-specific quality rules. Nothing outputs until it passes.
 
-**Execution layer**: `/arc-review` catches security holes and data bugs before PR creation. `/arc-ship` automates the entire deployment pipeline — tests, review, version bump, changelog, PR.
+**Quality layer**: Domain-aware quality checks, stub detection, wiring verification, and deployment safety — built into `/arc-check`.
 
-**Quality layer**: `/arc-check` validates outputs against anti-slop rules, domain-specific checks, and deployment safety.
-
-**Memory layer**: `/arc-retro` extracts lessons after each sprint. `tasks/lessons.md` accumulates institutional knowledge. `STATE.md` keeps sessions continuous.
+**Memory layer**: `/arc-resume` reads context, runs health checks, and captures end-of-session lessons in `tasks/lessons.md`. Institutional knowledge accumulates automatically.
 
 No re-explaining. No generic output. No lost context between sessions.
 
@@ -81,32 +81,25 @@ arc/
 │   │   ├── content-publishing.md
 │   │   ├── business-strategy.md
 │   │   ├── learning-research.md
-│   │   ├── productivity.md
-│   │   ├── decision-frameworks.md
-│   │   └── generic.md
+│   │   ├── generic.md
+│   │   └── [industry overlays]  ← saas, fintech, healthcare, etc.
 │   ├── kickoff/                 ← Domain-specific interview checklists
 │   └── prompts/                 ← 50+ prompt patterns by domain
 │
-├── domains/                     ← Industry expertise modules (23 domains)
+├── domains/                     ← Industry expertise modules (10 domains)
 │   ├── README.md                ← how to use domain modules
-│   ├── saas.md / fintech.md / healthcare.md ...
-│   └── [20+ more domains]
+│   └── saas / fintech / healthcare / ai-ml / gaming / ...
 │
 ├── skills/                      ← Claude Code skills
 │   ├── arc-init/skill.md        ← /arc-init: project setup
-│   ├── arc-kickoff/skill.md     ← /arc-kickoff: full interview + arch diagram
-│   ├── arc-resume/skill.md      ← /arc-resume: session start + git awareness
+│   ├── arc-kickoff/skill.md     ← /arc-kickoff: full interview + context export
+│   ├── arc-resume/skill.md      ← /arc-resume: session start + health check + lessons
 │   ├── arc-rekickoff/skill.md   ← /arc-rekickoff: mid-project reset
-│   ├── arc-plan/skill.md        ← /arc-plan: architectural planning (EXPAND/HOLD/REDUCE)
-│   ├── arc-review/skill.md      ← /arc-review: pre-PR code review
-│   ├── arc-ship/skill.md        ← /arc-ship: automated deployment pipeline
-│   ├── arc-check/skill.md       ← /arc-check: quality + deployment safety checker
-│   ├── arc-progress/skill.md    ← /arc-progress: health dashboard
-│   ├── arc-retro/skill.md       ← /arc-retro: sprint retrospective
+│   ├── arc-check/skill.md       ← /arc-check: quality + anti-slop checker
 │   └── arc-export/skill.md      ← /arc-export: portable context export
 │
 ├── references/
-│   ├── review-checklist.md      ← customizable review checklist for arc-review
+│   ├── review-checklist.md      ← customizable quality checklist for arc-check
 │   ├── continuation-format.md
 │   └── verification-patterns.md
 │
@@ -116,14 +109,10 @@ arc/
 │   ├── lessons.md
 │   └── decisions.md
 │
-├── claude-code/                 ← Claude Code mastery layer
-│   └── [guides: features, hooks, mcp, memory, subagents, advanced]
-│
-├── examples/                    ← Before/after prompt examples
-│   └── software-eng/
-│
-└── setup/
-    └── install.md               ← Manual installation guide
+└── examples/                    ← Before/after prompt examples
+    ├── software-eng/
+    ├── content/
+    └── business-strategy/
 ```
 
 ---
@@ -135,26 +124,40 @@ arc/
 | Skill | When to use |
 |-------|------------|
 | `/arc-init` | Start of any new project. Creates `CLAUDE.md` + `tasks/`. Takes 2 minutes. |
-| `/arc-kickoff` | After init, for serious projects. ~15 minute interview. Builds deep context, calibrates voice, generates architecture diagram, exports portable context. |
-| `/arc-resume` | Start of every working session. Reads context, surfaces blockers, uncommitted changes, open PRs. |
+| `/arc-kickoff` | After init, for serious projects. ~15 minute interview. Builds deep context, calibrates voice, exports portable context. |
+| `/arc-resume` | Start of every working session. Reads context, runs health checks, surfaces blockers + open questions. |
 | `/arc-rekickoff` | Mid-project when scope changes, direction pivots, or you need to re-orient. |
 | `/arc-export` | Assembles a portable context prompt. Paste into Claude.ai or share with teammates. |
 
-### Planning & execution
+### Quality
 
 | Skill | When to use |
 |-------|------------|
-| `/arc-plan` | Before writing code. Default EXPAND mode: finds the real product, maps delight opportunities, failure modes, produces sequenced implementation plan. Modes: EXPAND / HOLD / REDUCE. |
-| `/arc-review` | Before creating a PR. Two-pass diff review: CRITICAL (security, data, auth) then INFORMATIONAL (quality, wiring, tests). Domain-aware. |
-| `/arc-ship` | When ready to land a feature. Fully automated: merge → tests → review → version bump → changelog → commits → push → PR. |
+| `/arc-check` | After generating any significant output. Anti-slop enforcement, domain-specific checks, stub detection, wiring verification, deployment safety. |
 
-### Quality & retrospective
+---
 
-| Skill | When to use |
-|-------|------------|
-| `/arc-check` | After generating any significant output. Structured quality review with domain-specific checks, stub detection, wiring verification, and deployment safety. |
-| `/arc-progress` | Project health dashboard. Shows context health, open questions, todo summary. |
-| `/arc-retro` | End of sprint or after a significant milestone. Reviews what shipped, what broke, context health, extracts actionable lessons. |
+## The workflow
+
+```
+New project:       /arc-init → /arc-kickoff
+Every session:     /arc-resume
+After any output:  /arc-check
+Scope change:      /arc-rekickoff
+Share context:     /arc-export
+```
+
+### Works alongside GSD and Superpowers
+
+Arc is a **context layer**, not a full SDLC engine. Pair it with execution tools:
+
+| Layer | Tool |
+|-------|------|
+| Context & quality | **Arc** (this repo) |
+| Code execution & planning | [GSD](https://github.com/gsd-build/get-shit-done) |
+| TDD & subagent workflow | [Superpowers](https://github.com/obra/superpowers) |
+
+Arc configures Claude right. GSD and Superpowers build the code. For content, business strategy, and cross-domain work, Arc is the only layer you need.
 
 ---
 
@@ -170,21 +173,13 @@ Examples:
 - Fintech SaaS: `base.md + software-eng.md + fintech.md + saas.md`
 - YouTube channel: `base.md + content-publishing.md + education.md`
 - Market analysis: `base.md + business-strategy.md + saas.md`
-- Learning Rust: `base.md + learning-research.md + developer-tools.md`
+- Learning Rust: `base.md + learning-research.md`
 
 The `/arc-init` skill handles composition automatically based on your answers.
 
+Target: under 3,000 words total. Over that, Claude's instruction-following degrades.
+
 ---
-
-## The workflow
-
-```
-New project:   /arc-init → /arc-kickoff
-Every session: /arc-resume
-Before coding: /arc-plan
-After coding:  /arc-check → /arc-review → /arc-ship
-End of sprint: /arc-retro
-```
 
 ## The three non-negotiables
 
@@ -198,18 +193,16 @@ Every ARC project enforces three things, regardless of domain:
 
 ---
 
-## How templates work
+## Anti-slop system
 
-The `templates/claude-md/` files are building blocks, not complete CLAUDE.md files. They use `{{VARIABLE}}` placeholders that `/arc-init` fills with your project's actual values.
+The `core/anti-slop.md` file defines what Arc enforces across every domain:
 
-If you want to compose manually:
-1. Start with `templates/claude-md/base.md`
-2. Append the relevant overlay(s)
-3. Append any domain module(s) from `domains/`
-4. Fill all `{{VARIABLE}}` placeholders with real values
-5. Add project-specific rules at the bottom
+- **Banned phrases**: "In today's fast-paced world", "Let's dive in", "Robust solution", "Game-changer", "Leverage" (when "use" works), and 30+ more
+- **Structural anti-patterns**: Predictable H2/H2/H2 listicles, numbered lists as default structure, summary paragraphs that restate what was just said
+- **Code anti-patterns**: Over-abstraction, enterprise patterns in simple projects, premature optimization
+- **Voice profiles**: Per-project tone/register/personality calibration with domain defaults
 
-Target: under 3,000 words total. Over that, Claude's instruction-following degrades.
+`/arc-check` runs all of these against any output.
 
 ---
 
